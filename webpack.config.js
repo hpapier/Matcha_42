@@ -2,15 +2,20 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './index.js',
+    entry: path.join(__dirname, 'app', 'index.js'),
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname, 'public')
     },
-    devtool: 'source-map', 
-    context: path.resolve(__dirname, 'public'),
+    devtool: 'source-map',
     module: {
-
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: 'babel-loader'
+            }
+        ]
     },
     devServer: {
         contentBase: path.resolve(__dirname, 'public'),
