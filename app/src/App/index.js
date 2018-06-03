@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { gql } from 'apollo-boost';
+import {graphql} from 'react-apollo';
+
 import './index.scss';
 
-const App = () => (
-    <div id="test">Hello World, I love you!</div>
-);
+const UserQuery = gql`
+  {
+    user {
+      name
+      id
+      age
+    }
+  }
+`;
 
-export default App;
+class App extends Component {
+  render() {
+    console.log(this.props);
+    return (
+      <div>
+        Hello world
+        { (this.props.data.user) ? 'YEAH USER IS THERE' : null }
+      </div>
+    );
+  }
+}
+
+export default graphql(UserQuery)(App);

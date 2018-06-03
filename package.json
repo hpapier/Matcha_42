@@ -5,7 +5,8 @@
   "scripts": {
     "front-build": "webpack",
     "front-serv": "webpack-dev-server --inline --hot",
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,20 +19,27 @@
   },
   "homepage": "https://github.com/hpapier/Matcha#readme",
   "devDependencies": {
+    "nodemon": "^1.17.5",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
+    "apollo-boost": "^0.1.7",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
+    "cors": "^2.8.4",
     "css-loader": "^0.28.11",
+    "express": "^4.16.3",
+    "express-graphql": "^0.6.12",
     "file-loader": "^1.1.11",
+    "graphql": "^0.13.2",
     "node-sass": "^4.9.0",
     "pg": "^7.4.3",
     "react": "^16.4.0",
+    "react-apollo": "^2.1.4",
     "react-dom": "^16.4.0",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
