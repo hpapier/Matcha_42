@@ -10,12 +10,12 @@
 // --> genre
 // --> sexual_orientation
 // --> bio
-// --> interests_id
-// --> image_id
 // --> popularity_score
 // --> location
-// --> notification_id
 // --> is_complete
+// --> creation_date
+// --> last_connexion
+// --> is_connected
 
 // Table `images`
 // images:
@@ -41,3 +41,31 @@
 // --> action
 // --> user_id
 // --> from
+
+// Table `account_blocked`
+// account_blocked:
+// --> id
+// --> from_user_id
+// --> to_user_id
+
+// Table `like`
+// like:
+// --> id
+// --> from
+// --> to
+
+// Table `room`
+// room:
+// --> id
+// --> user_id_one
+// --> user_id_two
+
+// Table `messages`
+// messages:
+// --> id
+// --> from 
+// --> to
+// --> content
+// --> room_id
+// --> is_viewed
+// --> date
