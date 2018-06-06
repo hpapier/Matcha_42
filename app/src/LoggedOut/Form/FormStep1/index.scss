@@ -15,12 +15,32 @@ $sass-border-input: 1px solid #ccc;
     flex-direction: column;
 }
 
+#form-step-1-form-label-username {
+  align-self: flex-start;
+  margin-bottom: 5px;
+  color: #4A4A4A;
+  font-size: 0.875em;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  margin-top: 5px;
+}
+
 #form-step-1-form-username {
     width: 320px;
     height: 40px;
     margin-bottom: 5px;
     border-radius: 3px;
     border: $sass-border-input;
+}
+
+#form-step-1-form-label-email {
+  align-self: flex-start;
+  margin-bottom: 5px;
+  color: #4A4A4A;
+  font-size: 0.875em;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  margin-top: 5px;
 }
 
 #form-step-1-form-email {

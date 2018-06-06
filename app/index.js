@@ -4,6 +4,7 @@ import App from './src/App';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router } from 'react-router-dom';
+import './index.scss';
 
 
 const client = new ApolloClient({

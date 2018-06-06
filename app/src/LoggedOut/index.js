@@ -12,18 +12,20 @@ class LoggedOut extends React.Component {
       action: 'basic'
     };
 
-    this.UIaction = () => {
-      const { action } = this.state;
-      switch (action) {
-        case 'basic':
-          return <FormBtn changeState={() => this.setState({ action: 'step1' })} />;
-        case 'step1':
-          return <FormStep1 changeState={{ previous: () => this.setState({ action: 'basic' }), next: () => this.setState({ action: 'step2' })}} />;
-        case 'step2':
-          return <FormStep2 changeState={{ previous: () => this.setState({ action: 'step1' }), next: () => this.setState({ action: 'step3' })}}/>;
-        case 'step3':
-          return <FormStep3 changeState={() => this.setState({ action: 'step2' })}/>;
-      }
+    this.UIaction = this.UIaction.bind(this);
+  }
+
+  UIaction() {
+    const { action } = this.state;
+    switch (action) {
+      case 'basic':
+        return <FormBtn changeState={() => this.setState({ action: 'step1' })} />;
+      case 'step1':
+        return <FormStep1 changeState={{ previous: () => this.setState({ action: 'basic' }), next: () => this.setState({ action: 'step2' })}} />;
+      case 'step2':
+        return <FormStep2 changeState={{ previous: () => this.setState({ action: 'step1' }), next: () => this.setState({ action: 'step3' })}}/>;
+      case 'step3':
+        return <FormStep3 changeState={() => this.setState({ action: 'step2' })}/>;
     }
   }
 

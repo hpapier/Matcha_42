@@ -24,9 +24,9 @@ class FormStep1 extends React.Component {
         return (
             <div id="form-step-1" onSubmit={this.handleSubmit}>
                 <form id="form-step-1-form">
-                    <label for="logged-out-username-input">Nom d'utilisateur</label>
+                    <label id="form-step-1-form-label-username" for="logged-out-username-input">Nom d'utilisateur</label>
                     <input id="form-step-1-form-username" name="logged-out-username-input" type="text" onChange={e => this.setState({ username: e.target.value })}/>
-                    <label for="logged-out-email-input">Adresse email</label>
+                    <label id="form-step-1-form-label-email" for="logged-out-email-input">Adresse email</label>
                     <input id="form-step-1-form-email" name="logged-out-email-input" type="email" onChange={e => this.setState({ email: e.target.value })}/>
                     <div id="form-step-1-form-btn">
                         <button id="form-step-1-form-btn-previous" type="button" onClick={this.props.changeState.previous}>Previous</button>
