@@ -1,5 +1,8 @@
 import React from 'react';
-import Btn from './Btn'
+import FormBtn from './Form/FormBtn';
+import FormStep1 from './Form/FormStep1';
+import FormStep2 from './Form/FormStep2';
+import FormStep3 from './Form/FormStep3';
 import './index.scss';
 
 class LoggedOut extends React.Component {
@@ -11,10 +14,16 @@ class LoggedOut extends React.Component {
 
     this.UIaction = () => {
       const { action } = this.state;
-      if (action === 'basic')
-        return <Btn changeState={() => this.setState({ action: 'step1' }) }/>;
-      if (action === 'step1')
-        return 'lol';
+      switch (action) {
+        case 'basic':
+          return <FormBtn changeState={() => this.setState({ action: 'step1' })} />;
+        case 'step1':
+          return <FormStep1 changeState={{ previous: () => this.setState({ action: 'basic' }), next: () => this.setState({ action: 'step2' })}} />;
+        case 'step2':
+          return <FormStep2 changeState={{ previous: () => this.setState({ action: 'step1' }), next: () => this.setState({ action: 'step3' })}}/>;
+        case 'step3':
+          return <FormStep3 changeState={() => this.setState({ action: 'step2' })}/>;
+      }
     }
   }
 

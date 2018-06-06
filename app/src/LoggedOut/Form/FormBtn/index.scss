@@ -1,0 +1,29 @@
+$sass-pink: #ff5a60;
+
+#form-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+#form-btn-signin {
+    color: #fff;
+    width: 200px;
+    height: 50px;
+    border-radius: 30px;
+    background-color: $sass-pink;
+    margin: 5px;
+}
+
+#form-btn-signup {
+    margin: 5px;
+    width: 200px;
+    height: 50px;
+    border-radius: 30px;
+    color: $sass-pink;
+    background: rgba(0,0,0,0);
+    border: 1px solid $sass-pink;
+}

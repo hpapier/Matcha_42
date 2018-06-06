@@ -4,16 +4,14 @@ import './index.scss';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      lol: ''
-    }
   }
+
   render() {
     console.log(this.props);
     return (
-      <div>
-        <button>Se connecter</button>
-        <button onClick={this.props.changeState}>S'inscrire</button>
+      <div id="form-btn">
+        <button id="form-btn-signin">Se connecter</button>
+        <button id="form-btn-signup" onClick={this.props.changeState}>S'inscrire</button>
       </div>
     );
   }
