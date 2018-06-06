@@ -1,0 +1,60 @@
+$sass-border-input: 1px solid #ccc;
+
+#form-step-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#form-step-1-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#form-step-1-form-username {
+    width: 320px;
+    height: 40px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    border: $sass-border-input;
+}
+
+#form-step-1-form-email {
+    width: 320px;
+    height: 40px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    border: $sass-border-input;
+}
+
+#form-step-1-form-btn {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center; 
+    margin-top: 10px;
+}
+
+#form-step-1-form-btn-submit {
+    width: 160px;
+    border-radius: 2px;
+    height: 40px;
+    border: $sass-border-input;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#form-step-1-form-btn-previous {
+    width: 160px;
+    border-radius: 2px;
+    height: 40px;    
+    border: $sass-border-input;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
