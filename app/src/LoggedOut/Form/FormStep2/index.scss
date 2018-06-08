@@ -40,7 +40,7 @@ $sass-border-input: 1px solid #ccc;
 }
 
 #form-step-2-form-group-1-firstname {
-  width: 150px;
+  width: 155px;
   height: 40px;
   margin-bottom: 5px;
   border-radius: 3px;
@@ -65,7 +65,7 @@ $sass-border-input: 1px solid #ccc;
 }
 
 #form-step-2-form-group-1-lastname {
-  width: 150px;
+  width: 155px;
   height: 40px;
   margin-bottom: 5px;
   border-radius: 3px;
@@ -111,4 +111,79 @@ $sass-border-input: 1px solid #ccc;
   height: 40px;
   border: $sass-border-input;
   background: #f8f8f8;
+}
+
+#form-step-2-form-group-3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+#form-step-2-form-group-3-box-1 {
+  margin-top: 15px;
+}
+
+#form-step-2-form-group-3-genre-title {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 5px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.875em;
+  color: #4A4A4A;
+}
+
+#form-step-2-form-group-3-genre {
+  width: 155px;
+  height: 40px;
+  border: $sass-border-input;
+}
+
+#form-step-2-form-group-3-box-2 {
+  margin-top: 15px;
+}
+
+#form-step-2-form-group-3-lookingFor-title {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 5px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.875em;
+  color: #4A4A4A;
+}
+
+#form-step-2-form-group-3-lookingFor {
+  width: 155px;
+  height: 40px;
+  border: $sass-border-input;
+}
+
+#form-step-2-form-group-4 {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+#form-step-2-previous {
+  width: 155px;
+  height: 40px;
+  background: #fff;
+  border: $sass-border-input;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+}
+
+#form-step-2-form-submit {
+  width: 155px;
+  height: 40px;
+  background: #fff;
+  border: $sass-border-input;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
 }
