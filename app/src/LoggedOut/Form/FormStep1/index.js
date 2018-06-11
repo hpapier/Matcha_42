@@ -17,7 +17,11 @@ class FormStep1 extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.changeState.next();
+        if (this.state.username === '') {
+          console.log('username non remplie');
+        } else {
+          this.props.changeState.next();
+        }
     }
     
     render() {
