@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/hpapier/Matcha#readme",
   "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "nodemon": "^1.17.5",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.4",
@@ -41,7 +42,9 @@
     "react": "^16.4.0",
     "react-apollo": "^2.1.4",
     "react-dom": "^16.4.0",
+    "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
+    "redux": "^4.0.0",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1"
@@ -50,6 +53,9 @@
     "presets": [
       "env",
       "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
     ]
   }
 }

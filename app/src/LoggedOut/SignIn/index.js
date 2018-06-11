@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { logUserIn } from '../../../store/reducer';
 
 class SignIn extends Component {
   constructor(props) {
@@ -14,13 +16,15 @@ class SignIn extends Component {
   handleSubmit(e) {
     e.preventDefault();
     console.log('Hello signin');
+    this.props.logUserIn();
   }
 
   render() {
+    console.log(this.props);
     const { changeState } = this.props;
     return (
       <div>
-        <p>Connexion</p>
+        <p>Connexion {this.props.isLoggedIn ? `true` : `false`}</p>
         <form onSubmit={e => this.handleSubmit(e)}>
           <label htmlFor="email">Adresse email</label>
           <input type="text" name="email" onChange={e => this.setState({ email: e.target.value })} />
@@ -36,4 +40,8 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
+const mapDispatchToProps = dispatch => ({
+  logUserIn: () => dispatch(logUserIn())
+});
+
+export default connect(null, mapDispatchToProps)(SignIn);
