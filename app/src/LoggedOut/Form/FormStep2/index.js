@@ -2,27 +2,17 @@ import React from 'react';
 import './index.scss';
 
 class FormStep2 extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            firstname: '',
-            lastname: '',
-            day: '',
-            month: '',
-            year: '',
-            genre: '',
-            lookingFor: ''
-        };
+    state = {
+      firstname: '',
+      lastname: '',
+      day: '',
+      month: '',
+      year: '',
+      genre: '',
+      lookingFor: ''
+    };
 
-        this.day = this.day.bind(this);
-        this.month = this.month.bind(this);
-        this.year = this.year.bind(this);
-        this.genre = this.genre.bind(this);
-        this.search = this.search.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    day() {
+    day = () => {
       let i = 1;
       let array = []; 
       while (i <= 31) {
@@ -32,12 +22,12 @@ class FormStep2 extends React.Component {
       return array.map(item => <option value={item} key={item}>{item}</option>);
     }
 
-    month() {
+    month = () => {
       const month = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre'];
       return month.map(item => (<option key={item} value={item}>{item}</option>));
     }
 
-    year() {
+    year = () => {
       let i = 2018;
       let array = [];
       while(i >= 1918) {
@@ -47,23 +37,22 @@ class FormStep2 extends React.Component {
       return array.map(i => <option value={i} key={i}>{i}</option>);
     }
 
-    genre() {
+    genre = () => {
       let array = ['Tu es..', 'Homme', 'Femme'];
       return array.map(i => <option value={i} key={i}>{i}</option>);
     }
 
-    search() {
+    search = () => {
       let array = ['Selectionner', 'Homme', 'Femme', 'Autre'];
       return array.map(i => <option value={i} key={i}>{i}</option>);
     }
 
-    handleSubmit(e) {
+    handleSubmit = e => {
       e.preventDefault();
       this.props.changeState.next();
     }
     
     render() {
-      console.log(this.state);
         return (
             <div id="form-step-2" onSubmit={this.handleSubmit}>
                 <form id="form-step-2-form">

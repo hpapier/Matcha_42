@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import './index.scss';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     console.log(this.props);
     return (

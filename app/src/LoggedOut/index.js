@@ -6,17 +6,12 @@ import FormStep3 from './Form/FormStep3';
 import SignIn from './SignIn';
 import './index.scss';
 
-class LoggedOut extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      action: 'logged-out'
-    };
-
-    this.UIaction = this.UIaction.bind(this);
+class LoggedOut extends React.Component {  
+  state = {
+    action: 'logged-out'
   }
 
-  UIaction() {
+  UIaction = () => {
     const { action } = this.state;
     switch (action) {
       case 'logged-out':

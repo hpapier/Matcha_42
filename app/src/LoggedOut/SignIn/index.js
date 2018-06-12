@@ -3,17 +3,12 @@ import { connect } from 'react-redux';
 import { logUserIn } from '../../../store/reducer';
 
 class SignIn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      pwd: ''
-    }
-
-    this.handleSubmit = this.handleSubmit.bind(this);
+  state = {
+    email: '',
+    pwd: ''
   }
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
     console.log('Hello signin');
     this.props.logUserIn();

@@ -2,20 +2,12 @@ import React from 'react';
 import './index.scss';
 
 class FormStep1 extends React.Component {
-    constructor(props) {
-        super(props);
-        
-        // Component State.
-        this.state = {
-            username: '',
-            email: ''
-        };
+    state = {
+      username: '',
+      email: ''
+    };
 
-        // Action binding.
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleSubmit(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
         if (this.state.username === '') {
           console.log('username non remplie');
@@ -23,7 +15,7 @@ class FormStep1 extends React.Component {
           this.props.changeState.next();
         }
     }
-    
+
     render() {
         return (
             <div id="form-step-1" onSubmit={this.handleSubmit}>

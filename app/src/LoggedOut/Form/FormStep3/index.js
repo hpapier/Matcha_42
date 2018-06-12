@@ -1,15 +1,12 @@
 import React from 'react';
 import './index.scss';
 
-class FormStep3 extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            password: '',
-            verif: ''
-        };
-    }
-    
+class FormStep3 extends React.Component { 
+    state = {
+      password: '',
+      verif: ''
+    };
+
     render() {
         return (
             <div id="form-step-3">
