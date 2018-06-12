@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const graphqlExpress = require('express-graphql');
-const pg = require('pg');
+// const pg = require('pg');
 const graphql = require('graphql');
 
 // Constante
@@ -24,20 +24,24 @@ const user = new GraphQLObjectType({
   fields: {
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    age: { type: GraphQLInt }
+    email: { type: GraphQLString }
   }
 });
 
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    user: {
+    getUserInfo: {
       type: user,
+      args: {
+        token: { type: GraphQLString }
+      },
       resolve: (parent, args, context) => {
+        console.log(args);
         return {
           id: 'jkhjhjkhk',
           name: 'hugo',
-          age: 55
+          email: 'lolllll'
         };
       }
     }
