@@ -2,21 +2,21 @@
 const express = require('express');
 const cors = require('cors');
 const graphqlExpress = require('express-graphql');
-// const pg = require('pg');
+const pg = require('pg');
 const graphql = require('graphql');
 
 // Constante
 const app = express();
 const PORT = 4000;
-const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLString, GraphQLInt} = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLString} = graphql;
 
 // Database
 // --> Constante
-// const host = 'postgres://postgres@127.0.0.1:5432/postgres';
-// const client = new pg.Client(host);
+const host = 'postgres://postgres@127.0.0.1:5432/postgres';
+const client = new pg.Client(host);
 
 // --> Connection
-// client.connect();
+client.connect(() => console.log('Connected to database'));
 
 // GraphQL Schema
 const user = new GraphQLObjectType({
@@ -37,7 +37,7 @@ const Query = new GraphQLObjectType({
         token: { type: GraphQLString }
       },
       resolve: (parent, args, context) => {
-        console.log(args);
+        // throw new Error('LOOOOOL');
         return {
           id: 'jkhjhjkhk',
           name: 'hugo',

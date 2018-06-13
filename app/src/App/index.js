@@ -24,7 +24,7 @@ class App extends Component {
       return (
         <Query query={GET_USER_INFO} variables={{ token }}>
           {(data) => {
-            console.log(data);
+            console.log(data.error);
             return (<div>lol</div>);
           }}
         </Query>
