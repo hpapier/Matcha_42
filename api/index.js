@@ -12,7 +12,7 @@ const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLString} = graphql;
 
 // Database
 // --> Constante
-const host = 'postgres://postgres@127.0.0.1:5432/postgres';
+const host = 'postgres://postgres@127.0.0.1:5432/matcha';
 const client = new pg.Client(host);
 
 // --> Connection
@@ -38,11 +38,15 @@ const Query = new GraphQLObjectType({
       },
       resolve: (parent, args, context) => {
         // throw new Error('LOOOOOL');
-        return {
-          id: 'jkhjhjkhk',
-          name: 'hugo',
-          email: 'lolllll'
-        };
+        if (args.token === 'null')
+          throw new Error('Not connected');
+        else {
+          return {
+            id: 'jkhjhjkhk',
+            name: 'hugo',
+            email: 'lolllll'
+          };
+        }
       }
     }
   })

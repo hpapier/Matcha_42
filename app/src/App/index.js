@@ -7,7 +7,7 @@ import LoggedOut from '../LoggedOut';
 import './index.scss';
 
 const GET_USER_INFO = gql`
-  query userInformation($token: String!) {
+  query userInformation($token: String) {
     getUserInfo(token: $token) {
       id
       name
@@ -18,23 +18,21 @@ const GET_USER_INFO = gql`
 
 class App extends Component {
   render() {
-    const token = localStorage.getItem('auth_token');
-    console.log(token);
-    if (token) {
-      return (
-        <Query query={GET_USER_INFO} variables={{ token }}>
-          {(data) => {
-            console.log(data.error);
-            return (<div>lol</div>);
-          }}
-        </Query>
-      );
-    }
-
+    let token = localStorage.getItem('auth_token');
+    if (!token)
+      token = 'null';
     return (
-      <div>
-        <LoggedOut />
-      </div>
+      <Query query={GET_USER_INFO} variables={{ token }}>
+        {({ data, loading, error, refetch }) => {
+          if (loading)
+            return <div>Loading...</div>;
+          if (error)
+            return <LoggedOut refetch={refetch}/>;
+
+          console.log(data);
+          return (<div>lol</div>);
+        }}
+      </Query>
     );
   }
 }

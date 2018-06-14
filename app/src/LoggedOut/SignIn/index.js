@@ -11,6 +11,7 @@ class SignIn extends Component {
   handleSubmit = e => {
     e.preventDefault();
     console.log('Hello signin');
+    localStorage.setItem('auth_token', 'lol');
     this.props.logUserIn();
   }
 
