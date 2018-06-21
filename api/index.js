@@ -68,12 +68,31 @@ const Query = new GraphQLObjectType({
   })
 });
 
-// const Mutation = new GraphQLObjectType({
-//   name: 'Mutation'
-// });
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addUser: {
+      type: user,
+      args: {
+        email: { type: GraphQLString },
+        username: { type: GraphQLString },
+        lastname: { type: GraphQLString },
+        firstname: { type: GraphQLString },
+        password: { type: GraphQLString },
+        birthDate: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        sexualOrientation: { type: GraphQLString }
+      },
+      resolve: (parent, args, context) => {
+        console.log(args);
+      }
+    }
+  }
+});
 
 const Schema = new GraphQLSchema({
-  query: Query
+  query: Query,
+  mutation: Mutation
 });
 
 // Middleware

@@ -28,6 +28,7 @@
     lastname            VARCHAR(255)      NOT NULL,
     firstname           VARCHAR(255)      NOT NULL,
     password            VARCHAR(50)       NOT NULL,
+    birth_date          DATE              NOT NULL,
     isconfirmed         SMALLINT          NOT NULL DEFAULT 0,
     genre               enum_genre        NOT NULL DEFAULT 'man',
     sexual_orientation  enum_orientation  NOT NULL DEFAULT 'bisexual',

@@ -1,5 +1,13 @@
 const store = {
-  isLoggedIn: false
+  isLoggedIn: false,
+  email: '',
+  username: '',
+  lastname: '',
+  firstname: '',
+  password: '',
+  birthDate: '',
+  genre: '',
+  sexualOrientation: ''
 };
 
 export default store;

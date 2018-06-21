@@ -1,5 +1,5 @@
 import initialState from './store';
-import { TOGGLE_NETWORK_STATUS } from './actions';
+import { TOGGLE_NETWORK_STATUS, SAVE_USER_INFO } from './actions';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -8,6 +8,11 @@ export default (state = initialState, action) => {
         ...state,
         isLoggedIn: !state.isLoggedIn
       }
+    case SAVE_USER_INFO:
+      return {
+        ...state,
+        ...action.payload
+      }
     default:
       return state;
   }
@@ -15,4 +20,9 @@ export default (state = initialState, action) => {
 
 export const logUserIn = () => ({
   type: TOGGLE_NETWORK_STATUS
+});
+
+export const saveUserInfo = data => ({
+  type: SAVE_USER_INFO,
+  payload: data
 });
