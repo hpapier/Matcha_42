@@ -23,13 +23,14 @@ class App extends Component {
       token = 'null';
     return (
       <Query query={GET_USER_INFO} variables={{ token }}>
-        {({ data, loading, error, refetch }) => {
-          if (loading)
-            return <div>Loading...</div>;
-          if (error)
-            return <LoggedOut refetch={refetch}/>;
-
+        {data => {
           console.log(data);
+
+          if (data.loading)
+            return <div>Loading...</div>;
+          if (data.error)
+            return <LoggedOut />;
+
           return (<div>lol</div>);
         }}
       </Query>

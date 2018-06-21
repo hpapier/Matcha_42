@@ -23,7 +23,7 @@ class LoggedOut extends React.Component {
       case 'logged-out-step3':
         return <FormStep3 changeState={() => this.setState({ action: 'logged-out-step2' })}/>;
       case 'logged-out-sign-in':
-        return <SignIn refetching={this.props.refetch} logUserIn={this.props.logUserIn} changeState={() => this.setState({ action: 'logged-out-step1' })}/>;
+        return <SignIn logUserIn={this.props.logUserIn} changeState={() => this.setState({ action: 'logged-out-step1' })}/>;
     }
   }
 

@@ -16,7 +16,12 @@ const host = 'postgres://postgres@127.0.0.1:5432/matcha';
 const client = new pg.Client(host);
 
 // --> Connection
-client.connect(() => console.log('Connected to database'));
+client.connect(err => {
+  if (err)
+    console.log(err);
+  else
+    console.log('Connected to db');
+});
 
 // GraphQL Schema
 const user = new GraphQLObjectType({
@@ -38,19 +43,34 @@ const Query = new GraphQLObjectType({
       },
       resolve: (parent, args, context) => {
         // throw new Error('LOOOOOL');
-        if (args.token === 'null')
+        if (args.token === 'null') {
+          console.log('--- ARGUMENT ---');
+          console.log(args.token);
           throw new Error('Not connected');
+        }
         else {
-          return {
-            id: 'jkhjhjkhk',
-            name: 'hugo',
-            email: 'lolllll'
-          };
+          console.log('START QUERY');
+          const QUERY = `SELECT * FROM user_info WHERE id = ${args.token}`;
+          return client.query(QUERY)
+            .then(data => {
+              console.log('-- THEN --');
+              console.log(data);
+              return data;
+            })
+            .catch(err => {
+              console.log('-- CATCH --');
+              console.log(err);
+              return err;
+            });
         }
       }
     }
   })
 });
+
+// const Mutation = new GraphQLObjectType({
+//   name: 'Mutation'
+// });
 
 const Schema = new GraphQLSchema({
   query: Query

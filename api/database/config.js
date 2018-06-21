@@ -22,7 +22,7 @@
 
 /*
   CREATE TABLE user_info (
-    id                  VARCHAR(255)      NOT NULL,
+    id                  VARCHAR(255)      NOT NULL PRIMARY KEY,
     email               VARCHAR(100)      NOT NULL,
     username            VARCHAR(25)       NOT NULL,
     lastname            VARCHAR(255)      NOT NULL,
@@ -49,7 +49,7 @@
 
 /*
   CREATE TABLE images (
-    id      SERIAL,
+    id      SERIAL PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL,
     path    VARCHAR(255) NOT NULL
   );
@@ -62,7 +62,7 @@
 
 /*
   CREATE TABLE interests (
-    id    SERIAL,
+    id    SERIAL PRIMARY KEY,
     name  VARCHAR(255)
   );
 */
@@ -75,7 +75,7 @@
 
 /*
   CREATE TABLE user_interests (
-    id            SERIAL,
+    id            SERIAL PRIMARY KEY,
     user_id       VARCHAR(255)  NOT NULL,
     interest_id   INTEGER      NOT NULL
   );
@@ -91,7 +91,7 @@
 
 /*
   CREATE TABLE notification (
-    id          SERIAL,
+    id          SERIAL PRIMARY KEY,
     is_viewed   SMALLINT      NOT NULL DEFAULT 0,
     action      VARCHAR(255)  NOT NULL,
     user_id     VARCHAR(255)  NOT NULL,
@@ -107,7 +107,7 @@
 
 /*
   CREATE TABLE account_blocked (
-    id            SERIAL,
+    id            SERIAL PRIMARY KEY,
     from_user_id  VARCHAR(255) NOT NULL,
     to_user_id    VARCHAR(255) NOT NULL
   );
@@ -121,7 +121,7 @@
 
 /*
  CREATE TABLE match (
-   id           SERIAL,
+   id           SERIAL PRIMARY KEY,
    from_user    VARCHAR(255)  NOT NULL,
    to_user      VARCHAR(255)  NOT NULL
  );
@@ -135,7 +135,7 @@
 
 /*
  CREATE TABLE room (
-   id           SERIAL,
+   id           SERIAL PRIMARY KEY,
    user_id_one  VARCHAR(255) NOT NULL,
    user_id_two  VARCHAR(255) NOT NULL
  );
@@ -153,7 +153,7 @@
 
 /*
  CREATE TABLE messages (
-   id           SERIAL,
+   id           SERIAL PRIMARY KEY,
    from_user    VARCHAR(255)  NOT NULL,
    to_user      VARCHAR(255)  NOT NULL,
    content      TEXT          NOT NULL,
