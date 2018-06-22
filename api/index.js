@@ -8,7 +8,7 @@ const graphql = require('graphql');
 // Constante
 const app = express();
 const PORT = 4000;
-const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLString} = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull } = graphql;
 
 // Database
 // --> Constante
@@ -27,9 +27,16 @@ client.connect(err => {
 const user = new GraphQLObjectType({
   name: 'User',
   fields: {
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    email: { type: GraphQLString }
+    id: { type: GraphQLString },
+    email: { type: GraphQLString },
+    username: { type: GraphQLString },
+    firstname: { type: GraphQLString },
+    lastname: { type: GraphQLString },
+    password: { type: GraphQLString },
+    birthDate: { type: GraphQLString },
+    isConfirmed: { type: GraphQLInt },
+    genre: { type: GraphQLString },
+    sexualOrientation: { type: GraphQLString },
   }
 });
 
@@ -74,14 +81,14 @@ const Mutation = new GraphQLObjectType({
     addUser: {
       type: user,
       args: {
-        email: { type: GraphQLString },
-        username: { type: GraphQLString },
-        lastname: { type: GraphQLString },
-        firstname: { type: GraphQLString },
-        password: { type: GraphQLString },
-        birthDate: { type: GraphQLString },
-        genre: { type: GraphQLString },
-        sexualOrientation: { type: GraphQLString }
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        username: { type: new GraphQLNonNull(GraphQLString) },
+        firstname: { type: new GraphQLNonNull(GraphQLString) },
+        lastname: { type: new GraphQLNonNull(GraphQLString) },
+        birthDate: { type: new GraphQLNonNull(GraphQLString) },
+        genre: { type: new GraphQLNonNull(GraphQLString) },
+        sexualOrientation: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve: (parent, args, context) => {
         console.log(args);

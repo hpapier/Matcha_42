@@ -10,8 +10,14 @@ const GET_USER_INFO = gql`
   query userInformation($token: String) {
     getUserInfo(token: $token) {
       id
-      name
       email
+      username
+      firstname
+      lastname
+      birthDate
+      isConfirmed
+      genre
+      sexualOrientation
     }
   }
 `;

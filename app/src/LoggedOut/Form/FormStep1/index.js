@@ -9,12 +9,13 @@ class FormStep1 extends React.Component {
       email: this.props.email
     };
 
-    handleSubmit = (e) => {
+    handleSubmit = e => {
         e.preventDefault();
         if (this.state.username === '') {
           console.log('username non remplie');
         } else {
           this.props.saveUserInfo({ email: this.state.email, username: this.state.username });
+          this.props.changeState.next();
         }
     }
 

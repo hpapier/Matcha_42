@@ -21,13 +21,14 @@ class LoggedOut extends React.Component {
       case 'logged-out-step2':
         return <FormStep2 changeState={{ previous: () => this.setState({ action: 'logged-out-step1' }), next: () => this.setState({ action: 'logged-out-step3' })}}/>;
       case 'logged-out-step3':
-        return <FormStep3 changeState={() => this.setState({ action: 'logged-out-step2' })}/>;
+        return <FormStep3 changeState={{ previous: () => this.setState({ action: 'logged-out-step2' }), next: () => this.setState({ action: 'logged-out' })}} />;
       case 'logged-out-sign-in':
         return <SignIn logUserIn={this.props.logUserIn} changeState={() => this.setState({ action: 'logged-out-step1' })}/>;
     }
   }
 
   render() {
+    console.log('RENDER');
     return(
       <div id="logged-out">
         <div id="box-1">

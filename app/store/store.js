@@ -6,6 +6,9 @@ const store = {
   firstname: '',
   password: '',
   birthDate: '',
+  day: '',
+  month: '',
+  year: '',
   genre: '',
   sexualOrientation: ''
 };

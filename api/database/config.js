@@ -3,9 +3,10 @@
 // --> id
 // --> email
 // --> username
-// --> lastname
 // --> firstname
+// --> lastname
 // --> password
+// --> birth_date
 // --> isconfirmed
 // --> genre
 // --> sexual_orientation
