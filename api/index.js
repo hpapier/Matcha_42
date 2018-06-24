@@ -4,6 +4,7 @@ const cors = require('cors');
 const graphqlExpress = require('express-graphql');
 const pg = require('pg');
 const graphql = require('graphql');
+const uuidv1 = require('uuid/v1');
 
 // Constante
 const app = express();
@@ -95,7 +96,6 @@ const Mutation = new GraphQLObjectType({
         console.log(args);
         const { email, username, firstname, lastname, birthDate, genre, sexualOrientation, password } = args;
         const date = new Date(birthDate);
-        console.log(date);
         const genreTrad = (genre === 'Homme') ? 'man' : 'woman';
         
         let sexualOrientationTrad = 'bisexual';
@@ -107,13 +107,52 @@ const Mutation = new GraphQLObjectType({
           sexualOrientationTrad = 'bisexual';
 
         const QUERY = 'INSERT INTO user_info (id, email, username, firstname, lastname, birth_date, genre, sexual_orientation, password, creation_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *;';
-        const id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+        const id = uuidv1();
         const VALUES = [id, email, username, firstname, lastname, date, genreTrad, sexualOrientationTrad, password, new Date()];
         return client.query(QUERY, VALUES)
           .then(res => {
             console.log('-- THEN --');
-            console.log(res);
-            return res.rows[0];
+            console.log(res.rows[0]);
+            const { 
+              id,
+              email,
+              username,
+              lastname,
+              firstname,
+              password,
+              birth_date,
+              isconfirmed,
+              genre,
+              sexual_orientation,
+              bio,
+              popularity_score,
+              location,
+              iscomplete,
+              creation_date,
+              last_connexion,
+              isconnected
+            } = res.rows[0];
+
+
+            return {
+              id,
+              email,
+              username,
+              lastname,
+              firstname,
+              password,
+              birthDate: birth_date,
+              isconfirmed,
+              genre,
+              sexualOrientation: sexual_orientation,
+              bio,
+              popularityScore: popularity_score,
+              location,
+              iscomplete,
+              creationDate: creation_date,
+              lastConnexion: last_connexion,
+              isconnected
+            };
           })
           .catch(err => {
             console.log('-- CATCH --');
