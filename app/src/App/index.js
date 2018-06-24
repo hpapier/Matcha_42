@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
 import LoggedOut from '../LoggedOut';
-// import LoggedIn from '../LoggedIn';
+import LoggedIn from '../LoggedIn';
 import './index.scss';
 
 const GET_USER_INFO = gql`
@@ -37,7 +37,7 @@ class App extends Component {
           if (data.error)
             return <LoggedOut />;
 
-          return (<div>lol</div>);
+          return <LoggedIn />;
         }}
       </Query>
     );

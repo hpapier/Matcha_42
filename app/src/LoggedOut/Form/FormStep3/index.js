@@ -30,6 +30,8 @@ class FormStep3 extends React.Component {
       if (this.state.password === '') {
         console.log('NOPPPP');
       } else {
+        console.log('THIS SUBMIT');
+        console.log(this.props);
         this.props.SaveToDb({
           variables: {
             email: this.props.email,

@@ -49,7 +49,7 @@ const Query = new GraphQLObjectType({
         token: { type: GraphQLString }
       },
       resolve: (parent, args, context) => {
-        // throw new Error('LOOOOOL');
+        console.log('----------------- GET USER INFO -----------------');
         if (args.token === 'null') {
           console.log('--- ARGUMENT ---');
           console.log(args.token);
@@ -91,7 +91,34 @@ const Mutation = new GraphQLObjectType({
         password: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve: (parent, args, context) => {
+        console.log('----------------- ADD USER FUNCTION -----------------');
         console.log(args);
+        const { email, username, firstname, lastname, birthDate, genre, sexualOrientation, password } = args;
+        const date = new Date(birthDate);
+        console.log(date);
+        const genreTrad = (genre === 'Homme') ? 'man' : 'woman';
+        
+        let sexualOrientationTrad = 'bisexual';
+        if (sexualOrientation === 'Homme')
+          sexualOrientationTrad = 'man';
+        else if (sexualOrientation === 'Femme')
+          sexualOrientationTrad = 'woman';
+        else
+          sexualOrientationTrad = 'bisexual';
+
+        const QUERY = 'INSERT INTO user_info (id, email, username, firstname, lastname, birth_date, genre, sexual_orientation, password, creation_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *;';
+        const id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+        const VALUES = [id, email, username, firstname, lastname, date, genreTrad, sexualOrientationTrad, password, new Date()];
+        return client.query(QUERY, VALUES)
+          .then(res => {
+            console.log('-- THEN --');
+            console.log(res);
+            return res.rows[0];
+          })
+          .catch(err => {
+            console.log('-- CATCH --');
+            console.log(err);
+          });
       }
     }
   }

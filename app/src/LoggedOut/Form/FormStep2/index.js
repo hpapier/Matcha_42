@@ -54,6 +54,8 @@ class FormStep2 extends React.Component {
       if (this.state.firstname === '') {
         console.log('NOP');
       } else {
+        const birthDate = this.state.year + '-' + this.state.month + '-' + this.state.day;
+        console.log(birthDate);
         const info = {
           firstname: this.state.firstname,
           lastname: this.state.lastname,
@@ -61,7 +63,8 @@ class FormStep2 extends React.Component {
           month: this.state.month,
           year: this.state.year,
           genre: this.state.genre,
-          sexualOrientation: this.state.sexualOrientation
+          sexualOrientation: this.state.sexualOrientation,
+          birthDate
         };
         this.props.saveUserInfo(info);
         this.props.changeState.next();
