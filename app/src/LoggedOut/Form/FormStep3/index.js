@@ -53,7 +53,7 @@ class FormStep3 extends React.Component {
       console.log(this.props);
       return (
           <div id="form-step-3">
-              <form id="form-step-3-form" onSubmit={this.handleSubmit}>
+              <form id="form-step-3-form" onSubmit={e => this.handleSubmit(e)}>
                 <div id="form-step-3-form-box-1">
                   <label id="form-step-3-form-pwd-title">Mot de passe</label>
                   <input id="form-step-3-form-pwd" type="password" onChange={e => this.setState({ password: e.target.value })}/>

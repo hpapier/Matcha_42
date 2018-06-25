@@ -5,12 +5,13 @@ const graphqlExpress = require('express-graphql');
 const pg = require('pg');
 const graphql = require('graphql');
 const uuidv1 = require('uuid/v1');
+const JWT = require('jsonwebtoken');
 
 // Constante
 const app = express();
 const PORT = 4000;
 const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull } = graphql;
-
+const JWTSecret = 'kjhjhhyuhf45456lkjkzFdjkbssDjkdbefsS';
 // Database
 // --> Constante
 const host = 'postgres://postgres@127.0.0.1:5432/matcha';
@@ -31,13 +32,44 @@ const user = new GraphQLObjectType({
     id: { type: GraphQLString },
     email: { type: GraphQLString },
     username: { type: GraphQLString },
-    firstname: { type: GraphQLString },
     lastname: { type: GraphQLString },
+    firstname: { type: GraphQLString },
     password: { type: GraphQLString },
     birthDate: { type: GraphQLString },
     isConfirmed: { type: GraphQLInt },
     genre: { type: GraphQLString },
     sexualOrientation: { type: GraphQLString },
+    bio: { type: GraphQLString },
+    popularityScore: { type: GraphQLInt },
+    location: { type: GraphQLString },
+    isComplete: { type: GraphQLInt },
+    creationDate: { type: GraphQLString },
+    lastConnexion: { type: GraphQLInt },
+    isConnected: { type: GraphQLInt }
+  }
+});
+
+const usertkn = new GraphQLObjectType({
+  name: 'UserToken',
+  fields: {
+    id: { type: GraphQLString },
+    email: { type: GraphQLString },
+    username: { type: GraphQLString },
+    lastname: { type: GraphQLString },
+    firstname: { type: GraphQLString },
+    password: { type: GraphQLString },
+    birthDate: { type: GraphQLString },
+    isConfirmed: { type: GraphQLInt },
+    genre: { type: GraphQLString },
+    sexualOrientation: { type: GraphQLString },
+    bio: { type: GraphQLString },
+    popularityScore: { type: GraphQLInt },
+    location: { type: GraphQLString },
+    isComplete: { type: GraphQLInt },
+    creationDate: { type: GraphQLString },
+    lastConnexion: { type: GraphQLInt },
+    isConnected: { type: GraphQLInt },
+    token: { type: GraphQLString }
   }
 });
 
@@ -49,28 +81,146 @@ const Query = new GraphQLObjectType({
       args: {
         token: { type: GraphQLString }
       },
-      resolve: (parent, args, context) => {
+      resolve: (parent, { token }, context) => {
         console.log('----------------- GET USER INFO -----------------');
-        if (args.token === 'null') {
-          console.log('--- ARGUMENT ---');
-          console.log(args.token);
+        if (token === 'null') {
           throw new Error('Not connected');
-        }
-        else {
-          console.log('START QUERY');
-          const QUERY = `SELECT * FROM user_info WHERE id = ${args.token}`;
-          return client.query(QUERY)
-            .then(data => {
+        } else {
+          const decoded = JWT.verify(token, JWTSecret);
+          console.log(decoded);
+
+          const QUERY = `SELECT * FROM user_info WHERE id = $1`;
+          return client.query({
+            name: 'fetch-user-info',
+            text: QUERY,
+            values: [decoded.uid]
+          })
+            .then(res => {
               console.log('-- THEN --');
-              console.log(data);
-              return data;
+              console.log(res);
+              const {
+                id,
+                email,
+                username,
+                lastname,
+                firstname,
+                password,
+                birth_date,
+                isconfirmed,
+                genre,
+                sexual_orientation,
+                bio,
+                popularity_score,
+                location,
+                iscomplete,
+                creation_date,
+                last_connexion,
+                isconnected
+              } = res.rows[0];
+
+              if (password !== decoded.password)
+                return new Error('Bad user');
+
+              return {
+                id,
+                email,
+                username,
+                lastname,
+                firstname,
+                password,
+                birthDate: birth_date,
+                icConfirmed: isconfirmed,
+                genre,
+                sexualOrientation: sexual_orientation,
+                bio,
+                popularityScore: popularity_score,
+                location,
+                isComplete: iscomplete,
+                creationDate: creation_date,
+                lastConnexion: last_connexion,
+                isConnected: isconnected
+              };
             })
             .catch(err => {
-              console.log('-- CATCH --');
-              console.log(err);
-              return err;
+              return new Error('User not found');
             });
         }
+      }
+    },
+    checkUserInfo: {
+      type: usertkn,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString }
+      },
+      resolve: (parent, { email, password }, context) => {
+        console.log(email, password);
+        const QUERY = 'SELECT * FROM user_info WHERE email = $1';
+        return client.query({
+          name: 'fetch-user',
+          text: QUERY,
+          values: [email]
+        })
+        .then(res => {
+          if (res.rows[0].password === password) {
+            const token = JWT.sign(
+              {
+                uid: res.rows[0].id,
+                password: res.rows[0].password
+              },
+              JWTSecret,
+              { expiresIn: 60 * 60 * 24 * 7 }
+            );
+            
+            const {
+              id,
+              email,
+              username,
+              lastname,
+              firstname,
+              password,
+              birth_date,
+              isconfirmed,
+              genre,
+              sexual_orientation,
+              bio,
+              popularity_score,
+              location,
+              iscomplete,
+              creation_date,
+              last_connexion,
+              isconnected
+            } = res.rows[0];
+            
+            return {
+              id,
+              email,
+              username,
+              lastname,
+              firstname,
+              password,
+              birthDate: birth_date,
+              isConfirmed: isconfirmed,
+              genre,
+              sexualOrientation: sexual_orientation,
+              bio,
+              popularityScore: popularity_score,
+              location,
+              isComplete: iscomplete,
+              creationDate: creation_date,
+              lastConnexion: last_connexion,
+              isConnected: isconnected,
+              token
+            };
+          } else {
+            return new Error('Wrong password');
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          if (err)
+            return new Error('User not found');
+        });
       }
     }
   })

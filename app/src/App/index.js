@@ -25,13 +25,13 @@ const GET_USER_INFO = gql`
 class App extends Component {
   render() {
     let token = localStorage.getItem('auth_token');
+    console.log(token);
     if (!token)
       token = 'null';
     return (
       <Query query={GET_USER_INFO} variables={{ token }}>
         {data => {
           console.log(data);
-
           if (data.loading)
             return <div>Loading...</div>;
           if (data.error)
