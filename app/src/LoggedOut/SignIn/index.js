@@ -93,7 +93,8 @@ class SignIn extends Component {
             creationDate,
             lastConnexion,
             isConnected
-          });
+          }, 'loggedIn');
+          console.log(this.props.client);
         } else {
           this.setState({ error: 'Account not confirmed' });
         }
@@ -132,7 +133,7 @@ class SignIn extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  logUserIn: () => dispatch(logUserIn())
+  logUserIn: (data, stage) => dispatch(logUserIn(data, stage))
 });
 
 export default withApollo(connect(null, mapDispatchToProps)(SignIn));

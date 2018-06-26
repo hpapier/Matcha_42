@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
-import { Query } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import LoggedOut from '../LoggedOut';
 import LoggedIn from '../LoggedIn';
 import './index.scss';
+import { changeStage } from '../../store/reducer';
 
 const GET_USER_INFO = gql`
   query userInformation($token: String) {
@@ -23,29 +24,55 @@ const GET_USER_INFO = gql`
 `;
 
 class App extends Component {
+  action = () => {
+    switch (this.props.stage) {
+      case 'onload':
+        return <div>Loading</div>;
+      case 'loggedOut':
+        return <LoggedOut />;
+      case 'loggedIn':
+        return <LoggedIn />;
+      default:
+        return <LoggedOut />;
+    }
+  };
+  
   render() {
-    let token = localStorage.getItem('auth_token');
-    console.log(token);
-    if (!token)
-      token = 'null';
-    return (
-      <Query query={GET_USER_INFO} variables={{ token }}>
-        {data => {
-          console.log(data);
-          if (data.loading)
-            return <div>Loading...</div>;
-          if (data.error)
-            return <LoggedOut />;
+    console.log(' --- RENDER APP ---');
+    
+    if (this.props.stage === 'onload') {
+      console.log('QUERY RENDER APP');
+      let token = localStorage.getItem('auth_token');
+      console.log(token);
+      if (!token)
+        token = 'null';
 
-          return <LoggedIn />;
-        }}
-      </Query>
-    );
+      this.props.client.query({
+        query: GET_USER_INFO,
+        variables: { token }
+      })
+      .then(res => {
+        console.log('-- THEN : APP --');
+        console.log(res);
+        this.props.changeStage('loggedIn');
+      })
+      .catch(err => {
+        console.log('-- CATCH : APP --');
+        console.log(err);
+        this.props.changeStage('loggedOut');
+      });
+    }
+
+    return this.action();
   }
 }
 
 const mapStateToProps = state => ({
-  isLoggedIn: state.isLoggedIn
+  stage: state.stage
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+  changeStage: data => dispatch(changeStage(data))
+});
+
+export default withApollo(connect(mapStateToProps, mapDispatchToProps)(App));

@@ -28,7 +28,7 @@ class LoggedOut extends React.Component {
   }
 
   render() {
-    console.log('RENDER');
+    console.log('RENDER LOGGED-OUT');
     return(
       <div id="logged-out">
         <div id="box-1">

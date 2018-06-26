@@ -84,7 +84,8 @@ const Query = new GraphQLObjectType({
       resolve: (parent, { token }, context) => {
         console.log('----------------- GET USER INFO -----------------');
         if (token === 'null') {
-          throw new Error('Not connected');
+          console.log(token);
+          return new Error('Not connected');
         } else {
           const decoded = JWT.verify(token, JWTSecret);
           console.log(decoded);
@@ -96,8 +97,8 @@ const Query = new GraphQLObjectType({
             values: [decoded.uid]
           })
             .then(res => {
-              console.log('-- THEN --');
-              console.log(res);
+              console.log('-- THEN (USER INFO) --');
+              console.log(res.rows[0]);
               const {
                 id,
                 email,

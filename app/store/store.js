@@ -1,5 +1,5 @@
 const store = {
-  isLoggedIn: false,
+  stage: 'onload',
   email: '',
   username: '',
   lastname: '',
@@ -10,7 +10,26 @@ const store = {
   month: '',
   year: '',
   genre: '',
-  sexualOrientation: ''
+  sexualOrientation: '',
+  userInfo: {
+    id: '',
+    email: '',
+    username: '',
+    lastname: '',
+    firstname: '',
+    password: '',
+    birthDate: '',
+    isConfirmed: '',
+    genre: '',
+    sexualOrientation: '',
+    bio: '',
+    popularityScore: '',
+    location: '',
+    isComplete: '',
+    creationDate: '',
+    lastConnexion: '',
+    isConnected: ''
+  }
 };
 
 export default store;
