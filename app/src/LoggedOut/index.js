@@ -30,11 +30,11 @@ class LoggedOut extends React.Component {
   render() {
     return(
       <div id="logged-out">
-        <div id="box-1">
+        <div id="logged-out-right-box">
           <p>Matcha</p>
           <p>blablabla</p>
         </div>
-        <div id="box-2">
+        <div id="logged-out-left-box">
           {this.UIaction()}
         </div>
       </div>

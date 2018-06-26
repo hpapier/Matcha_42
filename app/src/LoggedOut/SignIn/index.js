@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { logUserIn } from '../../../store/reducer';
 import { gql } from 'apollo-boost';
 import { graphql, compose, withApollo } from 'react-apollo';
-
+import './index.scss';
 
 const GET_USER_INFO = gql`
   query checkUserInfo($email: String!, $password: String!){
@@ -106,20 +106,20 @@ class SignIn extends Component {
   render() {
     const { changeState } = this.props;
     return (
-      <div>
-        <p>Connexion</p>
-        <form onSubmit={e => this.handleSubmit(e)}>
-          <label htmlFor="email">Adresse email</label>
-          <input type="text" name="email" onChange={e => this.setState({ email: e.target.value })} />
-          <label htmlFor="pwd">Mot de passe</label>
-          <input type="text" name="pwd" onChange={e => this.setState({ pwd: e.target.value })} />
+      <div id="sign-in">
+        <div id="sign-in-title">Connexion</div>
+        <form id="sign-in-form" onSubmit={e => this.handleSubmit(e)}>
+          <label id="sign-in-form-label-email" htmlFor="email">Adresse email</label>
+          <input id="sign-in-form-input-email" type="text" name="email" onChange={e => this.setState({ email: e.target.value })} />
+          <label id="sign-in-form-label-pwd" htmlFor="pwd">Mot de passe</label>
+          <input id="sign-in-form-input-pwd" type="text" name="pwd" onChange={e => this.setState({ pwd: e.target.value })} />
           
-          <div>
-            <button type="button" onClick={changeState}>S'inscrire</button>
-            <button type="submit">Connexion</button>
+          <div id="sign-in-fom-btn-box">
+            <button id="sign-in-fom-btn-box-sign-up" type="button" onClick={changeState}>S'inscrire</button>
+            <button id="sign-in-fom-btn-box-sign-in" type="submit">Connexion</button>
           </div>
         </form>
-        {(this.state.error) ? this.state.error : null}
+        <div id="sign-in-error">{(this.state.error) ? this.state.error : null}</div>
       </div>
     );
   }
