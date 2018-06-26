@@ -40,8 +40,6 @@ class SignIn extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.state.email && this.state.pwd) {
-      console.log(`email: ${this.state.email}`);
-      console.log(`pwd: ${this.state.pwd}`);
       this.props.client.query({
         query: GET_USER_INFO,
         variables: {
@@ -50,8 +48,6 @@ class SignIn extends Component {
         }
       })
       .then(res => {
-        console.log('-- THEN --');
-        console.log(res);
         const { 
           id,
           email,
@@ -94,23 +90,20 @@ class SignIn extends Component {
             lastConnexion,
             isConnected
           }, 'loggedIn');
-          console.log(this.props.client);
         } else {
           this.setState({ error: 'Account not confirmed' });
         }
       })
       .catch(err => {
-        console.log('-- CATCH --');
         const t = JSON.stringify(err);
         this.setState({ error: JSON.parse(t).graphQLErrors[0].message });
       });
     } else {
-      console.log('Nop');
+      this.setState({ error: 'Email or pwd incomplete'});
     }
   }
 
   render() {
-    console.log(this.props);
     const { changeState } = this.props;
     return (
       <div>

@@ -38,12 +38,8 @@ class App extends Component {
   };
   
   render() {
-    console.log(' --- RENDER APP ---');
-    
     if (this.props.stage === 'onload') {
-      console.log('QUERY RENDER APP');
       let token = localStorage.getItem('auth_token');
-      console.log(token);
       if (!token)
         token = 'null';
 
@@ -51,16 +47,8 @@ class App extends Component {
         query: GET_USER_INFO,
         variables: { token }
       })
-      .then(res => {
-        console.log('-- THEN : APP --');
-        console.log(res);
-        this.props.changeStage('loggedIn');
-      })
-      .catch(err => {
-        console.log('-- CATCH : APP --');
-        console.log(err);
-        this.props.changeStage('loggedOut');
-      });
+      .then(res => this.props.changeStage('loggedIn'))
+      .catch(err => this.props.changeStage('loggedOut'));
     }
 
     return this.action();

@@ -143,6 +143,7 @@ const Query = new GraphQLObjectType({
               };
             })
             .catch(err => {
+              console.log(err);
               return new Error('User not found');
             });
         }
