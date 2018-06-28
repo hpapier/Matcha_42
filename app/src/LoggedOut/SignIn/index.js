@@ -112,8 +112,8 @@ class SignIn extends Component {
           <label id="sign-in-form-label-email" htmlFor="email">Adresse email</label>
           <input id="sign-in-form-input-email" type="text" name="email" onChange={e => this.setState({ email: e.target.value })} />
           <label id="sign-in-form-label-pwd" htmlFor="pwd">Mot de passe</label>
-          <input id="sign-in-form-input-pwd" type="text" name="pwd" onChange={e => this.setState({ pwd: e.target.value })} />
-          
+          <input id="sign-in-form-input-pwd" type="password " name="pwd" onChange={e => this.setState({ pwd: e.target.value })} />
+
           <div id="sign-in-fom-btn-box">
             <button id="sign-in-fom-btn-box-sign-up" type="button" onClick={changeState}>S'inscrire</button>
             <button id="sign-in-fom-btn-box-sign-in" type="submit">Connexion</button>

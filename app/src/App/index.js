@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
 import { withApollo } from 'react-apollo';
-import LoggedOut from '../LoggedOut';
+import RouteLoggedOut from '../RouteLoggedOut';
 import LoggedIn from '../LoggedIn';
 import './index.scss';
 import { changeStage } from '../../store/reducer';
@@ -29,11 +29,11 @@ class App extends Component {
       case 'onload':
         return <div>Loading</div>;
       case 'loggedOut':
-        return <LoggedOut />;
+        return <RouteLoggedOut />;
       case 'loggedIn':
         return <LoggedIn />;
       default:
-        return <LoggedOut />;
+        return <RouteLoggedOut />;
     }
   };
   

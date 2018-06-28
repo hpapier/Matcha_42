@@ -44,6 +44,7 @@ module.exports = {
         stats: 'errors-only',
         open: true,
         port: 8080,
-        compress: true
+        compress: true,
+        historyApiFallback: true
     }
 }
