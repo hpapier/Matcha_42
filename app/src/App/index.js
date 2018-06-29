@@ -38,6 +38,7 @@ class App extends Component {
   };
   
   render() {
+    console.log('APP RENDER');
     if (this.props.stage === 'onload') {
       let token = localStorage.getItem('auth_token');
       if (!token)
