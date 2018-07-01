@@ -22,7 +22,8 @@ mutation addUser($email: String!, $username: String!, $firstname: String!, $last
 class FormStep3 extends React.Component { 
     state = {
       password: '',
-      verif: ''
+      verif: '',
+      error: ''
     };
 
     handleSubmit = e => {
@@ -30,6 +31,7 @@ class FormStep3 extends React.Component {
       if (this.state.password === '') {
         console.log('NOPPPP');
       } else {
+        this.setState({ error: 'Loading' });
         this.props.SaveToDb({
           variables: {
             email: this.props.email,
@@ -42,8 +44,17 @@ class FormStep3 extends React.Component {
             password: this.state.password
           }
         })
-        this.props.saveUserInfo({ password: this.state.password });
-        this.props.changeState.next();
+        .then(res => {
+          console.log('-- THEN FINAL STEP --');
+          console.log(res);
+          this.props.saveUserInfo({ password: this.state.password });
+          this.props.changeState.next();
+        })
+        .catch(err => {
+          console.log('-- CATCH FINAL STEP --');
+          console.log(err);
+          this.setState({ error: 'Une erreur est survenue.'});
+        });
       }
     }
 
@@ -65,6 +76,7 @@ class FormStep3 extends React.Component {
                   <button id="form-step-3-submit" type="submit">Submit</button>
                 </div>
               </form>
+              { (this.state.error) ? this.state.error : null }
           </div>
       );
     }

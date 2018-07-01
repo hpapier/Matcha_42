@@ -6,6 +6,7 @@ const pg = require('pg');
 const graphql = require('graphql');
 const uuidv1 = require('uuid/v1');
 const JWT = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 // Constante
 const app = express();
@@ -23,6 +24,15 @@ client.connect(err => {
     console.log(err);
   else
     console.log('Connected to db');
+});
+
+// Email configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'hpapier.matcha@gmail.com',
+    pass: 'matcha123456789'
+  }
 });
 
 // GraphQL Schema
@@ -285,26 +295,59 @@ const Mutation = new GraphQLObjectType({
               isconnected
             } = res.rows[0];
 
-
-            return {
-              id,
-              email,
-              username,
-              lastname,
-              firstname,
-              password,
-              birthDate: birth_date,
-              isconfirmed,
-              genre,
-              sexualOrientation: sexual_orientation,
-              bio,
-              popularityScore: popularity_score,
-              location,
-              iscomplete,
-              creationDate: creation_date,
-              lastConnexion: last_connexion,
-              isconnected
+            const options = {
+              from: 'hpapier.matcha@gmail.com',
+              to: email,
+              subject: 'TEST',
+              html: '<a href="http://localhost:8080/email:khjkhjkhjkhkj">CLIQUE BITCH</a>'
             };
+            return transporter.sendMail(options)
+              .then(res => {
+                console.log(res);
+                return {
+                  id,
+                  email,
+                  username,
+                  lastname,
+                  firstname,
+                  password,
+                  birthDate: birth_date,
+                  isconfirmed,
+                  genre,
+                  sexualOrientation: sexual_orientation,
+                  bio,
+                  popularityScore: popularity_score,
+                  location,
+                  iscomplete,
+                  creationDate: creation_date,
+                  lastConnexion: last_connexion,
+                  isconnected
+                };
+              })
+              .catch(err => {
+                console.log(err);
+                return new Error('MAIL CRASH');
+              });
+
+            // return {
+            //   id,
+            //   email,
+            //   username,
+            //   lastname,
+            //   firstname,
+            //   password,
+            //   birthDate: birth_date,
+            //   isconfirmed,
+            //   genre,
+            //   sexualOrientation: sexual_orientation,
+            //   bio,
+            //   popularityScore: popularity_score,
+            //   location,
+            //   iscomplete,
+            //   creationDate: creation_date,
+            //   lastConnexion: last_connexion,
+            //   isconnected
+            // };
           })
           .catch(err => {
             console.log('-- CATCH --');
