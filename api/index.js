@@ -83,6 +83,13 @@ const usertkn = new GraphQLObjectType({
   }
 });
 
+const state = new GraphQLObjectType({
+  name: 'State',
+  fields: {
+    state: { type: GraphQLString }
+  }
+});
+
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
@@ -353,6 +360,26 @@ const Mutation = new GraphQLObjectType({
             console.log('-- CATCH --');
             console.log(err);
           });
+      }
+    },
+    validAccount: {
+      type: state,
+      args: {
+        token: { type: GraphQLString },
+        username: { type: GraphQLString }
+      },
+      resolve: (parent, { token, username }, ctx) => {
+        console.log('--- VALID ACCOUNT MUTATION ---');
+        const QUERY = 'SELECT confirmation_token FROM user_info WHERE username = $1';
+        return client.query(QUERY, [username])
+        .then(res => {
+          console.log('- THEN -');
+          console.log(res);
+        })
+        .catch(err => {
+          console.log('- CATCH -');
+          return new Error(err);
+        });
       }
     }
   }

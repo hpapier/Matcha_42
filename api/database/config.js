@@ -39,7 +39,8 @@
     iscomplete          SMALLINT          NOT NULL DEFAULT 0,
     creation_date       DATE              NOT NULL,
     last_connexion      TIMESTAMP,
-    isconnected         SMALLINT          NOT NULL DEFAULT 0
+    isconnected         SMALLINT          NOT NULL DEFAULT 0,
+    confirmation_token  VARCHAR(255)
   );
 */
 
