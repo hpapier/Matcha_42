@@ -26,8 +26,11 @@ class ResetPassword extends React.Component {
 
   render() {
     console.log('- RESET PASSWORD COMPONENT -');
+    console.log(this.props);
 
     if (this.state.loading === 'loading') {
+      const { token, username } = this.props.match.params;
+
       this.props.client.query({
         query: QUERY_RESET_PASSWORD,
         variables: {

@@ -172,6 +172,7 @@ const Query = new GraphQLObjectType({
         }
       }
     },
+
     checkUserInfo: {
       type: usertkn,
       args: {
@@ -250,6 +251,33 @@ const Query = new GraphQLObjectType({
           if (err)
             return new Error('User not found');
         });
+      }
+    },
+
+    checkResetReq: {
+      type: state,
+      args: {
+        token: { type: GraphQLString },
+        username: { type: GraphQLString }
+      },
+      resolve: (parent, { token, username }, ctx) => {
+        const Q = 'SELECT reset_token as token FROM user_info WHERE username = $1';
+        const V = [username];
+        
+        return client.query(Q, V)
+          .then(res => {
+            if (res.rows[0]) {
+              if (token === res.rows[0].token)
+                return { state: 'success' };
+              else
+                return new Error('Invalid token');
+            } else {
+              return new Error('Not found');
+            }
+          })
+          .catch(err => {
+            return new Error(err);
+          });
       }
     }
   })
