@@ -14,7 +14,7 @@ class RouteLoggedOut extends React.Component {
           <Switch>
             <Route exact path="/" component={LoggedOut} />
             <Route exact path="/email/:token/:username" component={EmailValidation} />
-            <Route exact path="/reset" component={ResetPassword} />
+            <Route exact path="/reset/:token/:username" component={ResetPassword} />
             <Route component={() => (<div>NOT FOUND 404.</div>)} />
           </Switch>
         </Router>

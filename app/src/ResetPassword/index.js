@@ -1,6 +1,7 @@
 import React from 'react';
 import { withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import UIReset from './UIReset/index.js';
 
 const QUERY_RESET_PASSWORD = gql`
   query checkResetReq($token: String!, $username: String!) {
@@ -19,6 +20,8 @@ class ResetPassword extends React.Component {
     switch(this.state.loading) {
       case 'loading':
         return <div>LOADING</div>;
+      case 'success':
+        return <UIReset username={this.props.match.params.username} />;
       default:
         return <div>Error</div>;
     }
@@ -41,6 +44,10 @@ class ResetPassword extends React.Component {
       .then(res => {
         console.log('- THEN -');
         console.log(res);
+
+        if (res.data.checkResetReq.state === 'success') {
+          this.setState({ loading: 'success' });
+        }
       })
       .catch(err => {
         console.log('- CATCH -');

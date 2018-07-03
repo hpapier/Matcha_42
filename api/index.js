@@ -279,6 +279,51 @@ const Query = new GraphQLObjectType({
             return new Error(err);
           });
       }
+    },
+
+    sendResetEmail: {
+      type: state,
+      args: {
+        email: { type: GraphQLString }
+      },
+      resolve: (parent, { username, email }, ctx) => {
+        const Q = 'SELECT * FROM user_info WHERE email = $1';
+        const V = [email];
+
+        return client.query(Q, V)
+          .then(res => {
+            const data = res.rows[0];
+            if (data) {
+              const resetTkn = randToken.generate(128);
+              const Q1 = 'UPDATE user_info SET reset_token = $1 WHERE email = $2';
+              const V1 = [resetTkn, email];
+              return client.query(Q1, V1)
+                .then(res => {
+                  const options = {
+                    from: 'hpapier.matcha@gmail.com',
+                    to: email,
+                    subject: 'Matcha - Réinitialisation de votre mot de passe.',
+                    html: `<a href="http://localhost:8080/reset/${resetTkn}/${data.username}">Lien pour réinitialiser votre mot de passe</a>`
+                  };
+                  return transporter.sendMail(options)
+                    .then(res => {
+                      return { state: 'success' };
+                    })
+                    .catch(err => {
+                      return new Error('Error server');
+                    });
+                })
+                .catch(err => {
+                  return new Error(err);
+                });
+            } else {
+              return new Error('Not found');
+            }
+          })
+          .catch(err => {
+            return new Error(err);
+          });
+      }
     }
   })
 });
@@ -417,6 +462,25 @@ const Mutation = new GraphQLObjectType({
         .catch(err => {
           return new Error(err);
         });
+      }
+    },
+    resetPwd: {
+      type: state,
+      args: {
+        username: { type: GraphQLString },
+        password: { type: GraphQLString }
+      },
+      resolve: (parent, { username, password }, ctx) => {
+        const Q = 'UPDATE user_info SET password = $1 WHERE username = $2';
+        const V = [password, username];
+        return client.query(Q, V)
+          .then(res => {
+            return { state: 'success' };
+          })
+          .catch(err => {
+            console.log(err);
+            return new Error(err);
+          });
       }
     }
   }
