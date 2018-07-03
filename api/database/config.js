@@ -40,7 +40,8 @@
     creation_date       DATE              NOT NULL,
     last_connexion      TIMESTAMP,
     isconnected         SMALLINT          NOT NULL DEFAULT 0,
-    confirmation_token  VARCHAR(255)
+    confirmation_token  VARCHAR(255),
+    reset_token         VARCHAR(255),
   );
 */
 
