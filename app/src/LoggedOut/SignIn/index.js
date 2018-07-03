@@ -38,6 +38,7 @@ class SignIn extends Component {
   }
 
   handleSubmit = e => {
+    console.log('SUBMIT');
     e.preventDefault();
     if (this.state.email && this.state.pwd) {
       this.props.client.query({
@@ -48,6 +49,8 @@ class SignIn extends Component {
         }
       })
       .then(res => {
+        console.log('- THEN -');
+        console.log(res);
         const { 
           id,
           email,
@@ -92,11 +95,15 @@ class SignIn extends Component {
           }, 'loggedIn');
         } else {
           this.setState({ error: 'Account not confirmed' });
+          this.props.client.resetStore();
         }
       })
       .catch(err => {
+        console.log('- CATCH -');
+        console.log(err);
         const t = JSON.stringify(err);
         this.setState({ error: JSON.parse(t).graphQLErrors[0].message });
+        this.props.client.resetStore();
       });
     } else {
       this.setState({ error: 'Email or pwd incomplete'});

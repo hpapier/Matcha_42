@@ -13,7 +13,8 @@ const VALIDATION_ACCOUNT_MUTATION = gql`
 
 class EmailValidation extends React.Component {
   state = {
-    loading: 'loading'
+    loading: true,
+    error: ''
   }
 
   render() {
@@ -21,14 +22,10 @@ class EmailValidation extends React.Component {
     console.log(this.props);
 
     const { token, username } = this.props.match.params;
-    console.log('TOKEN = ');
-    console.log(token);
-    console.log('USERNAME = ');
-    console.log(username);
     
     const { loading } = this.state;
     
-    if (loading === 'loading') {      
+    if (loading) {      
       this.props.client.mutate({
         mutation: VALIDATION_ACCOUNT_MUTATION,
         variables: {
@@ -39,23 +36,24 @@ class EmailValidation extends React.Component {
       .then(res => {
         console.log('- THEN -');
         console.log(res);
+        this.setState({ loading: false, error: 'Success' });
       })
       .catch(err => {
+        let error = JSON.stringify(err);
+        error = JSON.parse(error);
+
         console.log('- CATCH -');
-        console.log(err);
+        console.log(error);
+
+        const errMsg = error.graphQLErrors[0].message
+        this.setState({ loading: false, error: errMsg });
       });
     }
 
-    if (loading === 'loading')
+    if (loading)
       return <div>Loading</div>;
-    else if (loading === 'already')
-      return <div>Already verified</div>;
-    else if (loading === 'success')
-      return <div>Successssss</div>;
-    else if (loading === 'error')
-      return <div>An Error Occurs</div>;
     else
-      return <div>Error server</div>;
+      return <div>{this.state.error}</div>;
   }
 }
 

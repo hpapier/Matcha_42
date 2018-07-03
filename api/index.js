@@ -7,6 +7,7 @@ const graphql = require('graphql');
 const uuidv1 = require('uuid/v1');
 const JWT = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const randToken = require('rand-token');
 
 // Constante
 const app = express();
@@ -55,7 +56,9 @@ const user = new GraphQLObjectType({
     isComplete: { type: GraphQLInt },
     creationDate: { type: GraphQLString },
     lastConnexion: { type: GraphQLInt },
-    isConnected: { type: GraphQLInt }
+    isConnected: { type: GraphQLInt },
+    confirmationToken: { type: GraphQLString }
+
   }
 });
 
@@ -79,7 +82,8 @@ const usertkn = new GraphQLObjectType({
     creationDate: { type: GraphQLString },
     lastConnexion: { type: GraphQLInt },
     isConnected: { type: GraphQLInt },
-    token: { type: GraphQLString }
+    token: { type: GraphQLString },
+    confirmationToken: { type: GraphQLString }
   }
 });
 
@@ -133,7 +137,8 @@ const Query = new GraphQLObjectType({
                 iscomplete,
                 creation_date,
                 last_connexion,
-                isconnected
+                isconnected,
+                confirmation_token
               } = res.rows[0];
 
               if (password !== decoded.password)
@@ -156,7 +161,8 @@ const Query = new GraphQLObjectType({
                 isComplete: iscomplete,
                 creationDate: creation_date,
                 lastConnexion: last_connexion,
-                isConnected: isconnected
+                isConnected: isconnected,
+                confirmationToken: confirmation_token
               };
             })
             .catch(err => {
@@ -208,8 +214,11 @@ const Query = new GraphQLObjectType({
               iscomplete,
               creation_date,
               last_connexion,
-              isconnected
+              isconnected,
+              confirmation_token
             } = res.rows[0];
+
+            console.log(`IS CONFIRMED ${isconfirmed}`);
             
             return {
               id,
@@ -229,7 +238,8 @@ const Query = new GraphQLObjectType({
               creationDate: creation_date,
               lastConnexion: last_connexion,
               isConnected: isconnected,
-              token
+              token,
+              confirmationToken: confirmation_token
             };
           } else {
             return new Error('Wrong password');
@@ -275,9 +285,11 @@ const Mutation = new GraphQLObjectType({
         else
           sexualOrientationTrad = 'bisexual';
 
-        const QUERY = 'INSERT INTO user_info (id, email, username, firstname, lastname, birth_date, genre, sexual_orientation, password, creation_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *;';
+        const QUERY = 'INSERT INTO user_info (id, email, username, firstname, lastname, birth_date, genre, sexual_orientation, password, creation_date, confirmation_token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;';
         const id = uuidv1();
-        const VALUES = [id, email, username, firstname, lastname, date, genreTrad, sexualOrientationTrad, password, new Date()];
+        const confirmToken = randToken.generate(128);
+        console.log(`RAND TOKEN = ${confirmToken}`);
+        const VALUES = [id, email, username, firstname, lastname, date, genreTrad, sexualOrientationTrad, password, new Date(), confirmToken];
         return client.query(QUERY, VALUES)
           .then(res => {
             console.log('-- THEN --');
@@ -299,14 +311,15 @@ const Mutation = new GraphQLObjectType({
               iscomplete,
               creation_date,
               last_connexion,
-              isconnected
+              isconnected,
+              confirmation_token
             } = res.rows[0];
 
             const options = {
               from: 'hpapier.matcha@gmail.com',
               to: email,
               subject: 'TEST',
-              html: '<a href="http://localhost:8080/email:khjkhjkhjkhkj">CLIQUE BITCH</a>'
+              html: `<a href="http://localhost:8080/email/${confirmation_token}/${username}">CLIQUE BITCH</a>`
             };
             return transporter.sendMail(options)
               .then(res => {
@@ -328,33 +341,14 @@ const Mutation = new GraphQLObjectType({
                   iscomplete,
                   creationDate: creation_date,
                   lastConnexion: last_connexion,
-                  isconnected
+                  isconnected,
+                  confirmationToken: confirmation_token
                 };
               })
               .catch(err => {
                 console.log(err);
                 return new Error('MAIL CRASH');
               });
-
-            // return {
-            //   id,
-            //   email,
-            //   username,
-            //   lastname,
-            //   firstname,
-            //   password,
-            //   birthDate: birth_date,
-            //   isconfirmed,
-            //   genre,
-            //   sexualOrientation: sexual_orientation,
-            //   bio,
-            //   popularityScore: popularity_score,
-            //   location,
-            //   iscomplete,
-            //   creationDate: creation_date,
-            //   lastConnexion: last_connexion,
-            //   isconnected
-            // };
           })
           .catch(err => {
             console.log('-- CATCH --');
@@ -370,14 +364,29 @@ const Mutation = new GraphQLObjectType({
       },
       resolve: (parent, { token, username }, ctx) => {
         console.log('--- VALID ACCOUNT MUTATION ---');
-        const QUERY = 'SELECT confirmation_token FROM user_info WHERE username = $1';
+        const QUERY = 'SELECT confirmation_token as token, isconfirmed FROM user_info WHERE username = $1';
         return client.query(QUERY, [username])
         .then(res => {
-          console.log('- THEN -');
-          console.log(res);
+          if (res.rows[0]) {
+            if (res.rows[0].isconfirmed === 1)
+              return new Error('Already confirmed');
+            
+            if (res.rows[0].token !== token)
+              return new Error('Invalid token');
+
+            const Q = 'UPDATE user_info SET isconfirmed = 1 WHERE username = $1';
+            return client.query(Q, [username])
+            .then(res => {
+              return { state: 'confirmed' };
+            })
+            .catch(err => {
+              return new Error('Error server');
+            });
+          }
+          else
+            return new Error('NOT FOUND');
         })
         .catch(err => {
-          console.log('- CATCH -');
           return new Error(err);
         });
       }
