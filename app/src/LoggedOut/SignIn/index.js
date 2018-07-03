@@ -111,7 +111,7 @@ class SignIn extends Component {
   }
 
   render() {
-    const { changeState } = this.props;
+    const { signup, reset } = this.props.changeState;
     return (
       <div id="sign-in">
         <div id="sign-in-title">Connexion</div>
@@ -122,8 +122,11 @@ class SignIn extends Component {
           <input id="sign-in-form-input-pwd" type="password " name="pwd" onChange={e => this.setState({ pwd: e.target.value })} />
 
           <div id="sign-in-fom-btn-box">
-            <button id="sign-in-fom-btn-box-sign-up" type="button" onClick={changeState}>S'inscrire</button>
-            <button id="sign-in-fom-btn-box-sign-in" type="submit">Connexion</button>
+            <div id="sign-in-fom-btn-box-1">
+              <button id="sign-in-fom-btn-box-sign-up" type="button" onClick={signup}>S'inscrire</button>
+              <button id="sign-in-fom-btn-box-sign-in" type="submit">Connexion</button>
+            </div>
+            <button id="sign-in-fom-btn-box-reset-token" type="button" onClick={reset}>Réinitialiser le mot de passe</button>
           </div>
         </form>
         <div id="sign-in-error">{(this.state.error) ? this.state.error : null}</div>

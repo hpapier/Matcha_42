@@ -3,6 +3,7 @@ import FormBtn from './Form/FormBtn';
 import FormStep1 from './Form/FormStep1';
 import FormStep2 from './Form/FormStep2';
 import FormStep3 from './Form/FormStep3';
+import Reset from './Reset';
 import SignIn from './SignIn';
 import './index.scss';
 
@@ -22,8 +23,10 @@ class LoggedOut extends React.Component {
         return <FormStep2 changeState={{ previous: () => this.setState({ action: 'logged-out-step1' }), next: () => this.setState({ action: 'logged-out-step3' })}}/>;
       case 'logged-out-step3':
         return <FormStep3 changeState={{ previous: () => this.setState({ action: 'logged-out-step2' }), next: () => this.setState({ action: 'logged-out' })}} />;
+      case 'logged-out-reset':
+        return <Reset changeState={{ signup: () => this.setState({ action: 'logged-out-step1' }), signin: () => this.setState({ action: 'logged-out-sign-in' })}} />
       case 'logged-out-sign-in':
-        return <SignIn logUserIn={this.props.logUserIn} changeState={() => this.setState({ action: 'logged-out-step1' })}/>;
+        return <SignIn changeState={{ singup: () => this.setState({ action: 'logged-out-step1' }), reset: () => this.setState({ action: 'logged-out-reset' })}} />;
     }
   }
 
