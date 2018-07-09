@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
 import { withApollo } from 'react-apollo';
 import RouteLoggedOut from '../RouteLoggedOut';
-import LoggedIn from '../LoggedIn';
+import RouteLoggedIn from '../RouteLoggedIn';
 import './index.scss';
 import { changeStage } from '../../store/reducer';
 
@@ -31,7 +31,7 @@ class App extends Component {
       case 'loggedOut':
         return <RouteLoggedOut />;
       case 'loggedIn':
-        return <LoggedIn />;
+        return <RouteLoggedIn />;
       default:
         return <RouteLoggedOut />;
     }

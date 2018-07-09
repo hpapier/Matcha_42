@@ -4,7 +4,7 @@ class LoggedIn extends Component {
   render() {
     return (
       <div>
-        connected
+        La  bite
       </div>
     );
   }
