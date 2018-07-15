@@ -29,6 +29,12 @@ const store = {
     creationDate: '',
     lastConnexion: '',
     isConnected: ''
+  },
+  preferences: {
+    age: [],
+    popularityScore: [],
+    location: 0,
+    interestTags: []
   }
 };
 

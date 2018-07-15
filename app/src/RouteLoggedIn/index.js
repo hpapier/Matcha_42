@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import LoggedIn from '../LoggedIn';
+import Home from '../Home';
 import SettingsBtn from './SettingsBtn';
 
 class RouteLoggedIn extends React.Component {
-  state = {};
-
   render() {
     return(
       <Router>
@@ -14,7 +12,7 @@ class RouteLoggedIn extends React.Component {
 
           <div>
               <Switch>
-                <Route exact path="/" component={LoggedIn} />
+                <Route exact path="/" component={Home} />
                 <Route component={() => <div>Lol</div>} />
               </Switch>
           </div>
