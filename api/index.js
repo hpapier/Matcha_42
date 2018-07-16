@@ -175,7 +175,7 @@ const Query = new GraphQLObjectType({
               if (password !== decoded.password)
                 return new Error('Bad user');
 
-              client.query("SELECT * FROM user_pref WHERE id = $1", [id])
+              return client.query("SELECT * FROM user_pref WHERE user_id = $1", [id])
               .then(res => {
                 const { age_start, age_end, score_start, score_end, location, tags } = res.rows[0];
                 return {
@@ -186,7 +186,7 @@ const Query = new GraphQLObjectType({
                   firstname,
                   password,
                   birthDate: birth_date,
-                  icConfirmed: isconfirmed,
+                  isConfirmed: isconfirmed,
                   genre,
                   sexualOrientation: sexual_orientation,
                   bio,

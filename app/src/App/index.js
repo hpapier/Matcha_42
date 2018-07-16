@@ -5,24 +5,24 @@ import { withApollo } from 'react-apollo';
 import RouteLoggedOut from '../RouteLoggedOut';
 import RouteLoggedIn from '../RouteLoggedIn';
 import './index.scss';
-import { changeStage } from '../../store/reducer';
+import { setUserInfoAndStage } from '../../store/reducer';
 
 const GET_USER_INFO = gql`
   query userInformation($token: String) {
     getUserInfo(token: $token) {
-      id,
-      email,
-      username,
-      lastname,
-      firstname,
-      password,
+      id
+      email
+      username
+      lastname
+      firstname
+      password
       birthDate
-      icConfirmed
-      genre,
+      isConfirmed
+      genre
       sexualOrientation
       bio,
       popularityScore
-      location,
+      location
       isComplete
       creationDate
       lastConnexion
@@ -32,7 +32,7 @@ const GET_USER_INFO = gql`
       ageEnd
       scoreStart
       scoreEnd
-      location,
+      location
       tags
     }
   }
@@ -63,8 +63,67 @@ class App extends Component {
         query: GET_USER_INFO,
         variables: { token }
       })
-      .then(res => this.props.changeStage('loggedIn'))
-      .catch(err => this.props.changeStage('loggedOut'));
+      .then(res => {
+        const {
+          id, 
+          email, 
+          username,
+          lastname,
+          firstname,
+          password,
+          birthDate,
+          isConfirmed,
+          genre,
+          sexualOrientation,
+          bio,
+          popularityScore,
+          location,
+          isComplete,
+          creationDate,
+          lastConnexion,
+          isConnected,
+          confirmationToken,
+          ageStart,
+          ageEnd,
+          scoreStart,
+          scoreEnd,
+          tags
+        } = res.data.getUserInfo;
+
+        const data = { 
+          id, 
+          email, 
+          username,
+          lastname,
+          firstname,
+          password,
+          birthDate,
+          isConfirmed,
+          genre,
+          sexualOrientation,
+          bio,
+          popularityScore,
+          location,
+          isComplete,
+          creationDate,
+          lastConnexion,
+          isConnected,
+          confirmationToken,
+          ageStart,
+          ageEnd,
+          scoreStart,
+          scoreEnd,
+          location,
+          tags
+        };
+
+        this.props.setUserInfoAndStage({ stage: 'loggedIn', data });
+      })
+      .catch(err => {
+        console.log('-- CATCH : FETCH DATA USER INFO --');
+        console.log(err);
+        this.props.setUserInfoAndStage({ stage: 'loggedOut', data: null });
+      });
     }
 
     return this.action();
@@ -76,7 +135,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeStage: data => dispatch(changeStage(data))
+  setUserInfoAndStage: data => dispatch(setUserInfoAndStage(data))
 });
 
 export default withApollo(connect(mapStateToProps, mapDispatchToProps)(App));

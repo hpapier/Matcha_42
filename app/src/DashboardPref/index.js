@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './index.scss';
+import { valueToObjectRepresentation } from '../../../node_modules/apollo-utilities';
 
 class DashboardPref extends React.Component {
   state = {
-    age: [18, 100],
-    popularityScore: [10, 100],
-    location: 0,
+    age: this.props.pref.age,
+    popularityScore: this.props.pref.popularityScore,
+    location: this.props.pref.location,
     interestTags: this.props.pref.interestTags,
     tags: ''
   };
@@ -17,7 +18,7 @@ class DashboardPref extends React.Component {
     const values = [];
     let it;
 
-    if (pointer === 2) {
+    if (pointer === 1) {
       it = state[0] + 1;
       if (it === 101)
       it = 100;
@@ -29,8 +30,8 @@ class DashboardPref extends React.Component {
       values.push(i);
 
     const changeState = e => {
-      let params1 = (pointer === 1) ? parseInt(e.target.value) : state[0];
-      let params2 = (pointer === 2) ? parseInt(e.target.value) : state[1];
+      let params1 = (pointer === 0) ? parseInt(e.target.value) : state[0];
+      let params2 = (pointer === 1) ? parseInt(e.target.value) : state[1];
 
       if (params1 >= params2)
         params2 = params1 + 1;
@@ -41,8 +42,8 @@ class DashboardPref extends React.Component {
     }
 
     return (
-      <select onChange={e => changeState(e)}>
-        {values.map(data => <option key={data} value={data} defaultValue={(data === state[0]) ? true : false} >{data}</option>)}
+      <select value={state[pointer]} onChange={e => changeState(e)}>
+        {values.map(data => <option key={data} value={data}>{data}</option>)}
       </select>
     );
   }
@@ -87,17 +88,17 @@ class DashboardPref extends React.Component {
     return (
       <div id="dashboard-pref-box">
         <div>
+          {this.selectInterval(setAgeState, 0, this.state.age, 'age')}
           {this.selectInterval(setAgeState, 1, this.state.age, 'age')}
-          {this.selectInterval(setAgeState, 2, this.state.age, 'age')}
         </div>
 
         <div>
+          {this.selectInterval(setPopularityScoreState, 0, this.state.popularityScore, 'score')}
           {this.selectInterval(setPopularityScoreState, 1, this.state.popularityScore, 'score')}
-          {this.selectInterval(setPopularityScoreState, 2, this.state.popularityScore, 'score')}
         </div>
 
         <div>
-          <input type="range" min="0" max="100" defaultValue="0" onChange={e => this.setState({ location: parseInt(e.target.value) })} />
+          <input type="range" min="0" max="100" defaultValue={this.state.location} onChange={e => this.setState({ location: parseInt(e.target.value) })} />
           location: {this.state.location} km
         </div>
 

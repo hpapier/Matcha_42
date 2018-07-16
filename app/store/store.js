@@ -31,8 +31,8 @@ const store = {
     isConnected: ''
   },
   preferences: {
-    age: [],
-    popularityScore: [],
+    age: [18, 100],
+    popularityScore: [10, 100],
     location: 0,
     interestTags: []
   }
