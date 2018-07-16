@@ -10,15 +10,30 @@ import { changeStage } from '../../store/reducer';
 const GET_USER_INFO = gql`
   query userInformation($token: String) {
     getUserInfo(token: $token) {
-      id
-      email
-      username
-      firstname
-      lastname
+      id,
+      email,
+      username,
+      lastname,
+      firstname,
+      password,
       birthDate
-      isConfirmed
-      genre
+      icConfirmed
+      genre,
       sexualOrientation
+      bio,
+      popularityScore
+      location,
+      isComplete
+      creationDate
+      lastConnexion
+      isConnected
+      confirmationToken
+      ageStart
+      ageEnd
+      scoreStart
+      scoreEnd
+      location,
+      tags
     }
   }
 `;

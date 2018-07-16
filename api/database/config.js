@@ -45,6 +45,30 @@
   );
 */
 
+// Table `user_pref`
+// user_pref
+// --> id
+// --> user_id
+// --> age_start
+// --> age_end
+// --> score_start
+// --> score_end
+// --> location
+// --> tags
+
+/*
+  CREATE TABLE user_pref (
+    id          SERIAL    NOT NULL PRIMARY KEY,
+    user_id     UUID      NOT NULL,
+    age_start   SMALLINT  NOT NULL DEFAULT 18,
+    age_end     SMALLINT  NOT NULL DEFAULT 100,
+    score_start SMALLINT  NOT NULL DEFAULT 10,
+    score_end   SMALLINT  NOT NULL DEFAULT 100,
+    location    SMALLINT  NOT NULL DEFAULT 100,
+    tags        TEXT
+  );
+*/
+
 // Table `images`
 // images:
 // --> id

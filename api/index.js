@@ -14,6 +14,7 @@ const app = express();
 const PORT = 4000;
 const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull } = graphql;
 const JWTSecret = 'kjhjhhyuhf45456lkjkzFdjkbssDjkdbefsS';
+
 // Database
 // --> Constante
 const host = 'postgres://postgres@127.0.0.1:5432/matcha';
@@ -58,7 +59,6 @@ const user = new GraphQLObjectType({
     lastConnexion: { type: GraphQLInt },
     isConnected: { type: GraphQLInt },
     confirmationToken: { type: GraphQLString }
-
   }
 });
 
@@ -87,6 +87,37 @@ const usertkn = new GraphQLObjectType({
   }
 });
 
+const userInfo = new GraphQLObjectType({
+  name: 'userInfo',
+  fields: {
+    id: { type: GraphQLString },
+    email: { type: GraphQLString },
+    username: { type: GraphQLString },
+    lastname: { type: GraphQLString },
+    firstname: { type: GraphQLString },
+    password: { type: GraphQLString },
+    birthDate: { type: GraphQLString },
+    isConfirmed: { type: GraphQLInt },
+    genre: { type: GraphQLString },
+    sexualOrientation: { type: GraphQLString },
+    bio: { type: GraphQLString },
+    popularityScore: { type: GraphQLInt },
+    location: { type: GraphQLString },
+    isComplete: { type: GraphQLInt },
+    creationDate: { type: GraphQLString },
+    lastConnexion: { type: GraphQLInt },
+    isConnected: { type: GraphQLInt },
+    token: { type: GraphQLString },
+    confirmationToken: { type: GraphQLString },
+    ageStart: { type: GraphQLInt },
+    ageEnd: { type: GraphQLInt },
+    scoreStart: { type: GraphQLInt },
+    scoreEnd: { type: GraphQLInt },
+    location: { type: GraphQLInt },
+    tags: { type: GraphQLString }
+  }
+});
+
 const state = new GraphQLObjectType({
   name: 'State',
   fields: {
@@ -98,7 +129,7 @@ const Query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
     getUserInfo: {
-      type: user,
+      type: userInfo,
       args: {
         token: { type: GraphQLString }
       },
@@ -144,26 +175,37 @@ const Query = new GraphQLObjectType({
               if (password !== decoded.password)
                 return new Error('Bad user');
 
-              return {
-                id,
-                email,
-                username,
-                lastname,
-                firstname,
-                password,
-                birthDate: birth_date,
-                icConfirmed: isconfirmed,
-                genre,
-                sexualOrientation: sexual_orientation,
-                bio,
-                popularityScore: popularity_score,
-                location,
-                isComplete: iscomplete,
-                creationDate: creation_date,
-                lastConnexion: last_connexion,
-                isConnected: isconnected,
-                confirmationToken: confirmation_token
-              };
+              client.query("SELECT * FROM user_pref WHERE id = $1", [id])
+              .then(res => {
+                const { age_start, age_end, score_start, score_end, location, tags } = res.rows[0];
+                return {
+                  id,
+                  email,
+                  username,
+                  lastname,
+                  firstname,
+                  password,
+                  birthDate: birth_date,
+                  icConfirmed: isconfirmed,
+                  genre,
+                  sexualOrientation: sexual_orientation,
+                  bio,
+                  popularityScore: popularity_score,
+                  location,
+                  isComplete: iscomplete,
+                  creationDate: creation_date,
+                  lastConnexion: last_connexion,
+                  isConnected: isconnected,
+                  confirmationToken: confirmation_token,
+                  ageStart: age_start,
+                  ageEnd: age_end,
+                  scoreStart: score_start,
+                  scoreEnd: score_end,
+                  location,
+                  tags
+                };
+              })
+              .catch(err => new Error(err));
             })
             .catch(err => {
               console.log(err);
@@ -388,13 +430,19 @@ const Mutation = new GraphQLObjectType({
               confirmation_token
             } = res.rows[0];
 
-            const options = {
-              from: 'hpapier.matcha@gmail.com',
-              to: email,
-              subject: 'TEST',
-              html: `<a href="http://localhost:8080/email/${confirmation_token}/${username}">CLIQUE BITCH</a>`
-            };
-            return transporter.sendMail(options)
+            const Q_Pref = "INSERT INTO user_pref (user_id) VALUES ($1) RETURNING *;";
+            const V_pref = [id];
+
+            return client.query(Q_Pref, V_pref)
+            .then(res => {
+              const options = {
+                from: 'hpapier.matcha@gmail.com',
+                to: email,
+                subject: 'TEST',
+                html: `<a href="http://localhost:8080/email/${confirmation_token}/${username}">CLIQUE BITCH</a>`
+              };
+
+              return transporter.sendMail(options)
               .then(res => {
                 console.log(res);
                 return {
@@ -422,6 +470,8 @@ const Mutation = new GraphQLObjectType({
                 console.log(err);
                 return new Error('MAIL CRASH');
               });
+            })
+            .catch(err => new Error(err));
           })
           .catch(err => {
             console.log('-- CATCH --');

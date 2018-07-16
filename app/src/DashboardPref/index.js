@@ -58,7 +58,7 @@ class DashboardPref extends React.Component {
   // Handle the submition form
   handleSubmit = e => {
     e.preventDefault();
-    this.setState({ interestTags: [...this.state.interestTags, this.state.tags]});
+    this.setState({ interestTags: [...this.state.interestTags, this.state.tags], tags: ''});
   }
 
 
@@ -98,12 +98,12 @@ class DashboardPref extends React.Component {
 
         <div>
           <input type="range" min="0" max="100" defaultValue="0" onChange={e => this.setState({ location: parseInt(e.target.value) })} />
-          location: {this.state.location}
+          location: {this.state.location} km
         </div>
 
         <div>
           <form onSubmit={e => this.handleSubmit(e)}>
-            <input type="text" onChange={e => this.setState({ tags: e.target.value })} />
+            <input type="text" value={this.state.tags} onChange={e => this.setState({ tags: e.target.value })} />
           </form>
           <div>{this.displayTags()}</div>
         </div>
