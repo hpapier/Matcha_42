@@ -1,5 +1,5 @@
 import initialState from './store';
-import { TOGGLE_NETWORK_STATUS, SAVE_USER_INFO, STORE_USER_PREF } from './actions';
+import { TOGGLE_NETWORK_STATUS, SAVE_USER_INFO, STORE_USER_PREF, UPDATE_USER_PREF } from './actions';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -53,6 +53,13 @@ export default (state = initialState, action) => {
           interestTags: [action.payload.data.tags]
         }
       }
+    case UPDATE_USER_PREF:
+      return {
+        ...state,
+        pref: {
+          ...action.payload
+        }
+      }
     default:
       return state;
   }
@@ -72,3 +79,8 @@ export const setUserInfoAndStage = data => ({
   type: STORE_USER_PREF,
   payload: data
 });
+
+export const updatePrefStore = data => ({
+  type: UPDATE_USER_PREF,
+  payload: data
+})

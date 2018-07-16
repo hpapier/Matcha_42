@@ -532,6 +532,26 @@ const Mutation = new GraphQLObjectType({
             return new Error(err);
           });
       }
+    },
+    updatePreferences: {
+      type: state,
+      args: {
+        id: { type: GraphQLString },
+        ageStart: { type: GraphQLInt },
+        ageEnd: { type: GraphQLInt },
+        scoreStart: { type: GraphQLInt },
+        scoreEnd: { type: GraphQLInt },
+        location: { type: GraphQLInt },
+        tags: { type: GraphQLString }
+      },
+      resolve: (parent, { id, ageStart, ageEnd, scoreStart, scoreEnd, location, tags }, ctx) => {
+        const Q = 'UPDATE user_pref SET age_start = $1, age_end = $2, score_start = $3, score_end = $4, location = $5, tags = $6 WHERE user_id = $7';
+        const V = [ageStart, ageEnd, scoreStart, scoreEnd, location, tags, id];
+
+        return client.query(Q, V)
+        .then(res => ({ state: 'success' }))
+        .catch(err => new Error(err));
+      }
     }
   }
 });

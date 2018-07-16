@@ -1,7 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { gql } from 'apollo-boost';
+import { withApollo } from 'react-apollo';
+import { updatePrefStore } from '../../store/reducer';
 import './index.scss';
-import { valueToObjectRepresentation } from '../../../node_modules/apollo-utilities';
+
+const MUTATION_PREFERENCE = gql`
+  mutation ($id: String!, $ageStart: Int!, $ageEnd: Int!, $scoreStart: Int!, $scoreEnd: Int!, $location: Int!, $tags: String!) {
+    updatePreferences(id: $id, ageStart: $ageStart, ageEnd: $ageEnd, scoreStart: $scoreStart, scoreEnd: $scoreEnd, location: $location, tags: $tags) {
+      state
+    }
+  }
+`;
 
 class DashboardPref extends React.Component {
   state = {
@@ -9,7 +19,8 @@ class DashboardPref extends React.Component {
     popularityScore: this.props.pref.popularityScore,
     location: this.props.pref.location,
     interestTags: this.props.pref.interestTags,
-    tags: ''
+    tags: '',
+    reqLoading: false
   };
 
 
@@ -70,12 +81,42 @@ class DashboardPref extends React.Component {
   }
 
 
+  // Save the preferences
+  savePreferences = () => {
+    this.setState({ reqLoading: true });
+    const tagsObject = { data: this.state.interestTags };
+    const tagsJson = JSON.stringify(tagsObject);
+    this.props.client.mutate({
+      mutation: MUTATION_PREFERENCE,
+      variables: {
+        id: this.props.id,
+        ageStart: this.state.age[0],
+        ageEnd: this.state.age[1],
+        scoreStart: this.state.popularityScore[0],
+        scoreEnd: this.state.popularityScore[1],
+        location: this.state.location,
+        tags: tagsJson
+      }
+    })
+    .then(res => {
+      this.setState({ reqLoading: false });
+      this.props.updatePrefStore({ age: this.state.age, popularityScore: this.state.popularityScore, location: this.state.location, interestTags: this.state.interestTags });
+    })
+    .catch(err => {
+      this.setState({ error: 'Errorrrrrrr', reqLoading: false });
+    });
+  }
+
+
+  // Display error msg
+  errorMsg = () => {
+    if (this.state.error)
+      return (<div>{this.state.error}</div>);
+  }
+
+
   // Render the UI
   render() {
-    console.log('--- PREF ---');
-    console.log(this.props);
-    console.log(this.state);
-
     // Utils function
     const setAgeState = (first, second) => {
       this.setState({ age: [first, second] });
@@ -108,17 +149,24 @@ class DashboardPref extends React.Component {
           </form>
           <div>{this.displayTags()}</div>
         </div>
+
+        <div>
+          <button type="button" onClick={this.savePreferences} disabled={this.state.reqLoading}>Sauvegarder</button>
+        </div>
+
+        {this.errorMsg()}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  id: state.userInfo.id,
   pref: state.preferences
 });
 
-// const mapDispatchToProps = dispatch => ({
-  
-// });
+const mapDispatchToProps = dispatch => ({
+  updatePrefStore: data => dispatch(updatePrefStore(data))
+});
 
-export default connect(mapStateToProps, null)(DashboardPref);
+export default connect(mapStateToProps, mapDispatchToProps)(withApollo(DashboardPref));

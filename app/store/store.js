@@ -32,7 +32,7 @@ const store = {
   },
   preferences: {
     age: [18, 100],
-    popularityScore: [10, 100],
+    tiopopularityScore: [10, 100],
     location: 0,
     interestTags: []
   }
