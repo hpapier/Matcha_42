@@ -117,6 +117,7 @@ class DashboardPref extends React.Component {
 
   // Render the UI
   render() {
+
     // Utils function
     const setAgeState = (first, second) => {
       this.setState({ age: [first, second] });
@@ -128,6 +129,8 @@ class DashboardPref extends React.Component {
 
     return (
       <div id="dashboard-pref-box">
+
+        <div>Préférences</div>
         <div>
           {this.selectInterval(setAgeState, 0, this.state.age, 'age')}
           {this.selectInterval(setAgeState, 1, this.state.age, 'age')}

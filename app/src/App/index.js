@@ -53,7 +53,6 @@ class App extends Component {
   };
   
   render() {
-    console.log('APP RENDER');
     if (this.props.stage === 'onload') {
       let token = localStorage.getItem('auth_token');
       if (!token)
@@ -90,6 +89,8 @@ class App extends Component {
           tags
         } = res.data.getUserInfo;
 
+        const interestsTags = JSON.parse(tags).data;
+
         const data = { 
           id, 
           email, 
@@ -114,7 +115,7 @@ class App extends Component {
           scoreStart,
           scoreEnd,
           location,
-          tags
+          tags: interestsTags
         };
 
         this.props.setUserInfoAndStage({ stage: 'loggedIn', data });

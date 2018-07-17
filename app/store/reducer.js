@@ -50,7 +50,7 @@ export default (state = initialState, action) => {
           age: [action.payload.data.ageStart, action.payload.data.ageEnd],
           popularityScore: [action.payload.data.scoreStart, action.payload.data.scoreEnd],
           location: action.payload.data.location,
-          interestTags: [action.payload.data.tags]
+          interestTags: action.payload.data.tags
         }
       }
     case UPDATE_USER_PREF:
