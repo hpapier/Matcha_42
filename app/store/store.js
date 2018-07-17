@@ -24,7 +24,7 @@ const store = {
     sexualOrientation: '',
     bio: '',
     popularityScore: '',
-    location: '',
+    userLocation: '',
     isComplete: '',
     creationDate: '',
     lastConnexion: '',

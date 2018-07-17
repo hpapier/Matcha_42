@@ -40,7 +40,7 @@ export default (state = initialState, action) => {
           sexualOrientation: action.payload.data.sexualOrientation,
           bio: action.payload.data.bio,
           popularityScore: action.payload.data.popularityScore,
-          location: action.payload.data.location,
+          userLocation: action.payload.data.userLocation,
           isComplete: action.payload.data.isComplete,
           creationDate: action.payload.data.creationDate,
           lastConnexion: action.payload.data.lastConnexion,

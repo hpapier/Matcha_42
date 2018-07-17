@@ -77,13 +77,19 @@ const usertkn = new GraphQLObjectType({
     sexualOrientation: { type: GraphQLString },
     bio: { type: GraphQLString },
     popularityScore: { type: GraphQLInt },
-    location: { type: GraphQLString },
+    userLocation: { type: GraphQLString },
     isComplete: { type: GraphQLInt },
     creationDate: { type: GraphQLString },
     lastConnexion: { type: GraphQLInt },
     isConnected: { type: GraphQLInt },
     token: { type: GraphQLString },
-    confirmationToken: { type: GraphQLString }
+    confirmationToken: { type: GraphQLString },
+    ageStart: { type: GraphQLInt },
+    ageEnd: { type: GraphQLInt },
+    scoreStart: { type: GraphQLInt },
+    scoreEnd: { type: GraphQLInt },
+    location: { type: GraphQLInt },
+    tags: { type: GraphQLString }
   }
 });
 
@@ -102,7 +108,7 @@ const userInfo = new GraphQLObjectType({
     sexualOrientation: { type: GraphQLString },
     bio: { type: GraphQLString },
     popularityScore: { type: GraphQLInt },
-    location: { type: GraphQLString },
+    userLocation: { type: GraphQLString },
     isComplete: { type: GraphQLInt },
     creationDate: { type: GraphQLString },
     lastConnexion: { type: GraphQLInt },
@@ -164,7 +170,7 @@ const Query = new GraphQLObjectType({
                 sexual_orientation,
                 bio,
                 popularity_score,
-                location,
+                userLocation,
                 iscomplete,
                 creation_date,
                 last_connexion,
@@ -191,7 +197,7 @@ const Query = new GraphQLObjectType({
                   sexualOrientation: sexual_orientation,
                   bio,
                   popularityScore: popularity_score,
-                  location,
+                  userLocation,
                   isComplete: iscomplete,
                   creationDate: creation_date,
                   lastConnexion: last_connexion,
@@ -222,7 +228,6 @@ const Query = new GraphQLObjectType({
         password: { type: GraphQLString }
       },
       resolve: (parent, { email, password }, context) => {
-        console.log(email, password);
         const QUERY = 'SELECT * FROM user_info WHERE email = $1';
         return client.query({
           name: 'fetch-user',
@@ -253,37 +258,46 @@ const Query = new GraphQLObjectType({
               sexual_orientation,
               bio,
               popularity_score,
-              location,
+              userLocation,
               iscomplete,
               creation_date,
               last_connexion,
               isconnected,
               confirmation_token
             } = res.rows[0];
-
-            console.log(`IS CONFIRMED ${isconfirmed}`);
             
-            return {
-              id,
-              email,
-              username,
-              lastname,
-              firstname,
-              password,
-              birthDate: birth_date,
-              isConfirmed: isconfirmed,
-              genre,
-              sexualOrientation: sexual_orientation,
-              bio,
-              popularityScore: popularity_score,
-              location,
-              isComplete: iscomplete,
-              creationDate: creation_date,
-              lastConnexion: last_connexion,
-              isConnected: isconnected,
-              token,
-              confirmationToken: confirmation_token
-            };
+            return client.query('SELECT * FROM user_pref WHERE user_id = $1', [id])
+            .then(res => {
+              const { age_start, age_end, score_start, score_end, location, tags } = res.rows[0];
+              return {
+                id,
+                email,
+                username,
+                lastname,
+                firstname,
+                password,
+                birthDate: birth_date,
+                isConfirmed: isconfirmed,
+                genre,
+                sexualOrientation: sexual_orientation,
+                bio,
+                popularityScore: popularity_score,
+                userLocation,
+                isComplete: iscomplete,
+                creationDate: creation_date,
+                lastConnexion: last_connexion,
+                isConnected: isconnected,
+                token,
+                confirmationToken: confirmation_token,
+                ageStart: age_start,
+                ageEnd: age_end,
+                scoreStart: score_start,
+                scoreEnd: score_end,
+                location,
+                tags
+              };
+            })
+            .catch(err => new Error(err));
           } else {
             return new Error('Wrong password');
           }

@@ -3,7 +3,7 @@ import DashboardPref from '../DashboardPref';
 import SelectionList from '../SelectionList';
 
 class Home extends Component {
-  state = {}; 
+  state = {};
 
   render() {
     return (

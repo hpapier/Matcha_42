@@ -76,7 +76,7 @@ class App extends Component {
           sexualOrientation,
           bio,
           popularityScore,
-          location,
+          userLocation,
           isComplete,
           creationDate,
           lastConnexion,
@@ -86,6 +86,7 @@ class App extends Component {
           ageEnd,
           scoreStart,
           scoreEnd,
+          location,
           tags
         } = res.data.getUserInfo;
 
@@ -104,7 +105,7 @@ class App extends Component {
           sexualOrientation,
           bio,
           popularityScore,
-          location,
+          userLocation,
           isComplete,
           creationDate,
           lastConnexion,
@@ -117,6 +118,9 @@ class App extends Component {
           location,
           tags: interestsTags
         };
+
+        console.log('-- USER DATA --');
+        console.log(data);
 
         this.props.setUserInfoAndStage({ stage: 'loggedIn', data });
       })

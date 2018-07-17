@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { logUserIn } from '../../../store/reducer';
+import { setUserInfoAndStage } from '../../../store/reducer';
 import { gql } from 'apollo-boost';
 import { graphql, compose, withApollo } from 'react-apollo';
 import './index.scss';
@@ -20,12 +20,18 @@ const GET_USER_INFO = gql`
       sexualOrientation
       bio
       popularityScore
-      location
+      userLocation
       isComplete
       creationDate
       lastConnexion
       isConnected
       token
+      ageStart
+      ageEnd
+      scoreStart
+      scoreEnd
+      location
+      tags
     }
   }
 `;
@@ -64,17 +70,24 @@ class SignIn extends Component {
           sexualOrientation,
           bio,
           popularityScore,
-          location,
+          userLocation,
           isComplete,
           creationDate,
           lastConnexion,
           isConnected,
-          token
+          token,
+          ageStart,
+          ageEnd,
+          scoreStart,
+          scoreEnd,
+          location,
+          tags
         } = res.data.checkUserInfo;
 
+        const tagsArray = JSON.parse(tags).data;
+
         if (isConfirmed) {
-          localStorage.setItem('auth_token', token);
-          this.props.logUserIn({
+          const data = {
             id,
             email,
             username,
@@ -87,12 +100,21 @@ class SignIn extends Component {
             sexualOrientation,
             bio,
             popularityScore,
-            location,
+            userLocation,
             isComplete,
             creationDate,
             lastConnexion,
-            isConnected
-          }, 'loggedIn');
+            isConnected,
+            token,
+            ageStart,
+            ageEnd,
+            scoreStart,
+            scoreEnd,
+            location,
+            tags: tagsArray
+          };
+          localStorage.setItem('auth_token', token);
+          this.props.setUserInfoAndStage({stage: 'loggedIn', data });
         } else {
           this.setState({ error: 'Account not confirmed' });
           this.props.client.resetStore();
@@ -136,7 +158,7 @@ class SignIn extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  logUserIn: (data, stage) => dispatch(logUserIn(data, stage))
+  setUserInfoAndStage: data => dispatch(setUserInfoAndStage(data))
 });
 
 export default withApollo(connect(null, mapDispatchToProps)(SignIn));
