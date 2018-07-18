@@ -28,7 +28,10 @@ const store = {
     isComplete: '',
     creationDate: '',
     lastConnexion: '',
-    isConnected: ''
+    isConnected: '',
+    pictureNb: 0,
+    picturesPath: [],
+    profilPicture: ''
   },
   preferences: {
     age: [18, 100],

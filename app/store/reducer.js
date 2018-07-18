@@ -44,7 +44,10 @@ export default (state = initialState, action) => {
           isComplete: action.payload.data.isComplete,
           creationDate: action.payload.data.creationDate,
           lastConnexion: action.payload.data.lastConnexion,
-          isConnected: action.payload.data.isConnected
+          isConnected: action.payload.data.isConnected,
+          pictureNb: action.payload.data.pictureNb,
+          picturesPath: action.payload.data.picturesPath,
+          profilPicture: action.payload.data.profilPicture
         },
         preferences: {
           age: [action.payload.data.ageStart, action.payload.data.ageEnd],

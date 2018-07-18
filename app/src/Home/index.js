@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DashboardPref from '../DashboardPref';
 import SelectionList from '../SelectionList';
+import { connect } from 'react-redux';
 
 class Home extends Component {
   state = {};
@@ -15,4 +16,8 @@ class Home extends Component {
   }
 }
 
-export default Home;
+const mapStateToProps = state => ({
+  userPref: state.userInfo
+});
+
+export default connect(mapStateToProps, null)(Home);

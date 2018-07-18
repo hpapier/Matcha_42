@@ -32,6 +32,7 @@ const GET_USER_INFO = gql`
       scoreEnd
       location
       tags
+      pictureNb
     }
   }
 `;
@@ -55,8 +56,6 @@ class SignIn extends Component {
         }
       })
       .then(res => {
-        console.log('- THEN -');
-        console.log(res);
         const { 
           id,
           email,
@@ -81,10 +80,13 @@ class SignIn extends Component {
           scoreStart,
           scoreEnd,
           location,
-          tags
+          tags,
+          pictureNb
         } = res.data.checkUserInfo;
 
-        const tagsArray = JSON.parse(tags).data;
+        let tagsArray = [];
+        if (tags)
+          tagsArray = JSON.parse(tags).data;
 
         if (isConfirmed) {
           const data = {
@@ -111,8 +113,11 @@ class SignIn extends Component {
             scoreStart,
             scoreEnd,
             location,
-            tags: tagsArray
+            tags: tagsArray,
+            pictureNb
           };
+          console.log('DATA CONNEXION');
+          console.log(data);
           localStorage.setItem('auth_token', token);
           this.props.setUserInfoAndStage({stage: 'loggedIn', data });
         } else {
@@ -121,7 +126,6 @@ class SignIn extends Component {
         }
       })
       .catch(err => {
-        console.log('- CATCH -');
         console.log(err);
         const t = JSON.stringify(err);
         this.setState({ error: JSON.parse(t).graphQLErrors[0].message });

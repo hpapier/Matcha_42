@@ -34,6 +34,9 @@ const GET_USER_INFO = gql`
       scoreEnd
       location
       tags
+      pictureNb
+      picturesPath
+      profilPicture
     }
   }
 `;
@@ -87,10 +90,15 @@ class App extends Component {
           scoreStart,
           scoreEnd,
           location,
-          tags
+          tags,
+          pictureNb,
+          picturesPath,
+          profilPicture
         } = res.data.getUserInfo;
-
-        const interestsTags = JSON.parse(tags).data;
+        
+        let interestsTags = [];
+        if (tags)
+          interestsTags = JSON.parse(tags).data;
 
         const data = { 
           id, 
@@ -116,7 +124,10 @@ class App extends Component {
           scoreStart,
           scoreEnd,
           location,
-          tags: interestsTags
+          tags: interestsTags,
+          pictureNb,
+          picturesPath,
+          profilPicture
         };
 
         console.log('-- USER DATA --');

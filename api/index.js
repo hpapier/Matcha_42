@@ -12,7 +12,7 @@ const randToken = require('rand-token');
 // Constante
 const app = express();
 const PORT = 4000;
-const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull } = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull, GraphQLList } = graphql;
 const JWTSecret = 'kjhjhhyuhf45456lkjkzFdjkbssDjkdbefsS';
 
 // Database
@@ -89,7 +89,8 @@ const usertkn = new GraphQLObjectType({
     scoreStart: { type: GraphQLInt },
     scoreEnd: { type: GraphQLInt },
     location: { type: GraphQLInt },
-    tags: { type: GraphQLString }
+    tags: { type: GraphQLString },
+    pictureNb: { type: GraphQLInt }
   }
 });
 
@@ -120,7 +121,10 @@ const userInfo = new GraphQLObjectType({
     scoreStart: { type: GraphQLInt },
     scoreEnd: { type: GraphQLInt },
     location: { type: GraphQLInt },
-    tags: { type: GraphQLString }
+    tags: { type: GraphQLString },
+    pictureNb: { type: GraphQLInt },
+    picturesPath: { type: new GraphQLList(GraphQLString)},
+    profilPicture: { type: GraphQLString }
   }
 });
 
@@ -142,11 +146,9 @@ const Query = new GraphQLObjectType({
       resolve: (parent, { token }, context) => {
         console.log('----------------- GET USER INFO -----------------');
         if (token === 'null') {
-          console.log(token);
           return new Error('Not connected');
         } else {
           const decoded = JWT.verify(token, JWTSecret);
-          console.log(decoded);
 
           const QUERY = `SELECT * FROM user_info WHERE id = $1`;
           return client.query({
@@ -155,8 +157,6 @@ const Query = new GraphQLObjectType({
             values: [decoded.uid]
           })
             .then(res => {
-              console.log('-- THEN (USER INFO) --');
-              console.log(res.rows[0]);
               const {
                 id,
                 email,
@@ -175,48 +175,64 @@ const Query = new GraphQLObjectType({
                 creation_date,
                 last_connexion,
                 isconnected,
-                confirmation_token
+                confirmation_token,
+                profil_picture
               } = res.rows[0];
 
+              console.log(id);
               if (password !== decoded.password)
                 return new Error('Bad user');
 
               return client.query("SELECT * FROM user_pref WHERE user_id = $1", [id])
               .then(res => {
                 const { age_start, age_end, score_start, score_end, location, tags } = res.rows[0];
-                return {
-                  id,
-                  email,
-                  username,
-                  lastname,
-                  firstname,
-                  password,
-                  birthDate: birth_date,
-                  isConfirmed: isconfirmed,
-                  genre,
-                  sexualOrientation: sexual_orientation,
-                  bio,
-                  popularityScore: popularity_score,
-                  userLocation,
-                  isComplete: iscomplete,
-                  creationDate: creation_date,
-                  lastConnexion: last_connexion,
-                  isConnected: isconnected,
-                  confirmationToken: confirmation_token,
-                  ageStart: age_start,
-                  ageEnd: age_end,
-                  scoreStart: score_start,
-                  scoreEnd: score_end,
-                  location,
-                  tags
-                };
+                
+                return client.query('SELECT * FROM images WHERE user_id = $1', [id])
+                .then(res => {
+                  console.log(res.rows);
+                  let pictureNb = 0;
+                  let picturesPath = [];
+
+                  if (res.rows.length > 0) {
+                    pictureNb = res.rows.length;
+                    picturesPath = res.rows.map(item => item.path);
+                  }
+
+                  return {
+                    id,
+                    email,
+                    username,
+                    lastname,
+                    firstname,
+                    password,
+                    birthDate: birth_date,
+                    isConfirmed: isconfirmed,
+                    genre,
+                    sexualOrientation: sexual_orientation,
+                    bio,
+                    popularityScore: popularity_score,
+                    userLocation,
+                    isComplete: iscomplete,
+                    creationDate: creation_date,
+                    lastConnexion: last_connexion,
+                    isConnected: isconnected,
+                    confirmationToken: confirmation_token,
+                    ageStart: age_start,
+                    ageEnd: age_end,
+                    scoreStart: score_start,
+                    scoreEnd: score_end,
+                    location,
+                    tags,
+                    pictureNb,
+                    picturesPath,
+                    profilPicture: profil_picture
+                  };
+                })
+                .catch(err => new Error(err));
               })
               .catch(err => new Error(err));
             })
-            .catch(err => {
-              console.log(err);
-              return new Error('User not found');
-            });
+            .catch(err => new Error('User not found'));
         }
       }
     },
@@ -269,33 +285,46 @@ const Query = new GraphQLObjectType({
             return client.query('SELECT * FROM user_pref WHERE user_id = $1', [id])
             .then(res => {
               const { age_start, age_end, score_start, score_end, location, tags } = res.rows[0];
-              return {
-                id,
-                email,
-                username,
-                lastname,
-                firstname,
-                password,
-                birthDate: birth_date,
-                isConfirmed: isconfirmed,
-                genre,
-                sexualOrientation: sexual_orientation,
-                bio,
-                popularityScore: popularity_score,
-                userLocation,
-                isComplete: iscomplete,
-                creationDate: creation_date,
-                lastConnexion: last_connexion,
-                isConnected: isconnected,
-                token,
-                confirmationToken: confirmation_token,
-                ageStart: age_start,
-                ageEnd: age_end,
-                scoreStart: score_start,
-                scoreEnd: score_end,
-                location,
-                tags
-              };
+
+              return client.query('SELECT * FROM images WHERE user_id = $1', [id])
+              .then(res => {
+                let pictureNb;
+
+                if (res.rows[0])
+                  pictureNb = res.rows.length;
+                else
+                  pictureNb = 0;
+ 
+                return {
+                  id,
+                  email,
+                  username,
+                  lastname,
+                  firstname,
+                  password,
+                  birthDate: birth_date,
+                  isConfirmed: isconfirmed,
+                  genre,
+                  sexualOrientation: sexual_orientation,
+                  bio,
+                  popularityScore: popularity_score,
+                  userLocation,
+                  isComplete: iscomplete,
+                  creationDate: creation_date,
+                  lastConnexion: last_connexion,
+                  isConnected: isconnected,
+                  token,
+                  confirmationToken: confirmation_token,
+                  ageStart: age_start,
+                  ageEnd: age_end,
+                  scoreStart: score_start,
+                  scoreEnd: score_end,
+                  location,
+                  tags,
+                  pictureNb
+                };
+              })
+              .catch(err => new Error(err));
             })
             .catch(err => new Error(err));
           } else {

@@ -42,6 +42,7 @@
     isconnected         SMALLINT          NOT NULL DEFAULT 0,
     confirmation_token  VARCHAR(255),
     reset_token         VARCHAR(255),
+    profil_picture      TEXT
   );
 */
 
@@ -189,4 +190,11 @@
    is_viewed    SMALLINT      NOT NULL DEFAULT 0,
    date         timestamp     NOT NULL
  );
+*/
+
+
+
+/*
+    INSERT INTO images (user_id, path)
+    VALUES ('00701b20-8a94-11e8-aaa7-3fa5cd884214', 'kljkl');
 */
