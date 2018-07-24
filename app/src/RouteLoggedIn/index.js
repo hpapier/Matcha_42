@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from '../Home';
+import Profil from '../Profil';
 import LoggedInNavbar from './LoggedInNavbar';
 
 class RouteLoggedIn extends React.Component {
@@ -13,7 +14,7 @@ class RouteLoggedIn extends React.Component {
           <div>
               <Switch>
                 <Route exact path="/" component={Home} />
-                <Route exact path="/preferences" component={() => (<div>Preferences Component</div>)} />
+                <Route exact path="/profil" component={Profil} />
                 <Route exact path="/msg" component={() => (<div>Message Component</div>)} />
                 <Route component={() => <div>Lol</div>} />
               </Switch>

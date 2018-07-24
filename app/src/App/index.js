@@ -130,9 +130,6 @@ class App extends Component {
           profilPicture
         };
 
-        console.log('-- USER DATA --');
-        console.log(data);
-
         this.props.setUserInfoAndStage({ stage: 'loggedIn', data });
       })
       .catch(err => {
