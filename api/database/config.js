@@ -198,3 +198,15 @@
     INSERT INTO images (user_id, path)
     VALUES ('00701b20-8a94-11e8-aaa7-3fa5cd884214', 'kljkl');
 */
+
+
+module.exports = {
+  HOST: 'localhost',
+  PORT: 4000,
+  DBHOST: 'localhost',
+  DBPORT: 5432,
+  DBNAME: 'matcha',
+  DBUSER: 'postgres',
+  DBPWD: '',
+  JWTSecret: 'kdQjKJjkhK7jhjK9YBMIOynkjdhKKgg5GGEkjk89jft6bGGU95E1gh'
+}

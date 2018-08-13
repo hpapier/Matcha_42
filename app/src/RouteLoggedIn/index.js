@@ -22,6 +22,7 @@ class RouteLoggedIn extends React.Component {
 
           <div>
             footer
+            <SubTest />
           </div>
         </div>
       </Router>
