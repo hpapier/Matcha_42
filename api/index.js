@@ -13,7 +13,7 @@ const { schema } = require('./schema.js');
 
 const app = express();
 app.use(cors());
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema, graphiql: true }));
+app.use('/graphql', bodyParser.json(), (req, res) => graphqlExpress({ schema, graphiql: true, context: req})(req, res));
 const ws = createServer(app);
 
 ws.listen(PORT, () => {

@@ -3,7 +3,7 @@ const CONFIG = {
   PORT: 4000,
   DBUSER: 'postgres',
   DBPWD: '',
-  DBNAME: 'subscription',
+  DBNAME: 'matcha',
   DBPORT: 5432,
   DBHOST: 'localhost'
 }

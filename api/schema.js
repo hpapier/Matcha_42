@@ -1,8 +1,21 @@
 const { makeExecutableSchema } = require('graphql-tools');
 const { client } = require('./database.js');
 const { PostgresPubSub } = require('graphql-postgres-subscriptions');
+const JWT = require('jsonwebtoken');
+const JWTSECRET = 'lkjkjoiuoidSFsdgkjDSFLDOR435Dfdg34554435DSFdGfdgdfkljgg45546ERGG650128923';
 
 const pubSub = new PostgresPubSub({ client });
+
+const verifyUserToken = async token => {
+  if (token.authorization === '')
+    return false;
+
+  const decoded = JWT.verify(token, JWTSECRET);
+  const res = await client.query('SELECT * FROM user_info WHERE id = $1', [decoded.id]);
+  if (res.rows[0])
+    return true;
+  return false;
+}
 
 const typeDefs = `
   type User {
@@ -17,9 +30,12 @@ const typeDefs = `
     author: String
   }
 
+  type Status {
+    status: Boolean
+  }
+
   type Query {
-    getUser: [User]
-    getPost: [Post]
+    userStatus: Status
   }
 
   type Mutation {
@@ -34,29 +50,9 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    getUser: async () => {
-      const res = await client.query('SELECT * FROM userInfo');
-
-      // =========
-      console.log('-> GetUser Query, response :');
-      console.log(res);
-      // =========
-
-      return [];
-    },
-
-    getPost: async () => {
-      const res = await client.query('SELECT * FROM post');
-
-      // =========
-      console.log('-> GetPost Query, response :');
-      console.log(res);
-      // =========
-    
-      if (res.rows[0])
-        return res.rows;
-      else
-        return [];
+    userStatus: async (parent, args, ctx) => {
+      const token = await verifyUserToken(ctx.headers);
+      return { status: token };
     }
   },
 
