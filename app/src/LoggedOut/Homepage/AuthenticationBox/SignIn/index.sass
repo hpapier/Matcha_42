@@ -1,0 +1,389 @@
+$font-ssp: 'Source sans pro', sans-serif
+
+=appearance($value)
+  -webkit-appearance: $value
+   -moz-appearance:    $value
+   appearance:         $value
+  
+#lgo-sign-in
+  width: calc(100% - 2px)
+  padding: 30px 0px
+  border: 1px solid #dce3e6
+  border-top: none
+  margin: 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  flex-wrap: wrap
+  border-radius: 0px 0px 2px 2px
+
+
+// Username input
+#lgo-sign-in-username
+  width: 368px
+  display: flex
+  border-radius: 3px 3px 0px 0px
+  border: 1px solid #DCE3E6
+  height: 45px
+
+#lgo-sign-in-username-icon
+  margin-left: 15px
+  margin-right: 10px
+
+#lgo-sign-in-username-input
+  width: 100%
+  background: rgba(0, 0, 0, 0)
+  border: none
+  box-shadow: none
+  padding: 0px
+  padding-left: 10px
+  font-family: $font-ssp
+  font-size: .75em
+  font-weight: 600
+  color: rgba(50, 62, 66, 1)
+  outline: none
+
+#lgo-sign-in-username-input::placeholder
+  color: rgba(50, 62, 66, .5)
+
+
+// Email input
+#lgo-sign-in-email
+  width: 368px
+  display: flex
+  border-radius: 0px 0px 3px 3px
+  border: 1px solid #DCE3E6
+  border-top: none
+  height: 45px
+
+#lgo-sign-in-email-icon
+  margin-left: 15px
+  margin-right: 10px
+
+#lgo-sign-in-email-input
+  width: 100%
+  background: rgba(0, 0, 0, 0)
+  border: none
+  box-shadow: none
+  padding: 0px
+  padding-left: 10px
+  font-family: $font-ssp
+  font-size: .75em
+  font-weight: 600
+  color: rgba(50, 62, 66, 1)
+  outline: none
+
+#lgo-sign-in-email-input::placeholder
+  color: rgba(50, 62, 66, .5)
+
+
+// FirstName - LastName Box
+#lgo-sign-in-box-1
+  display: flex
+  width: 370px
+  margin-top: 20px
+
+#lgo-sign-in-box-1-lastname
+  width: 50%
+  display: flex
+  border-radius: 3px 0px 0px 0px
+  border: 1px solid #DCE3E6
+  height: 45px
+
+#lgo-sign-in-box-1-lastname-icon
+  margin-left: 15px
+  margin-right: 10px
+
+#lgo-sign-in-box-1-lastname-input
+  width: 100%
+  background: rgba(0, 0, 0, 0)
+  border: none
+  box-shadow: none
+  padding: 0px
+  padding-left: 10px
+  font-family: $font-ssp
+  font-size: .75em
+  font-weight: 600
+  color: rgba(50, 62, 66, 1)
+  outline: none
+
+#lgo-sign-in-box-1-lastname-input::placeholder
+  color: rgba(50, 62, 66, .5)
+
+#lgo-sign-in-box-1-firstname
+  width: 50%
+  display: flex
+  border-radius: 0px 3px 0px 0px
+  border: 1px solid #DCE3E6
+  border-left: none
+  height: 45px
+
+#lgo-sign-in-box-1-firstname-icon
+  margin-left: 15px
+  margin-right: 10px
+
+#lgo-sign-in-box-1-firstname-input
+  width: 100%
+  background: rgba(0, 0, 0, 0)
+  border: none
+  box-shadow: none
+  padding: 0px
+  padding-left: 10px
+  font-family: $font-ssp
+  font-size: .75em
+  font-weight: 600
+  color: rgba(50, 62, 66, 1)
+  outline: none
+
+#lgo-sign-in-box-1-firstname-input::placeholder
+  color: rgba(50, 62, 66, .5)
+
+// BirthDate box
+#lgo-sign-in-box-2
+  display: flex
+  width: 370px
+
+#lgo-sign-in-box-2-day
+  width: calc(370px / 3)
+
+#lgo-sign-in-box-2-day-select
+  width: 100%
+  +appearance(none)
+  background-color: rgba(0, 0, 0, 0)
+  background-image: url('../../../../../assets/bottom-arrow.svg')
+  background-repeat: no-repeat
+  background-position: calc(100% - 30%) calc(100% - 45%)
+  background-size: 12px
+  height: 45px
+  border: 1px solid #dce3e6
+  border-top: none
+  border-radius: 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  outline: none
+  padding: 0px 0px 0px 40px
+  color: rgba(50, 62, 66, .5)
+  font-weight: 600
+  font-family: $font-ssp
+  font-size: .75em
+  cursor: pointer
+  transition: .2s
+
+#lgo-sign-in-box-2-day-select:hover
+  background-color: #fcfcfd
+
+#lgo-sign-in-box-2-month
+  width: calc(370px / 3)
+
+#lgo-sign-in-box-2-month-select
+  width: 100%
+  +appearance(none)
+  background-color: rgba(0, 0, 0, 0)
+  background-image: url('../../../../../assets/bottom-arrow.svg')
+  background-repeat: no-repeat
+  background-position: calc(100% - 20%) calc(100% - 45%)
+  background-size: 12px
+  height: 45px
+  border: 1px solid #dce3e6
+  border-top: none
+  border-radius: 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  outline: none
+  padding: 0px 0px 0px 30px
+  color: rgba(50, 62, 66, .5)
+  font-weight: 600
+  font-family: $font-ssp
+  font-size: .75em
+  border-left: none
+  cursor: pointer
+  transition: .2s
+
+#lgo-sign-in-box-2-month-select:hover
+  background-color: #fcfcfd
+
+#lgo-sign-in-box-2-year
+  width: calc(370px / 3)
+
+#lgo-sign-in-box-2-year-select
+  width: 100%
+  +appearance(none)
+  background-color: rgba(0, 0, 0, 0)
+  background-image: url('../../../../../assets/bottom-arrow.svg')
+  background-repeat: no-repeat
+  background-position: calc(100% - 30%) calc(100% - 45%)
+  background-size: 12px
+  height: 45px
+  border: 1px solid #dce3e6
+  border-top: none
+  border-radius: 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  outline: none
+  padding: 0px 0px 0px 40px
+  color: rgba(50, 62, 66, .5)
+  font-weight: 600
+  font-family: $font-ssp
+  font-size: .75em
+  border-left: none
+  cursor: pointer
+  transition: .2s
+
+#lgo-sign-in-box-2-year-select:hover
+  background-color: #fcfcfd
+
+
+// Genre & Interest box
+#lgo-sign-in-box-3
+  display: flex
+  width: 370px
+
+#lgo-sign-in-box-3-genre
+  width: 50%
+
+#lgo-sign-in-box-3-genre-select
+  width: 100%
+  +appearance(none)
+  background-color: rgba(0, 0, 0, 0)
+  background-image: url('../../../../../assets/bottom-arrow.svg')
+  background-repeat: no-repeat
+  background-position: calc(100% - 35%) calc(100% - 45%)
+  background-size: 12px
+  height: 45px
+  border: 1px solid #dce3e6
+  border-top: none
+  border-radius: 0px 0px 0px 3px
+  display: flex
+  justify-content: center
+  align-items: center
+  outline: none
+  padding: 0px 0px 0px 55px
+  color: rgba(50, 62, 66, .5)
+  font-weight: 600
+  font-family: $font-ssp
+  font-size: .75em
+  cursor: pointer
+  transition: .2s
+
+#lgo-sign-in-box-3-genre-select:hover
+  background-color: #fcfcfd
+
+#lgo-sign-in-box-3-interest
+  width: 50%
+
+#lgo-sign-in-box-3-interest-select
+  width: 100%
+  +appearance(none)
+  background-color: rgba(0, 0, 0, 0)
+  background-image: url('../../../../../assets/bottom-arrow.svg')
+  background-repeat: no-repeat
+  background-position: calc(100% - 20%) calc(100% - 45%)
+  background-size: 12px
+  height: 45px
+  border: 1px solid #dce3e6
+  border-top: none
+  border-left: none
+  border-radius: 0px 0px 3px 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  outline: none
+  padding: 0px 0px 0px 40px
+  color: rgba(50, 62, 66, .5)
+  font-weight: 600
+  font-family: $font-ssp
+  font-size: .75em
+  cursor: pointer
+  transition: .2s
+
+#lgo-sign-in-box-3-interest-select:hover
+  background-color: #fcfcfd
+
+// Password input
+#lgo-sign-in-password
+  width: 368px
+  background-color: rgba(0, 0, 0, 0)
+  border: 1px solid #dce3e6
+  border-radius: 3px 3px 0px 0px
+  display: flex
+  height: 45px
+  margin-top: 20px
+
+#lgo-sign-in-password-icon
+  margin-left: 15px
+  margin-right: 10px
+
+#lgo-sign-in-password-input
+  width: 100%
+  background: rgba(0, 0, 0, 0)
+  border: none
+  box-shadow: none
+  padding: 0px
+  padding-left: 10px
+  font-family: $font-ssp
+  font-size: .75em
+  font-weight: 600
+  color: rgba(50, 62, 66, 1)
+  outline: none
+
+#lgo-sign-in-password-input::placeholder
+  color: rgba(50, 62, 66, .5)
+
+
+// Verification input
+#lgo-sign-in-verification
+  width: 368px
+  background-color: rgba(0, 0, 0, 0)
+  border: 1px solid #dce3e6
+  border-top: none
+  border-radius: 0px 0px 3px 3px
+  display: flex
+  height: 45px
+
+#lgo-sign-in-verification-icon
+  margin-left: 15px
+  margin-right: 10px
+
+#lgo-sign-in-verification-input
+  width: 100%
+  background: rgba(0, 0, 0, 0)
+  border: none
+  box-shadow: none
+  padding: 0px
+  padding-left: 10px
+  font-family: $font-ssp
+  font-size: .75em
+  font-weight: 600
+  color: rgba(50, 62, 66, 1)
+  outline: none
+
+#lgo-sign-in-verification-input::placeholder
+  color: rgba(50, 62, 66, .5)
+
+
+// Submit button
+#lgo-sign-in-submit
+  width: 370px
+  height: 45px
+  margin-top: 20px
+  border: none
+  background: #E6C2AA
+  border-bottom: 1px solid #BC9E8A
+  padding: 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  color: #fff
+  text-transform: uppercase
+  font-family: $font-ssp
+  font-size: .875em
+  font-weight: 600
+  border-radius: 3px
+  transition: .2s
+  cursor: pointer
+
+#lgo-sign-in-submit:hover
+  opacity: 0.9
