@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Query } from 'react-apollo';
 
 import { USER_STATUS_QUERY } from '../../query';
@@ -10,6 +11,9 @@ const App = props => {
     <Query query={USER_STATUS_QUERY}>
       {
         response => {
+          console.log('---> ');
+          console.log(props.isLoggedIn);
+          console.log(response);
           if (response.loading)
             return <div>Loading...</div>;
 
@@ -31,4 +35,8 @@ const App = props => {
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  isLoggedIn: state.isLoggedIn
+})
+
+export default connect(mapStateToProps, null)(App);

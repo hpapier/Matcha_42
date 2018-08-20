@@ -5,7 +5,7 @@ import './index.sass';
 
 class AuthenticationBox extends Component {
   state = {
-    status: 'sign-in'
+    status: 'sign-up'
   }
 
   getActiveClassName = el => {
@@ -20,22 +20,22 @@ class AuthenticationBox extends Component {
       <div id='lgo-authentication-box'>
         <div id='lgo-authentication-box-button'>
           <div
-            onClick={() => (this.state.status !== 'sign-in') ? this.setState({ status: 'sign-in' }) : null}
-            className={`lgo-authentication-box-button left ${this.getActiveClassName('sign-in')}`}
+            onClick={() => (this.state.status !== 'sign-up') ? this.setState({ status: 'sign-up' }) : null}
+            className={`lgo-authentication-box-button left ${this.getActiveClassName('sign-up')}`}
           >
             inscription
           </div>
           <div
-            onClick={() => (this.state.status !== 'sign-up') ? this.setState({ status: 'sign-up' }) : null}
-            className={`lgo-authentication-box-button right ${this.getActiveClassName('sign-up')}`}
+            onClick={() => (this.state.status !== 'sign-in') ? this.setState({ status: 'sign-in' }) : null}
+            className={`lgo-authentication-box-button right ${this.getActiveClassName('sign-in')}`}
           >
             connexion
           </div>
         </div>
         {
-          this.state.status === 'sign-in' ?
-          <SignIn /> :
-          <SignUp />
+          this.state.status === 'sign-up' ?
+          <SignUp /> :
+          <SignIn />
         }
       </div>
     );
