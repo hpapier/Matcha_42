@@ -387,3 +387,32 @@ $font-ssp: 'Source sans pro', sans-serif
 
 #lgo-sign-in-submit:hover
   opacity: 0.8
+
+
+// Loading Animation and Style
+@keyframes lgo-sign-in-loading
+  0% 
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+#lgo-sign-in-loading-box
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 450px
+  height: 489px
+  background: #fff
+
+#lgo-sign-in-loading-box-animation
+  width: 70px
+  height: 70px
+  border: 5px solid #fcfcfd
+  border-top: 5px solid #E6C2AA
+  border-radius: 50%
+  background: #fff
+  animation-name: lgo-sign-in-loading
+  animation-duration: 2s
+  animation-iteration-count: infinite
+  animation-fill-mode: linear
+  

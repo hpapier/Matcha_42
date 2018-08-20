@@ -11,9 +11,9 @@ const App = props => {
     <Query query={USER_STATUS_QUERY}>
       {
         response => {
-          console.log('---> ');
-          console.log(props.isLoggedIn);
-          console.log(response);
+          // console.log('---> ');
+          // console.log(props.isLoggedIn);
+          // console.log(response);
           if (response.loading)
             return <div>Loading...</div>;
 

@@ -23,12 +23,12 @@
 
 /*
   CREATE TABLE user_info (
-    id                  UUID              NOT NULL PRIMARY KEY,
+    id                  SERIAL            UNIQUE PRIMARY KEY,
     email               VARCHAR(100)      NOT NULL,
     username            VARCHAR(25)       NOT NULL,
     lastname            VARCHAR(255)      NOT NULL,
     firstname           VARCHAR(255)      NOT NULL,
-    password            VARCHAR(50)       NOT NULL,
+    password            VARCHAR(255)       NOT NULL,
     birth_date          DATE              NOT NULL,
     isconfirmed         SMALLINT          NOT NULL DEFAULT 0,
     genre               enum_genre        NOT NULL DEFAULT 'man',
@@ -38,7 +38,7 @@
     location            VARCHAR(255),
     iscomplete          SMALLINT          NOT NULL DEFAULT 0,
     creation_date       DATE              NOT NULL,
-    last_connexion      TIMESTAMP,
+    last_connexion      DATE,
     isconnected         SMALLINT          NOT NULL DEFAULT 0,
     confirmation_token  VARCHAR(255),
     reset_token         VARCHAR(255),

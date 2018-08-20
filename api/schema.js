@@ -1,8 +1,10 @@
 const { makeExecutableSchema } = require('graphql-tools');
 const { client } = require('./database.js');
 const { PostgresPubSub } = require('graphql-postgres-subscriptions');
+const randtoken = require('rand-token');
 const JWT = require('jsonwebtoken');
 const JWTSECRET = 'lkjkjoiuoidSFsdgkjDSFLDOR435Dfdg34554435DSFdGfdgdfkljgg45546ERGG650128923';
+const bcrypt = require('bcrypt');
 
 const pubSub = new PostgresPubSub({ client });
 
@@ -28,9 +30,20 @@ const typeDefs = `
     jwtToken: String
   }
 
+  type SignUpStatus {
+    message: String
+  }
+
+
+
+
   type Query {
     userStatus: Status
     userAuth(username: String!, password: String!): AuthStatus
+  }
+
+  type Mutation {
+    signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): SignUpStatus
   }
 
 `;
@@ -62,20 +75,40 @@ const resolvers = {
       
       return { status: true, message: 'Success', jwtToken: 'lkdjfkdshjkfjghdfjfgudhgfuydfgvuygfyudrgyug' };
     }
-  }
+  },
 
-  // Mutation: {
-  //   // addUser: async (parent, { name, password }, ctx) => {
-  //   //   const res = await client.query('INSERT INTO userInfo (name, password) VALUES ($1, $2) RETURNING *', [name, password]);
-  //   //   return { id: res.rows[0].id, name: res.rows[0].name, password: res.rows[0].password };
-  //   // }
+  Mutation: {
+    signUpMutation: async (parent, { username, email, lastname, firstname, birthDate, genre, interest, password }, ctx) => {
+      try {
+        const usernameCheck = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
+        if (usernameCheck.rows[0])
+          return { message: 'Username exist' };
+  
+        const emailCheck = await client.query('SELECT * FROM user_info WHERE email = $1', [email]);
+        if (emailCheck.rows[0])
+          return { message: 'Email exist' };
+  
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPwd = bcrypt.hashSync(password, salt);
 
-  //   // addPost: async (parent, { content, author }, ctx) => {
-  //   //   const res = await client.query('INSERT INTO post (content, author) VALUES ($1, $2) RETURNING *', [content, author]);
-  //   //   pubSub.publish('postAdded', { postAdded: { id: res.rows[0].id, content: res.rows[0].content, author: res.rows[0].author }});
-  //   //   return { id: res.rows[0].id, content: res.rows[0].content, author: res.rows[0].author };
-  //   // }
-  // },
+        const emailConfirmationToken = randtoken.generate(64);
+        const insertion = 'INSERT INTO user_info (email, username, lastname, firstname, password, birth_date, genre, sexual_orientation, creation_date, confirmation_token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
+        const creationDate = new Date();
+        const result = await client.query(insertion, [email, username, lastname, firstname, hashedPwd, birthDate, genre, interest, creationDate, emailConfirmationToken]);
+
+        return { message: 'Success' };
+      } catch (e) {
+        console.log(e);
+        return { message: 'Error server' };
+      }
+    }
+
+    // addPost: async (parent, { content, author }, ctx) => {
+    //   const res = await client.query('INSERT INTO post (content, author) VALUES ($1, $2) RETURNING *', [content, author]);
+    //   pubSub.publish('postAdded', { postAdded: { id: res.rows[0].id, content: res.rows[0].content, author: res.rows[0].author }});
+    //   return { id: res.rows[0].id, content: res.rows[0].content, author: res.rows[0].author };
+    // }
+  },
 
   // Subscription: {
   //   postAdded: {

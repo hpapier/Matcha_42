@@ -16,3 +16,11 @@ export const USER_AUTH_QUERY = gql`
     }
   }
 `;
+
+export const SIGN_UP_MUTATION = gql`
+  mutation signUpMutation($username: String!, $email: String!, $lastname: String!, $firstname: String!, $birthDate: String!, $genre: String!, $interest: String!, $password: String!) {
+    signUpMutation(username: $username, email: $email, lastname: $lastname, firstname: $firstname, birthDate: $birthDate, genre: $genre, interest: $interest, password: $password) {
+      message
+    }
+  }
+`;
