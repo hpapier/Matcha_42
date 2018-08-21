@@ -32,3 +32,11 @@ export const EMAIL_TOKEN_VERIFICATION_QUERY = gql`
     }
   }
 `;
+
+export const SEND_EMAIL_RESET_MUTATION = gql`
+  mutation sendEmailReset($username: String!, $email: String!) {
+    sendEmailReset(username: $username, email: $email) {
+      message
+    }
+  }
+`;

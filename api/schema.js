@@ -55,6 +55,7 @@ const typeDefs = `
   type Mutation {
     signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): MessageStatus
     userAuth(username: String!, password: String!): AuthStatus
+    sendEmailReset(username: String!, email: String!): MessageStatus
   }
 
 `;
@@ -149,6 +150,31 @@ const resolvers = {
       } catch (e) {
         console.log(e);
         return { message: 'Server Error', token: '' };
+      }
+    },
+
+    sendEmailReset: async (parent, { username, email }, ctx) => {
+      try {
+        const res = await client.query('SELECT * FROM user_info WHERE username = $1 AND email = $2', [username, email]);
+        if (res.rowCount === 0)
+          return { message: 'User not exist' };
+
+        if (!res.rows[0].isconfirmed)
+          return { message: 'Account not confirmed' };
+        
+        const resetToken = randtoken.generate(64);
+        const mailOptions = {
+          from: '"Hugo de Matcha.com" <hpapier.matcha@gmail.com>',
+          to: email,
+          subject: `${res.rows[0].firstname}, voici votre lien de réinitialisation ! :)`,
+          html: `<a href="http://localhost:8080/reset/${username}/${resetToken}">Réinitialiser votre mot de passe en cliquant sur ce lien</a>`
+        };
+        const mailResult = await transporter.sendMail(mailOptions);
+        const user = await client.query('UPDATE user_info SET reset_token = $1 WHERE username = $2', [resetToken, username]);
+        return { message: 'Success' };
+      } catch (e) {
+        console.log(e);
+        return { message: 'Server Error' };
       }
     }
 
