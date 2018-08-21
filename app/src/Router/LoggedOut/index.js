@@ -8,7 +8,7 @@ const LoggedOut = props => (
   <Router>
     <Switch>
       <Route exact path='/' component={Homepage} />
-      <Route path='/email/:token' component={ConfirmEmail} />
+      <Route path='/email/:username/:token' component={ConfirmEmail} />
       <Route path='/reset/:token' component={SetPassword} />
       <Route component={() => <div>NOT FOUND</div>} />
     </Switch>

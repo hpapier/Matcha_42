@@ -7,25 +7,29 @@ import { Link } from 'react-router-dom';
 // Local import.
 import { EMAIL_TOKEN_VERIFICATION_QUERY } from '../../../query';
 import backgroundImage1 from '../../../assets/bg-1.jpg';
-import heartIcon from '../../../assets/heart.svg';
 import './index.sass';
 
 
 // Confirm Email Component
 const ConfirmEmail = props => {
   const emailToken = props.match.params.token;
+  const username = props.match.params.username;
 
   const getCorrectMsg = msg => {
     if (msg === 'Success')
       return 'Votre compte a bien été confirmé.'
     else if (msg === 'Invalid token')
       return 'Code invalide';
+    else if (msg === 'User not exist')
+      return 'Ce compte n\'existe pas.';
+    else if (msg === 'Already confirmed')
+      return 'Compte déjà confirmé.';
     else
       return 'Une erreur de serveur est survenue.';
   }
 
   return (
-    <Query query={EMAIL_TOKEN_VERIFICATION_QUERY} variables={{ emailToken }}>
+    <Query query={EMAIL_TOKEN_VERIFICATION_QUERY} variables={{ username, emailToken }}>
     {
       ({ loading, error, data }) => {
         return (
@@ -35,7 +39,7 @@ const ConfirmEmail = props => {
               <div id='lgo-homepage-view-response-email-page'>
                 {
                   loading ? 
-                  <div id='lgo-homepage-view-response-loading-email-page'>loading</div> :
+                  <div id='lgo-homepage-view-response-loading-email-page'></div> :
                     error ?
                     <div className='lgo-homepage-view-response-error-email-page'>{typeof error === 'object' ? 'Une erreur de serveur est survenue.' : error}</div> :
                       data ?

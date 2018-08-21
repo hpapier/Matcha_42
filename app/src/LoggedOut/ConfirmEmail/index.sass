@@ -43,11 +43,24 @@ $family : 'Source sans pro', sans-serif
 
 
 // LOADING
+@keyframes lgo-sign-in-loading-email
+  0% 
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
 #lgo-homepage-view-response-loading-email-page
-  animation-name: lgo-sign-in-loading
+  width: 25px
+  height: 25px
+  border: 5px solid #fcfcfd
+  border-top: 5px solid #E6C2AA
+  border-radius: 50%
+  background: #fff
+  animation-name: lgo-sign-in-loading-email
   animation-duration: 2s
   animation-iteration-count: infinite
   animation-fill-mode: linear
+  margin-top: 80px
 
 // ERROR && SUCCESS
 .lgo-homepage-view-response-error-email-page

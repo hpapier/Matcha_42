@@ -39,20 +39,18 @@ const typeDefs = `
     jwtToken: String
   }
 
-  type SignUpStatus {
+  type MessageStatus {
     message: String
   }
-
-
-
 
   type Query {
     userStatus: Status
     userAuth(username: String!, password: String!): AuthStatus
+    emailTokenVerification(username: String!, emailToken: String!): MessageStatus
   }
 
   type Mutation {
-    signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): SignUpStatus
+    signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): MessageStatus
   }
 
 `;
@@ -83,6 +81,25 @@ const resolvers = {
         return { status: false, message: 'Wrong password', jwtToken: '' };
       
       return { status: true, message: 'Success', jwtToken: 'lkdjfkdshjkfjghdfjfgudhgfuydfgvuygfyudrgyug' };
+    },
+
+    emailTokenVerification: async (parent, { username, emailToken }, ctx) => {
+      try {
+        const user = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
+        if (user.rowCount === 0)
+        return { message: 'User not exist' };
+        
+        if (user.rows[0].confirmation_token !== emailToken)
+        return { message: 'Invalid token' };
+        
+        if (user.rows[0].isconfirmed)
+        return { message: 'Already confirmed' };
+        
+        const res = await client.query('UPDATE user_info SET isconfirmed = 1 WHERE username = $1', [username]);
+        return { message: 'Success' };
+      } catch (e) {
+        return { message: 'Error server' };
+      }
     }
   },
 
@@ -102,7 +119,7 @@ const resolvers = {
           from: '"Hugo de Matcha.com" <hpapier.matcha@gmail.com>',
           to: email,
           subject: `Bienvenu ${firstname}, veuillez confirmer votre email ! :)`,
-          html: `<a href="http://localhost:8080/email/${emailConfirmationToken}">Confirmer votre email en cliquant sur ce lien</a>`
+          html: `<a href="http://localhost:8080/email/${username}/${emailConfirmationToken}">Confirmer votre email en cliquant sur ce lien</a>`
         }
           
         const mailSendingResult = await transporter.sendMail(mailOptions);

@@ -26,8 +26,8 @@ export const SIGN_UP_MUTATION = gql`
 `;
 
 export const EMAIL_TOKEN_VERIFICATION_QUERY = gql`
-  query emailTokenVerification($emailToken: String!) {
-    emailTokenVerification(emailToken: $emailToken) {
+  query emailTokenVerification($username: String!, $emailToken: String!) {
+    emailTokenVerification(username: $username, emailToken: $emailToken) {
       message
     }
   }
