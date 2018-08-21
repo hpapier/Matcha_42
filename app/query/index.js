@@ -24,3 +24,11 @@ export const SIGN_UP_MUTATION = gql`
     }
   }
 `;
+
+export const EMAIL_TOKEN_VERIFICATION_QUERY = gql`
+  query emailTokenVerification($emailToken: String!) {
+    emailTokenVerification(emailToken: $emailToken) {
+      message
+    }
+  }
+`;

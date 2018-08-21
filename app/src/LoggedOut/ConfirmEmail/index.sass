@@ -1,0 +1,95 @@
+$family : 'Source sans pro', sans-serif
+
+#lgo-homepage-email-page
+  width: 100%
+  height: 100%
+
+#lgo-homepage-background-email-page
+  width: 100%
+  height: 100%
+  position: absolute
+  z-index: -1
+  object-fit: cover
+
+// Response view
+#lgo-homepage-view-email-page
+  width: 370px
+  padding: 20px 0px
+  height: 200px
+  display: flex
+  flex-direction: column
+  align-items: center
+  background: #fff
+  border-radius: 2px
+  box-shadow: 1px 1px 10px rgba(50, 62, 66, .2)
+  margin: auto
+  position: absolute
+  z-index: 1
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+
+#lgo-homepage-view-response-box-link-email-page
+  color: rgba(50, 62, 66, .5)
+  font-size: .75em
+  font-family: $family
+  font-weight: 400
+  text-decoration: none
+  transition: .2s
+
+#lgo-homepage-view-response-box-link-email-page:hover
+  color: rgba(50, 62, 66, 1)
+
+
+// LOADING
+#lgo-homepage-view-response-loading-email-page
+  animation-name: lgo-sign-in-loading
+  animation-duration: 2s
+  animation-iteration-count: infinite
+  animation-fill-mode: linear
+
+// ERROR && SUCCESS
+.lgo-homepage-view-response-error-email-page
+  margin-top: 80px
+  width: 100%
+  display: flex
+  justify-content: center
+  color: red
+  font-family: $family
+  font-size: 1.25em
+  font-weight: 300
+
+.lgo-homepage-view-response-success-email-page
+  color: rgba(1, 195, 163, 1)
+  margin-top: 80px
+  width: 100%
+  display: flex
+  justify-content: center
+  font-family: $family
+  font-size: 1.25em
+  font-weight: 300
+
+// Footer
+#lgo-homepage-box-email-page
+  background: rgba(255, 255, 255, 0)
+  width: 100%
+  height: 285px
+  position: absolute
+  bottom: 0
+  // box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5)
+  display: flex
+  justify-content: flex-start
+  align-items: flex-start
+  flex-direction: column
+
+#lgo-homage-box-copyright-email-page
+  position: absolute
+  bottom: 10px
+  right: 10px
+  font-size: .75em
+  font-family: $family
+  font-weight: 400
+  color: #fff
+  text-decoration: underline
+
