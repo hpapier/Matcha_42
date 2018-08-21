@@ -36,7 +36,6 @@ const link = split(
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('auth_token');
-  console.log(token);
   return {
     headers: {
       ...headers,

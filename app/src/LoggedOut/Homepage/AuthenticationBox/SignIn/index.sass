@@ -114,3 +114,31 @@ $font-ssp : 'Source sans pro', sans-serif
   font-family: $font-ssp
   font-weight: 300
   margin-top: 5px
+
+@keyframes lgo-sign-up-loading-animation
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+#lgo-sign-up-loading
+  margin-top: 20px
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 370px
+  height: 45px
+  background: #fff
+
+
+#lgo-sign-up-loading-animation
+  width: 25px
+  height: 25px
+  border: 5px solid #fcfcfd
+  border-top: 5px solid #E6C2AA
+  border-radius: 50%
+  background: #fff
+  animation-name: lgo-sign-in-loading
+  animation-duration: 2s
+  animation-iteration-count: infinite
+  animation-fill-mode: linear

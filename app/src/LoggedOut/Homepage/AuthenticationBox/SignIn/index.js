@@ -40,7 +40,6 @@ class SignUp extends Component {
       }
     })
     .then(res => {
-      console.log(res);
       if (res.data) {
         if (res.data.userAuth.message === 'Success') {
           localStorage.setItem('auth_token', res.data.userAuth.token);
@@ -50,13 +49,24 @@ class SignUp extends Component {
     });
   }
 
+  getCorrectMsg = msg => {
+    if (msg === 'Success')
+      return '';
+    if (msg === 'User not exist')
+      return 'Ce compte n\'existe pas';
+    if (msg === 'Wrong password')
+      return 'Mot de passe incorrect';
+    if (msg === 'Account not confirmed')
+      return 'Ce compte n\’est pas confirmé';
+    return 'Oups! Une erreur est survenue..';
+  }
+
   render() {
     const { activeResetPwd, usernameInput, passwordInput, errorMsg } = this.state;
     return (
       <Mutation mutation={USER_AUTH_MUTATION}>
       {
         (userAuth, { loading, data, error }) => {
-          console.log(error);
           return (
             <div id='lgo-sign-up'>
               <form onSubmit={e => this.handleSubmit(e, userAuth)}>
@@ -82,13 +92,13 @@ class SignUp extends Component {
                   />
                 </div>
         
-                { loading ? <div>LOADING</div> : <button type='submit' id='lgo-sign-up-submit'>connexion</button> }
+                { loading ? <div id='lgo-sign-up-loading'><div id='lgo-sign-up-loading-animation'></div></div> : <button type='submit' id='lgo-sign-up-submit'>connexion</button> }
               </form>
               <div onClick={() => this.setState({ activeResetPwd: !this.state.activeResetPwd })} id='lgo-sign-up-forgot'>Mot de passe oublié ?</div>
               { errorMsg ?
                 <div className='lgo-sign-up-error'>{errorMsg}</div> :
-                  error ? <div className='lgo-sign-up-error'>{typeof error === 'object' ? 'Server error' : error}</div>:
-                    (data) ? (data.userAuth) ? <div className={data.userAuth.message === 'Success' ? 'lgo-sign-up-success' : 'lgo-sign-up-error'}>{data.userAuth.message}</div> : null : null
+                  error ? <div className='lgo-sign-up-error'>{typeof error === 'object' ? 'Oups! Une erreur est survenue..' : error}</div>:
+                    (data) ? (data.userAuth) ? <div className={data.userAuth.message === 'Success' ? 'lgo-sign-up-success' : 'lgo-sign-up-error'}>{this.getCorrectMsg(data.userAuth.message)}</div> : null : null
               }
               {
                 activeResetPwd ?

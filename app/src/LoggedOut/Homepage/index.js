@@ -5,8 +5,6 @@ import AuthenticationBox from './AuthenticationBox';
 import './index.scss';
 
 const Homepage = props => {
-  console.log('HOMEPAGE');
-  console.log(props);
   return (
     <div id='lgo-homepage'>
       <img id='lgo-homepage-background' src={backgroundImage1} alt='background' />

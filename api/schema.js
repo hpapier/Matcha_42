@@ -18,14 +18,19 @@ const transporter = nodemailer.createTransport({
 const pubSub = new PostgresPubSub({ client });
 
 const verifyUserToken = async token => {
-  if (token.authorization === '')
+  try {
+    if (token.authorization === '')
+      return false;
+  
+    const tokenJwt = token.authorization.split(' ')[1];
+    const decoded = JWT.verify(tokenJwt, JWTSECRET);
+    const res = await client.query('SELECT * FROM user_info WHERE id = $1 AND username = $2', [decoded.id, decoded.username]);
+    if (res.rows[0])
+      return true;
     return false;
-
-  const decoded = JWT.verify(token, JWTSECRET);
-  const res = await client.query('SELECT * FROM user_info WHERE id = $1', [decoded.id]);
-  if (res.rows[0])
-    return true;
-  return false;
+  } catch (e) {
+    return false;
+  }
 }
 
 const typeDefs = `
@@ -65,7 +70,10 @@ const resolvers = {
   Query: {
     userStatus: async (parent, args, ctx) => {
       const token = await verifyUserToken(ctx.headers);
-      return { status: token };
+      if (token)
+        return { status: true };
+
+      return { status: false };
     },
 
     emailTokenVerification: async (parent, { username, emailToken }, ctx) => {
@@ -136,7 +144,6 @@ const resolvers = {
         if (!res.rows[0].isconfirmed)
           return { message: 'Account not confirmed', token: '' };
 
-        console.log({ id: res.rows[0].id, username: res.rows[0].username });
         const jwtToken = JWT.sign({ id: res.rows[0].id, username: res.rows[0].username }, JWTSECRET);
         return { message: 'Success', token: jwtToken };
       } catch (e) {
