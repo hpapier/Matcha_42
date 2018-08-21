@@ -50,12 +50,14 @@ const typeDefs = `
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
+    resetTokenVerification(username: String!, resetToken: String!): MessageStatus
   }
 
   type Mutation {
     signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): MessageStatus
     userAuth(username: String!, password: String!): AuthStatus
     sendEmailReset(username: String!, email: String!): MessageStatus
+    resetPassword(username: String!, resetToken: String!, password: String!): MessageStatus
   }
 
 `;
@@ -90,6 +92,21 @@ const resolvers = {
         return { message: 'Already confirmed' };
         
         const res = await client.query('UPDATE user_info SET isconfirmed = 1 WHERE username = $1', [username]);
+        return { message: 'Success' };
+      } catch (e) {
+        return { message: 'Error server' };
+      }
+    },
+
+    resetTokenVerification: async (parent, { username, resetToken }, ctx) => {
+      try {
+        const user = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
+        if (user.rowCount === 0)
+          return { message: 'User not exist' };
+        
+        if (user.rows[0].reset_token !== resetToken)
+          return { message: 'Invalid token' };
+
         return { message: 'Success' };
       } catch (e) {
         return { message: 'Error server' };
@@ -175,6 +192,32 @@ const resolvers = {
       } catch (e) {
         console.log(e);
         return { message: 'Server Error' };
+      }
+    },
+    
+    resetPassword: async (parent, { username, resetToken, password }, ctx) => {
+      try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // })
+
+        // const ll = await lol();
+        console.log(password);
+        const res = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
+        if (res.rowCount === 0)
+          return { message: 'User not exist' };
+
+        if (res.rows[0].reset_token !== resetToken)
+          return { message: 'Invalid token' };
+
+        const salt = bcrypt.genSaltSync(10);
+        const pwd = bcrypt.hashSync(password, salt);
+        const user = await client.query('UPDATE user_info SET (reset_token, password) = ($1, $2) WHERE username = $3', [null, pwd, username]);
+        console.log(user);
+        return { message: 'Success' };
+      } catch (e) {
+        console.log(e);
+        return { message: 'Server error' };
       }
     }
 

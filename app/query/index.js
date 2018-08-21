@@ -40,3 +40,19 @@ export const SEND_EMAIL_RESET_MUTATION = gql`
     }
   }
 `;
+
+export const RESET_TOKEN_VERIFICATION_QUERY = gql`
+  query resetTokenVerification($username: String!, $resetToken: String!) {
+    resetTokenVerification(username: $username, resetToken: $resetToken) {
+      message
+    }
+  }
+`;
+
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation resetPassword($username: String!, $resetToken: String!, $password: String!) {
+    resetPassword(username: $username, resetToken: $resetToken, password: $password) {
+      message
+    }
+  }
+`;

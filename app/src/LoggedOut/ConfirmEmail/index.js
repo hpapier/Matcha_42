@@ -25,7 +25,7 @@ const ConfirmEmail = props => {
     else if (msg === 'Already confirmed')
       return 'Compte déjà confirmé.';
     else
-      return 'Une erreur de serveur est survenue.';
+      return 'Oups! Une erreur est survenue..';
   }
 
   return (
@@ -41,7 +41,7 @@ const ConfirmEmail = props => {
                   loading ? 
                   <div id='lgo-homepage-view-response-loading-email-page'></div> :
                     error ?
-                    <div className='lgo-homepage-view-response-error-email-page'>{typeof error === 'object' ? 'Une erreur de serveur est survenue.' : error}</div> :
+                    <div className='lgo-homepage-view-response-error-email-page'>{typeof error === 'object' ? 'Oups! Une erreur est survenue..' : error}</div> :
                       data ?
                       <div id='lgo-homepage-view-response-box-email-page'>
                         <div className={ data.emailTokenVerification.message !== 'Success' ? 'lgo-homepage-view-response-error-email-page' : 'lgo-homepage-view-response-success-email-page'}>{getCorrectMsg(data.emailTokenVerification.message)}</div>

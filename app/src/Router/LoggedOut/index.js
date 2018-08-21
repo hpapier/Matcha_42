@@ -9,7 +9,7 @@ const LoggedOut = props => (
     <Switch>
       <Route exact path='/' component={() => <Homepage firstRefetch={props.firstRefetch} />} />
       <Route path='/email/:username/:token' component={ConfirmEmail} />
-      <Route path='/reset/:token' component={SetPassword} />
+      <Route path='/reset/:username/:token' component={SetPassword} />
       <Route component={() => <div>NOT FOUND</div>} />
     </Switch>
   </Router>
