@@ -35,7 +35,7 @@ class AuthenticationBox extends Component {
         {
           this.state.status === 'sign-up' ?
           <SignUp /> :
-          <SignIn />
+          <SignIn firstRefetch={this.props.firstRefetch} />
         }
       </div>
     );

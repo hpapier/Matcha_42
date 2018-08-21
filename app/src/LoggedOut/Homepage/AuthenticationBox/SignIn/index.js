@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ApolloConsumer } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import { logUserIn } from '../../../../../store/action/synchronous';
 import PasswordForgot from '../PasswordForgot';
 import personIcon from '../../../../../assets/person.svg';
 import lockIcon from '../../../../../assets/lock.svg';
 import './index.sass';
 
-import { USER_AUTH_QUERY, USER_STATUS_QUERY } from '../../../../../query';
+import { USER_AUTH_MUTATION } from '../../../../../query';
 
 class SignUp extends Component {
   state = {
@@ -17,35 +17,49 @@ class SignUp extends Component {
     errorMsg: false
   };
 
-  handleSubmit = async (e, client) => {
+  handleSubmit = async (e, mutation) => {
     e.preventDefault();
+    this.setState({ errorMsg: false });
+    const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
     const { usernameInput, passwordInput } = this.state;
     if (!usernameInput || !passwordInput) {
       this.setState({ errorMsg: 'Tout les champs doivent être remplis' });
       return;
     }
 
-    const { logUserIn } = this.props;
-    const result = await client.query({
-      query: USER_AUTH_QUERY,
+    if (usernameInput.match(regexp) || passwordInput.match(regexp)) {
+      this.setState({ errorMsg: 'Les caractères spéciaux sont interdits.'});
+      return;
+    }
+
+    const { firstRefetch } = this.props;
+    mutation({
       variables: {
-        username: usernameInput,
-        password: passwordInput
+      username: usernameInput,
+      password: passwordInput
+      }
+    })
+    .then(res => {
+      console.log(res);
+      if (res.data) {
+        if (res.data.userAuth.message === 'Success') {
+          localStorage.setItem('auth_token', res.data.userAuth.token);
+          firstRefetch();
+        }
       }
     });
-    const { data: userAuth} = result;
-    logUserIn();
   }
 
   render() {
     const { activeResetPwd, usernameInput, passwordInput, errorMsg } = this.state;
     return (
-      <ApolloConsumer>
+      <Mutation mutation={USER_AUTH_MUTATION}>
       {
-        client => {
+        (userAuth, { loading, data, error }) => {
+          console.log(error);
           return (
             <div id='lgo-sign-up'>
-              <form onSubmit={e => this.handleSubmit(e, client)}>
+              <form onSubmit={e => this.handleSubmit(e, userAuth)}>
                 <div id='lgo-sign-up-username'>
                   <img src={personIcon} alt='person-icon' id='lgo-sign-up-username-icon' />
                   <input
@@ -68,10 +82,14 @@ class SignUp extends Component {
                   />
                 </div>
         
-                <button type='submit' id='lgo-sign-up-submit'>connexion</button>
+                { loading ? <div>LOADING</div> : <button type='submit' id='lgo-sign-up-submit'>connexion</button> }
               </form>
               <div onClick={() => this.setState({ activeResetPwd: !this.state.activeResetPwd })} id='lgo-sign-up-forgot'>Mot de passe oublié ?</div>
-              { errorMsg ? <div id='lgo-sign-up-error'>{errorMsg}</div> : null}
+              { errorMsg ?
+                <div className='lgo-sign-up-error'>{errorMsg}</div> :
+                  error ? <div className='lgo-sign-up-error'>{typeof error === 'object' ? 'Server error' : error}</div>:
+                    (data) ? (data.userAuth) ? <div className={data.userAuth.message === 'Success' ? 'lgo-sign-up-success' : 'lgo-sign-up-error'}>{data.userAuth.message}</div> : null : null
+              }
               {
                 activeResetPwd ?
                 <PasswordForgot /> :
@@ -81,7 +99,7 @@ class SignUp extends Component {
           );
         }
       }
-      </ApolloConsumer>
+      </Mutation>
     );
   }
 };

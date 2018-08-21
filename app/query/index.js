@@ -8,11 +8,11 @@ export const USER_STATUS_QUERY = gql`
   }
 `;
 
-export const USER_AUTH_QUERY = gql`
-  query userAuth($username: String!, $password: String!){
+export const USER_AUTH_MUTATION = gql`
+  mutation userAuth($username: String!, $password: String!){
     userAuth(username: $username, password: $password) {
-      status
       message
+      token
     }
   }
 `;

@@ -11,9 +11,10 @@ const App = props => {
     <Query query={USER_STATUS_QUERY}>
       {
         response => {
-          // console.log('---> ');
+          console.log('---> ');
           // console.log(props.isLoggedIn);
           // console.log(response);
+          if (response.networkStatus === 4) console.log("Refetching!");
           if (response.loading)
             return <div>Loading...</div>;
 
@@ -25,7 +26,7 @@ const App = props => {
               {
                 response.data.userStatus.status ?
                 <LoggedIn /> :
-                <LoggedOut />
+                <LoggedOut firstRefetch={response.refetch}/>
               }
             </div>
           );

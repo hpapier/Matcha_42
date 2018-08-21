@@ -34,9 +34,8 @@ const typeDefs = `
   }
 
   type AuthStatus {
-    status: Boolean
     message: String
-    jwtToken: String
+    token: String
   }
 
   type MessageStatus {
@@ -45,12 +44,12 @@ const typeDefs = `
 
   type Query {
     userStatus: Status
-    userAuth(username: String!, password: String!): AuthStatus
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
   }
 
   type Mutation {
     signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): MessageStatus
+    userAuth(username: String!, password: String!): AuthStatus
   }
 
 `;
@@ -67,20 +66,6 @@ const resolvers = {
     userStatus: async (parent, args, ctx) => {
       const token = await verifyUserToken(ctx.headers);
       return { status: token };
-    },
-
-    userAuth: async (parent, { username, password }, ctx)  => {
-      const res = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
-      if (!res)
-        return { status: false, message: 'Server Error', jwtToken: '' };
-      
-      if (!res.rows[0])
-        return { status: false, message: 'User not found', jwtToken: '' };
-      
-      if (password !== res.rows[0].password)
-        return { status: false, message: 'Wrong password', jwtToken: '' };
-      
-      return { status: true, message: 'Success', jwtToken: 'lkdjfkdshjkfjghdfjfgudhgfuydfgvuygfyudrgyug' };
     },
 
     emailTokenVerification: async (parent, { username, emailToken }, ctx) => {
@@ -135,6 +120,28 @@ const resolvers = {
         if (error.message === 'Error: No recipients defined')
           return { message: 'Email error' };
         return { message: 'Error server' };
+      }
+    },
+
+    userAuth: async (parent, { username, password }, ctx)  => {
+      try {
+        const res = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
+        if (res.rowCount === 0)
+          return { message: 'User not exist', token: '' };
+
+        const pwdComparison = await bcrypt.compare(password, res.rows[0].password);
+        if (!pwdComparison)
+          return { message: 'Wrong password', token: '' };
+
+        if (!res.rows[0].isconfirmed)
+          return { message: 'Account not confirmed', token: '' };
+
+        console.log({ id: res.rows[0].id, username: res.rows[0].username });
+        const jwtToken = JWT.sign({ id: res.rows[0].id, username: res.rows[0].username }, JWTSECRET);
+        return { message: 'Success', token: jwtToken };
+      } catch (e) {
+        console.log(e);
+        return { message: 'Server Error', token: '' };
       }
     }
 
