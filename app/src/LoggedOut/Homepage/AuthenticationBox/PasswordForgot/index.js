@@ -44,6 +44,16 @@ class PasswordForgot extends Component {
     });
   }
 
+  getCorrectMsg = msg => {
+    if (msg === 'User not exist')
+      return 'Ce compte n\'existe pas';
+    if (msg === 'Account not confirmed')
+      return 'Votre compte n\'est pas encore confirmé';
+    if (msg === 'Success')
+      return 'Un email de ré-initialisation a bien été envoyé';
+    return 'Oups! Une erreur est survenue..';
+  }
+
   render() {
     return (
       <Mutation mutation={SEND_EMAIL_RESET_MUTATION}>
@@ -70,11 +80,11 @@ class PasswordForgot extends Component {
                 <button id='lgo-password-forgot-submit' type='submit'>envoyer un email</button> }
               {
                 this.state.errorMsg ?
-                <div>{this.state.errorMsg}</div> :
+                <div className='lgo-password-forgot-error'>{this.state.errorMsg}</div> :
                   error ?
-                  <div>{typeof error === 'object' ? 'Oups! Une erreur est survenue..' : error}</div> :
+                  <div className='lgo-password-forgot-error'>{typeof error === 'object' ? 'Oups! Une erreur est survenue..' : error}</div> :
                     data ?
-                    <div>{data.sendEmailReset.message}</div> :
+                    <div className={ data.sendEmailReset.message === 'Success' ? 'lgo-password-forgot-success' : 'lgo-password-forgot-error'}>{this.getCorrectMsg(data.sendEmailReset.message)}</div> :
                     null
               }
             </form>
