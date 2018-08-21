@@ -397,16 +397,17 @@ $font-ssp: 'Source sans pro', sans-serif
     transform: rotate(360deg)
 
 #lgo-sign-in-loading-box
+  margin-top: 20px
   display: flex
   justify-content: center
   align-items: center
-  width: 450px
-  height: 489px
+  width: 370px
+  height: 45px
   background: #fff
 
 #lgo-sign-in-loading-box-animation
-  width: 70px
-  height: 70px
+  width: 25px
+  height: 25px
   border: 5px solid #fcfcfd
   border-top: 5px solid #E6C2AA
   border-radius: 50%
@@ -415,4 +416,25 @@ $font-ssp: 'Source sans pro', sans-serif
   animation-duration: 2s
   animation-iteration-count: infinite
   animation-fill-mode: linear
-  
+
+
+// Error and Success message
+.lgo-sign-in-error-msg
+  width: 370px
+  display: flex
+  justify-content: center
+  margin-top: 10px
+  color: red
+  font-family: $font-ssp
+  font-size: .875em
+  font-weight: 400
+
+.lgo-sign-in-success-msg
+  width: 370px
+  display: flex
+  justify-content: center
+  margin-top: 10px
+  color: rgba(1, 195, 165, 1)
+  font-family: $font-ssp
+  font-size: .875em
+  font-weight: 400

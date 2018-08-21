@@ -116,6 +116,19 @@ class SignIn extends Component {
     this.setState({ errorMsg: 'Vérification du mot de passe invalide' });
   }
 
+  getCorrectMsg = msg => {
+    if (msg === 'Success')
+      return 'Votre compte à été créé avec succès';
+    else if (msg === 'Username exist')
+      return 'Ce nom d\'utilisateur est déjà pris.';
+    else if (msg === 'Email exist')
+      return 'Cet email existe déjà.';
+    else if (msg === 'Email error')
+      return 'Cet email est invalide.';
+    else
+      return 'Erreur de server, veuillez réessayer plus tard.'
+  }
+
   render() {
     const { errorMsg } = this.state;
     return (
@@ -123,96 +136,91 @@ class SignIn extends Component {
         {
           (signUpMutation, response) => {
             // console.log('--> Sign Up Component:');
-            console.log(response);
+            // console.log(response);
             return (
               <div id='lgo-sign-in'>
-                
-                {
-                  !response.loading ?
-                  (
-                    <form onSubmit={e => this.signUpMechanism(e, signUpMutation)}>
-                      <div id='lgo-sign-in-username'>
-                        <img id='lgo-sign-in-username-icon' src={personIcon} alt='person-icon' />
-                        <input id='lgo-sign-in-username-input' autoComplete='off' type='text' placeholder="Nom d'utilisateur" onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />
-                      </div>
+                <form onSubmit={e => this.signUpMechanism(e, signUpMutation)}>
+                  <div id='lgo-sign-in-username'>
+                    <img id='lgo-sign-in-username-icon' src={personIcon} alt='person-icon' />
+                    <input id='lgo-sign-in-username-input' autoComplete='off' type='text' placeholder="Nom d'utilisateur" onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />
+                  </div>
 
-                      <div id='lgo-sign-in-email'>
-                        <img id='lgo-sign-in-email-icon' src={emailIcon} alt='email-icon' />
-                        <input id='lgo-sign-in-email-input' autoComplete='email' type='email' placeholder='Adresse email' onChange={e => this.setState({ email: e.target.value })} value={this.state.email} />
-                      </div>
+                  <div id='lgo-sign-in-email'>
+                    <img id='lgo-sign-in-email-icon' src={emailIcon} alt='email-icon' />
+                    <input id='lgo-sign-in-email-input' autoComplete='email' type='email' placeholder='Adresse email' onChange={e => this.setState({ email: e.target.value })} value={this.state.email} />
+                  </div>
 
-                      <div id='lgo-sign-in-box-1'>
-                        <div id='lgo-sign-in-box-1-lastname'>
-                          <img id='lgo-sign-in-box-1-lastname-icon' src={personIcon} alt='person-icon' />
-                          <input id='lgo-sign-in-box-1-lastname-input' autoComplete='family-name' type='text' placeholder='Nom' onChange={e => this.setState({ lastname: e.target.value })} value={this.state.lastname} />
-                        </div>
-                        <div id='lgo-sign-in-box-1-firstname'>
-                          <img id='lgo-sign-in-box-1-firstname-icon' src={personIcon} alt='person-icon' />
-                          <input id='lgo-sign-in-box-1-firstname-input' autoComplete='given-name' type='text' placeholder='Prénom' onChange={e => this.setState({ firstname: e.target.value })} value={this.state.firstname} />
-                        </div>
-                      </div>
+                  <div id='lgo-sign-in-box-1'>
+                    <div id='lgo-sign-in-box-1-lastname'>
+                      <img id='lgo-sign-in-box-1-lastname-icon' src={personIcon} alt='person-icon' />
+                      <input id='lgo-sign-in-box-1-lastname-input' autoComplete='family-name' type='text' placeholder='Nom' onChange={e => this.setState({ lastname: e.target.value })} value={this.state.lastname} />
+                    </div>
+                    <div id='lgo-sign-in-box-1-firstname'>
+                      <img id='lgo-sign-in-box-1-firstname-icon' src={personIcon} alt='person-icon' />
+                      <input id='lgo-sign-in-box-1-firstname-input' autoComplete='given-name' type='text' placeholder='Prénom' onChange={e => this.setState({ firstname: e.target.value })} value={this.state.firstname} />
+                    </div>
+                  </div>
 
-                      <div id='lgo-sign-in-box-2'>
-                        <div id='lgo-sign-in-box-2-day'>
-                          <select id='lgo-sign-in-box-2-day-select' onChange={e => this.setState({ day: e.target.value })} value={this.state.day || 'no-value'}>
-                            <option value='no-value' hidden>Jour</option>
-                            {this.dayOption()}
-                          </select>
-                        </div>
-                        <div id='lgo-sign-in-box-2-month'>
-                          <select id='lgo-sign-in-box-2-month-select' onChange={e => this.setState({ month: e.target.value })} value={this.state.month || 'no-value'}>
-                            <option value='no-value' hidden>Mois</option>
-                            {this.monthOption()}
-                          </select>
-                        </div>
-                        <div id='lgo-sign-in-box-2-year'>
-                          <select id='lgo-sign-in-box-2-year-select' onChange={e => this.setState({ year: e.target.value })} value={this.state.year || 'no-value'}>
-                            <option value='no-value' hidden>Année</option>
-                            {this.yearOption()}
-                          </select>
-                        </div>
-                      </div>
+                  <div id='lgo-sign-in-box-2'>
+                    <div id='lgo-sign-in-box-2-day'>
+                      <select id='lgo-sign-in-box-2-day-select' onChange={e => this.setState({ day: e.target.value })} value={this.state.day || 'no-value'}>
+                        <option value='no-value' hidden>Jour</option>
+                        {this.dayOption()}
+                      </select>
+                    </div>
+                    <div id='lgo-sign-in-box-2-month'>
+                      <select id='lgo-sign-in-box-2-month-select' onChange={e => this.setState({ month: e.target.value })} value={this.state.month || 'no-value'}>
+                        <option value='no-value' hidden>Mois</option>
+                        {this.monthOption()}
+                      </select>
+                    </div>
+                    <div id='lgo-sign-in-box-2-year'>
+                      <select id='lgo-sign-in-box-2-year-select' onChange={e => this.setState({ year: e.target.value })} value={this.state.year || 'no-value'}>
+                        <option value='no-value' hidden>Année</option>
+                        {this.yearOption()}
+                      </select>
+                    </div>
+                  </div>
 
-                      <div id='lgo-sign-in-box-3'>
-                        <div id='lgo-sign-in-box-3-genre'>
-                          <select id='lgo-sign-in-box-3-genre-select' onChange={e => this.setState({ genre: e.target.value })} value={this.state.genre || 'no-value'}>
-                            <option value='no-value' hidden>Genre</option>
-                            <option value='man' className='lgo-sign-in-box-3-genre-select-option'>Homme</option>
-                            <option value='woman' className='lgo-sign-in-box-3-genre-select-option'>Femme</option>
-                          </select>
-                        </div>
-                        <div id='lgo-sign-in-box-3-interest'>
-                          <select id='lgo-sign-in-box-3-interest-select' onChange={e => this.setState({ interest: e.target.value })} value={this.state.interest || 'no-value'}>
-                            <option value='no-value' hidden>Intéressé par..</option>
-                            <option value='man' className='lgo-sign-in-box-3-interest-select-option'>Homme</option>
-                            <option value='woman' className='lgo-sign-in-box-3-interest-select-option'>Femme</option>
-                            <option value='bisexual' className='lgo-sign-in-box-3-interest-select-option'>Homme et Femme</option>
-                          </select>
-                        </div>
-                      </div>
+                  <div id='lgo-sign-in-box-3'>
+                    <div id='lgo-sign-in-box-3-genre'>
+                      <select id='lgo-sign-in-box-3-genre-select' onChange={e => this.setState({ genre: e.target.value })} value={this.state.genre || 'no-value'}>
+                        <option value='no-value' hidden>Genre</option>
+                        <option value='man' className='lgo-sign-in-box-3-genre-select-option'>Homme</option>
+                        <option value='woman' className='lgo-sign-in-box-3-genre-select-option'>Femme</option>
+                      </select>
+                    </div>
+                    <div id='lgo-sign-in-box-3-interest'>
+                      <select id='lgo-sign-in-box-3-interest-select' onChange={e => this.setState({ interest: e.target.value })} value={this.state.interest || 'no-value'}>
+                        <option value='no-value' hidden>Intéressé par..</option>
+                        <option value='man' className='lgo-sign-in-box-3-interest-select-option'>Homme</option>
+                        <option value='woman' className='lgo-sign-in-box-3-interest-select-option'>Femme</option>
+                        <option value='bisexual' className='lgo-sign-in-box-3-interest-select-option'>Homme et Femme</option>
+                      </select>
+                    </div>
+                  </div>
 
-                      <div id='lgo-sign-in-password'>
-                        <img src={lockIcon} alt='lock-icon' id='lgo-sign-in-password-icon' />
-                        <input type='password' autoComplete='new-password' id='lgo-sign-in-password-input' placeholder='Mot de passe' onChange={e => this.setState({ password: e.target.value })} />
-                      </div>
+                  <div id='lgo-sign-in-password'>
+                    <img src={lockIcon} alt='lock-icon' id='lgo-sign-in-password-icon' />
+                    <input type='password' autoComplete='new-password' id='lgo-sign-in-password-input' placeholder='Mot de passe' onChange={e => this.setState({ password: e.target.value })} value={this.state.password} />
+                  </div>
 
-                      <div id='lgo-sign-in-verification'>
-                        <img src={lockIcon} alt='lock-icon' id='lgo-sign-in-verification-icon' />
-                        <input type='password' autoComplete='new-password' id='lgo-sign-in-verification-input' placeholder='Vérification du mot de passe' onChange={e => this.setState({ verif: e.target.value })} />
-                      </div>
+                  <div id='lgo-sign-in-verification'>
+                    <img src={lockIcon} alt='lock-icon' id='lgo-sign-in-verification-icon' />
+                    <input type='password' autoComplete='new-password' id='lgo-sign-in-verification-input' placeholder='Vérification du mot de passe' onChange={e => this.setState({ verif: e.target.value })} value={this.state.verif} />
+                  </div>
 
-                      <button id='lgo-sign-in-submit' onClick={e => this.signUpMechanism(e, signUpMutation)}>s'inscrire</button>
-                      { response.error && !errorMsg ? <div>{(typeof response.error === 'object') ? 'Server error' : response.error}</div> : null }
-                      { errorMsg ? <div>{errorMsg}</div> : null }
-                      { response.data ? <div>{response.data.signUpMutation.message}</div> : null }
-                    </form>
-                  ) :
-                  (
+                  {
+                    !response.loading ?
+                    <button id='lgo-sign-in-submit' onClick={e => this.signUpMechanism(e, signUpMutation)}>s'inscrire</button> :
                     <div id='lgo-sign-in-loading-box'>
                       <div id='lgo-sign-in-loading-box-animation'></div>
                     </div>
-                  )
-                }
+                  }
+                  { response.error && !errorMsg ? <div className='lgo-sign-in-error-msg'>{(typeof response.error === 'object') ? 'Server error' : response.error}</div> : null }
+                  { errorMsg ? <div className='lgo-sign-in-error-msg'>{errorMsg}</div> : null }
+                  { response.data && !errorMsg ? <div className={response.data.signUpMutation.message !== 'Success' ? 'lgo-sign-in-error-msg' : 'lgo-sign-in-success-msg'}>{this.getCorrectMsg(response.data.signUpMutation.message)}</div> : null }
+                </form>
               </div>
             );
           }

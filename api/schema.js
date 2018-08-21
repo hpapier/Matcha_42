@@ -5,6 +5,15 @@ const randtoken = require('rand-token');
 const JWT = require('jsonwebtoken');
 const JWTSECRET = 'lkjkjoiuoidSFsdgkjDSFLDOR435Dfdg34554435DSFdGfdgdfkljgg45546ERGG650128923';
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'hpapier.matcha@gmail.com',
+    pass: 'papierhugo42'
+  }
+});
 
 const pubSub = new PostgresPubSub({ client });
 
@@ -87,18 +96,27 @@ const resolvers = {
         const emailCheck = await client.query('SELECT * FROM user_info WHERE email = $1', [email]);
         if (emailCheck.rows[0])
           return { message: 'Email exist' };
-  
+
+        const emailConfirmationToken = randtoken.generate(64);
+        const mailOptions = {
+          from: '"Hugo de Matcha.com" <hpapier.matcha@gmail.com>',
+          to: email,
+          subject: `Bienvenu ${firstname}, veuillez confirmer votre email ! :)`,
+          html: `<a href="http://localhost:8080/email/${emailConfirmationToken}">Confirmer votre email en cliquant sur ce lien</a>`
+        }
+          
+        const mailSendingResult = await transporter.sendMail(mailOptions);
         const salt = bcrypt.genSaltSync(10);
         const hashedPwd = bcrypt.hashSync(password, salt);
 
-        const emailConfirmationToken = randtoken.generate(64);
         const insertion = 'INSERT INTO user_info (email, username, lastname, firstname, password, birth_date, genre, sexual_orientation, creation_date, confirmation_token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
         const creationDate = new Date();
         const result = await client.query(insertion, [email, username, lastname, firstname, hashedPwd, birthDate, genre, interest, creationDate, emailConfirmationToken]);
-
         return { message: 'Success' };
       } catch (e) {
-        console.log(e);
+        const error = new Error(e);
+        if (error.message === 'Error: No recipients defined')
+          return { message: 'Email error' };
         return { message: 'Error server' };
       }
     }
