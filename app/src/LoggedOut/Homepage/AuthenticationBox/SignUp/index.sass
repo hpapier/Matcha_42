@@ -438,3 +438,89 @@ $font-ssp: 'Source sans pro', sans-serif
   font-family: $font-ssp
   font-size: .875em
   font-weight: 400
+
+// MEDIA QUERIES
+@media screen and (max-width: 650px)
+  #lgo-sign-in
+    width: calc(100% - 2px)
+    padding: 30px 0px
+    border: 1px solid #dce3e6
+    border-top: none
+    margin: 0px
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-wrap: wrap
+    border-radius: 0px 0px 2px 2px
+  
+  #lgo-sign-in-form
+    width: 100%
+    display: flex
+    justify-content: center
+    flex-wrap: wrap
+
+  #lgo-sign-in-username
+    width: 300px
+    display: flex
+    border-radius: 3px 3px 0px 0px
+    border: 1px solid #DCE3E6
+    height: 45px
+
+  #lgo-sign-in-email
+    width: 300px
+    display: flex
+    border-radius: 0px 0px 3px 3px
+    border: 1px solid #DCE3E6
+    border-top: none
+    height: 45px
+
+  #lgo-sign-in-box-1
+    display: flex
+    width: 300px
+    margin-top: 20px
+
+  #lgo-sign-in-box-2
+    display: flex
+    width: 300px
+
+  #lgo-sign-in-box-3
+    display: flex
+    width: 300px
+
+  #lgo-sign-in-password
+    width: 300px
+    background-color: rgba(0, 0, 0, 0)
+    border: 1px solid #dce3e6
+    border-radius: 3px 3px 0px 0px
+    display: flex
+    height: 45px
+    margin-top: 20px
+
+  #lgo-sign-in-verification
+    width: 300px
+    background-color: rgba(0, 0, 0, 0)
+    border: 1px solid #dce3e6
+    border-top: none
+    border-radius: 0px 0px 3px 3px
+    display: flex
+    height: 45px
+
+  #lgo-sign-in-submit
+    width: 300px
+    height: 45px
+    margin-top: 20px
+    border: none
+    background: #E6C2AA
+    border-bottom: 1px solid #BC9E8A
+    padding: 0px
+    display: flex
+    justify-content: center
+    align-items: center
+    color: #fff
+    text-transform: uppercase
+    font-family: $font-ssp
+    font-size: .875em
+    font-weight: 600
+    border-radius: 3px
+    transition: .2s
+    cursor: pointer

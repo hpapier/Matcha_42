@@ -69,7 +69,7 @@ class SignUp extends Component {
         (userAuth, { loading, data, error }) => {
           return (
             <div id='lgo-sign-up'>
-              <form onSubmit={e => this.handleSubmit(e, userAuth)}>
+              <form onSubmit={e => this.handleSubmit(e, userAuth)} id='lgo-sign-up-form'>
                 <div id='lgo-sign-up-username'>
                   <img src={personIcon} alt='person-icon' id='lgo-sign-up-username-icon' />
                   <input

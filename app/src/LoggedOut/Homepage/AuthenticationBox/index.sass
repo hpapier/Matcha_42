@@ -38,3 +38,44 @@ $font-ssp : 'Source Sans pro', sans-serif
 .right
   border-radius: 0px 2px 0px 0px
   cursor: pointer
+
+
+// RESPONSIVE
+
+@media screen and (max-width: 1250px)
+  #lgo-authentication-box
+    background: #fff
+    position: absolute
+    left: 0
+    right: 0
+    margin: auto
+    margin-top: 0px
+    top: 180px
+    border-radius: 2px
+    z-index: 1
+
+@media screen and (max-width: 650px)
+  #lgo-authentication-box
+    width: 350px
+    background: #fff
+    position: absolute
+    left: 0
+    right: 0
+    margin: auto
+    margin-top: 0px
+    top: 180px
+    border-radius: 2px
+    z-index: 1
+
+// UNDER 950px
+@media screen and (max-height: 850px)
+    #lgo-authentication-box
+      background: #fff
+      position: absolute
+      left: 0
+      right: 0
+      top: 0
+      margin: auto
+      margin-top: 180px
+      border-radius: 2px
+      z-index: 99

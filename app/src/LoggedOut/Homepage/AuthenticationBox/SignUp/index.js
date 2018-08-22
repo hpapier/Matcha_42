@@ -139,7 +139,7 @@ class SignIn extends Component {
             // console.log(response);
             return (
               <div id='lgo-sign-in'>
-                <form onSubmit={e => this.signUpMechanism(e, signUpMutation)}>
+                <form onSubmit={e => this.signUpMechanism(e, signUpMutation)} id='lgo-sign-in-form'>
                   <div id='lgo-sign-in-username'>
                     <img id='lgo-sign-in-username-icon' src={personIcon} alt='person-icon' />
                     <input id='lgo-sign-in-username-input' autoComplete='off' type='text' placeholder="Nom d'utilisateur" onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />

@@ -88,3 +88,117 @@ $family : 'Source sans pro', sans-serif;
   font-weight: 300;
   color: rgba(50, 62, 66, 1);
 }
+
+
+
+// MEDIA QUERIES
+@media screen and (max-width: 1250px) {
+  #lgo-homepage-title {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #lgo-homepage-title-first {
+    font-family: $family;
+    font-weight: 700;
+    font-size: 2.25em;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 1);
+  }
+
+  #lgo-homepage-title-second {
+    font-family: $family;
+    font-weight: 400;
+    font-size: 1.875em;
+    color: rgba(255, 255, 255, 1);
+    width: 366px;
+    text-align: center;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 1);
+  }
+
+  #lgo-homepage-box-title {
+    margin-top: 150px;
+    margin-left: 180px;
+  }
+}
+
+@media screen and (max-height: 850px) {
+  #lgo-homepage-title {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #lgo-homepage-background {
+    width: 100%;
+    height: 100vh;
+    position: static;
+    object-fit: cover;
+  }
+
+  #lgo-homepage-box {
+    background: rgba(255, 255, 255, 1);
+    position: relative;
+    width: 100%;
+    height: 30px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #lgo-homepage-box-title {
+    display: none !important;
+  }
+
+  #lgo-homepage-box-subtitle {
+    display: none !important;
+  }
+
+  #lgo-homepage-box-title-icon {
+    display: none;
+  }
+
+  #lgo-homage-box-copyright {
+    position: static;
+    bottom: 0;
+    right: 0;
+    font-size: .75em;
+    font-family: $family;
+    font-weight: 400;
+    color: rgba(50, 62, 66, 1);
+  }
+}
+
+@media screen and (max-width: 650px) {
+  #lgo-homepage-box-title {
+    display: flex;
+    margin: 0px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 150px;
+  }
+
+  #lgo-homepage-box-subtitle {
+    font-family: $family;
+    font-weight: 200;
+    font-size: 1em;
+    color: rgba(50, 62, 66, .7);
+    margin-left: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}
