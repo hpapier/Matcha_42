@@ -26,7 +26,7 @@ const verifyUserToken = async token => {
     const decoded = JWT.verify(tokenJwt, JWTSECRET);
     const res = await client.query('SELECT * FROM user_info WHERE id = $1 AND username = $2', [decoded.id, decoded.username]);
     if (res.rows[0])
-      return true;
+      return res.rows[0];
     return false;
   } catch (e) {
     return false;
@@ -47,10 +47,43 @@ const typeDefs = `
     message: String
   }
 
+  type UserImages {
+    id: Int
+    path: String
+  }
+
+  type Interests {
+    id: Int
+    name: String
+  }
+
+  type UserInterests {
+    id: Int
+    interestId: String
+  }
+
+  type UserInformations {
+    username: String
+    lastname: String
+    firstname: String
+    birthDate: String
+    genre: String
+    sexualOrientation: String
+    bio: String
+    popularityScore: Int
+    location: String
+    creationDate: String
+    lastConnexion: String
+    interests: [UserInterests]
+    images: [UserImages]
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
     resetTokenVerification(username: String!, resetToken: String!): MessageStatus
+    userInformations: UserInformations
+    getInterests: [Interests]
   }
 
   type Mutation {
@@ -110,6 +143,49 @@ const resolvers = {
         return { message: 'Success' };
       } catch (e) {
         return { message: 'Error server' };
+      }
+    },
+
+    userInformations: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('User not found');
+  
+        const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
+        const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
+        const updateConnexion = await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
+        
+        return {
+          username: user.username,
+          lastname: user.lastname,
+          firstname: user.firstname,
+          birthDate: user.birth_date,
+          genre: user.genre,
+          sexualOrientation: user.sexual_orientation,
+          bio: user.bio,
+          popularityScore: user.popularity_score,
+          location: user.location,
+          creationDate: user.creation_date,
+          lastConnexion: new Date(),
+          interests: userInterest.rows,
+          images: userImages.rows
+        };
+      } catch (e) {
+        return new Error(e.message)
+      }
+    },
+  
+    getInterests: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not authorized');
+  
+        const interests = await client.query('SELECT * FROM interests');
+        return interests.rows;
+      } catch (e) {
+        return new Error(e.message);
       }
     }
   },

@@ -1,1 +1,1 @@
-export const LOG_USER_IN = 'LOG_USER_IN';
+export const SAVE_USER_INFO = 'SAVE_USER_INFO';

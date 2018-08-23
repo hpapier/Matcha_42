@@ -1,8 +1,6 @@
-import { LOG_USER_IN } from '../../constant';
+import { SAVE_USER_INFO } from '../../constant';
 
-export const logUserIn = token => {
-  localStorage.setItem('auth_token', token);
-  return {
-    type: LOG_USER_IN
-  };
-}
+export const saveUserInfo = data => ({
+  type: SAVE_USER_INFO,
+  payload: data
+});

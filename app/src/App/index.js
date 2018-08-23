@@ -25,8 +25,8 @@ const App = props => {
             <div>
               {
                 response.data.userStatus.status ?
-                <LoggedIn /> :
-                <LoggedOut firstRefetch={response.refetch}/>
+                <LoggedIn firstRefetch={response.refetch} /> :
+                <LoggedOut firstRefetch={response.refetch} />
               }
             </div>
           );

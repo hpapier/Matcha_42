@@ -78,9 +78,9 @@
 
 /*
   CREATE TABLE images (
-    id      SERIAL PRIMARY KEY,
-    user_id VARCHAR(255) NOT NULL,
-    path    VARCHAR(255) NOT NULL
+    id        SERIAL PRIMARY KEY,
+    user_id   VARCHAR(255) NOT NULL,
+    path      VARCHAR(255) NOT NULL
   );
 */
 

@@ -56,3 +56,34 @@ export const RESET_PASSWORD_MUTATION = gql`
     }
   }
 `;
+
+export const GET_USER_INFO_QUERY = gql`
+  {
+    userInformations {
+      username
+      lastname
+      firstname
+      birthDate
+      genre
+      sexualOrientation
+      bio
+      popularityScore
+      location
+      creationDate
+      lastConnexion
+      interests {
+        id
+        interestId
+      }
+      images {
+        id
+        path
+      }
+    }
+
+    getInterests {
+      id
+      name
+    }
+  }
+`;
