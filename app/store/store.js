@@ -11,7 +11,8 @@ const store = {
     location: '',
     creationDate: '',
     lastConnexion: ''
-  }
+  },
+  statusBar: 'home'
 };
 
 export default store;

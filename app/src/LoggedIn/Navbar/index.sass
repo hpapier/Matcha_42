@@ -1,0 +1,153 @@
+$ssp: 'Source sans pro', sans-serif
+  
+#lgi-navbar
+  width: 100%
+  height: 55px
+  background: #ffffff
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  display: flex
+  justify-content: space-between
+  align-item: center
+
+#lgi-navbar-left
+  display: flex
+  margin-left: 100px
+
+.lgi-navbar-left-box-active
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  height: 100%
+  background: rgba(#E6C2AA, .05)
+  border-bottom: 1px solid #E6C2AA
+  cursor: pointer
+
+.lgi-navbar-left-box-inactive
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  height: 100%
+  background: rgba(0, 0, 0, 0)
+  cursor: pointer
+  border-color: rgba(0, 0, 0, 0)
+  transition: .2s
+
+.lgi-navbar-left-box-inactive:hover
+  background: rgba(#E6C2AA, .05)
+  border-bottom: 1px solid #E6C2AA
+
+.lgi-navbar-left-box-icon
+  margin-left: 25px
+  margin-right: 15px
+
+.lgi-navbar-left-box-text-active
+  color: #E6C2AA
+  font-family: $ssp
+  font-size: .875em
+  font-weight: 600
+  margin-right: 25px
+  letter-spacing: .3px
+
+.lgi-navbar-left-box-text-inactive
+  color: #66757F
+  font-family: $ssp
+  font-size: .875em
+  font-weight: 600
+  margin-right: 25px
+  letter-spacing: .3px
+
+.first
+  margin-right: 23px
+
+
+
+#lgi-navbar-right
+  display: flex
+  margin-right: 100px
+  height: 100%
+  align-items: center
+  justify-content: flex-start
+
+#lgi-navbar-right-img
+  width: 35px
+  height: 35px
+  border-radius: 50%
+  background: #f2f4f7
+  transition: .2s
+  border: 1px solid rgba(0, 0, 0, 0)
+  cursor: pointer
+  margin-right: 35px
+
+#lgi-navbar-right-img:hover
+  border: 1px solid #E6C2AA
+
+#lgi-navbar-right-logout
+  width: 145px
+  height: 35px
+  border: none
+  border-bottom: 1px solid #BC9E8A
+  background: #E6C2AA
+  display: flex
+  justify-content: center
+  align-items: center
+  color: #fff
+  font-family: $ssp
+  font-size: .75em
+  font-weight: 600
+  text-transform: uppercase
+  border-radius: 3px
+  cursor: pointer
+  transition: .2s
+
+#lgi-navbar-right-logout:hover
+  opacity: .8
+
+
+
+// MEDIA QUERIES
+@media screen and (max-width: 950px)
+  #lgi-navbar-left
+    display: flex
+    margin-left: 30px
+  
+@media screen and (max-width: 800px)
+  .lgi-navbar-left-box-text-active
+    color: #E6C2AA
+    font-family: $ssp
+    font-size: .875em
+    font-weight: 600
+    margin-right: 25px
+    letter-spacing: .3px
+    display: none
+
+  .lgi-navbar-left-box-text-inactive
+    color: #66757F
+    font-family: $ssp
+    font-size: .875em
+    font-weight: 600
+    margin-right: 25px
+    letter-spacing: .3px
+    display: none
+
+  #lgi-navbar-left
+    display: flex
+    margin-left: 10px
+
+  #lgi-navbar-right
+    display: flex
+    margin-right: 10px
+
+  .lgi-navbar-left-box-icon
+    margin-left: 20px
+    margin-right: 20px
+
+  #lgi-navbar-right-img
+    margin-right: 10px
+
+@media screen and (max-width: 400px)
+  #lgi-navbar-left
+    display: flex
+    margin-left: 5px
+
+  #lgi-navbar-right-logout
+    width: 100px

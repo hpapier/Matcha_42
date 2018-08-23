@@ -1,19 +1,96 @@
 // Module imports
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Local import.
+import './index.sass';
+import homeLineIcon from '../../../assets/home-line.svg';
+import homeSolidIcon from '../../../assets/home-solid.svg';
+import notifLineIcon from '../../../assets/notif-line.svg';
+import notifSolidIcon from '../../../assets/notif-solid.svg';
+import msgLineIcon from '../../../assets/msg-line.svg';
+import msgSolidIcon from '../../../assets/msg-solid.svg';
+import { statusBarMechanism, saveUserInfo } from '../../../store/action/synchronous';
 
 
 // Navbar component
-const Navbar = props => {
-  return (
-    <div>
-      Hello navbar
-    </div>
-  );
-}
+class Navbar extends Component {
+  state = {
+    up: false
+  }
+
+  componentDidUpdate() {
+    if (!this.props.loading && !this.state.up) {
+      this.props.saveUserInfo(this.props.data);
+      this.setState({ up: true });
+    }
+  }
+
+  logOutUser = () => {
+    localStorage.removeItem('auth_token');
+    this.props.firstRefetch();
+    this.props.history.push('/');
+  }
+
+  navigationView = status => {
+    const { statusBarMechanism, history } = this.props;
+    
+    if (status === 'home')
+      history.push('/');
+    else if (status === 'notification')
+      history.push('/notification');
+    else if (status === 'message')
+      history.push('/message');
+    else if (status === 'profil')
+      history.push('/profil');
+
+    statusBarMechanism(status);
+  }
+
+  render() {
+    const { statusBar } = this.props;
+    return (
+      <div id='lgi-navbar'>
+
+        <div id='lgi-navbar-left'>
+          <div className={statusBar === 'home' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('home')}>
+            <img src={statusBar === 'home' ? homeSolidIcon : homeLineIcon} className='lgi-navbar-left-box-icon' />
+            <div className={statusBar === 'home' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive first'}>Acceuil</div>
+          </div>
+  
+          <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('notification')}>
+            <img src={statusBar === 'notification' ? notifSolidIcon : notifLineIcon} className='lgi-navbar-left-box-icon' />
+            <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Notifications</div>
+          </div>
+  
+          <div className={statusBar === 'message' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('message')}>
+            <img src={statusBar === 'message' ? msgSolidIcon : msgLineIcon} className='lgi-navbar-left-box-icon' />
+            <div className={statusBar === 'message' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Messages</div>
+          </div>
+        </div>
+  
+        <div id='lgi-navbar-right'>
+          <div id='lgi-navbar-right-img' onClick={() => this.navigationView('profil')}></div>
+          <button id='lgi-navbar-right-logout' onClick={this.logOutUser}>déconnexion</button>
+        </div>
+      </div>
+    );
+  }
+};
+
+
+const mapStateToProps = state => ({
+  statusBar: state.statusBar,
+  user: state.user
+});
+
+const mapDispatchToProps = dispatch => ({
+  statusBarMechanism: status => dispatch(statusBarMechanism(status)),
+  saveUserInfo: info => dispatch(saveUserInfo(info))
+});
 
 
 // Export.
-export default Navbar;
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Navbar));

@@ -1,5 +1,5 @@
 import initialState from './store';
-import { SAVE_USER_INFO } from './constant';
+import { SAVE_USER_INFO, CHANGE_STATUS_BAR } from './constant';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -20,6 +20,11 @@ export default (state = initialState, action) => {
           lastConnexion: action.payload.lastConnexion
         }
       };
+    case CHANGE_STATUS_BAR:
+      return {
+        ...state,
+        statusBar: action.payload
+      }
     default:
       return state;
   }

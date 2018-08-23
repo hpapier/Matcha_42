@@ -1,1 +1,2 @@
 export const SAVE_USER_INFO = 'SAVE_USER_INFO';
+export const CHANGE_STATUS_BAR = 'CHANGE_STATUS_BAR';

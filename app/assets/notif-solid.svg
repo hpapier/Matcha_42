@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="18px" viewBox="0 0 15 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Notification-:-0--&gt;-/notification" transform="translate(-269.000000, -21.000000)" fill="#E6C2AA">
+            <g id="Notifications" transform="translate(244.000000, 0.000000)">
+                <g id="Icon-24px" transform="translate(25.000000, 21.000000)">
+                    <path d="M7.5,17.6875 C8.4625,17.6875 9.25,16.9 9.25,15.9375 L5.75,15.9375 C5.75,16.9 6.52875,17.6875 7.5,17.6875 L7.5,17.6875 Z M12.75,12.4375 L12.75,8.0625 C12.75,5.37625 11.315,3.1275 8.8125,2.5325 L8.8125,1.9375 C8.8125,1.21125 8.22625,0.625 7.5,0.625 C6.77375,0.625 6.1875,1.21125 6.1875,1.9375 L6.1875,2.5325 C3.67625,3.1275 2.25,5.3675 2.25,8.0625 L2.25,12.4375 L0.5,14.1875 L0.5,15.0625 L14.5,15.0625 L14.5,14.1875 L12.75,12.4375 L12.75,12.4375 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
