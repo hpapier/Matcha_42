@@ -21,6 +21,11 @@ class Navbar extends Component {
     up: false
   }
 
+  componentWillMount() {
+    console.log(this.props.location.pathname.split('/')[1])
+    this.props.statusBarMechanism((this.props.location.pathname.split('/')[1] !== '') ? this.props.location.pathname.split('/')[1] : 'home');
+  }
+
   componentDidUpdate() {
     if (!this.props.loading && !this.state.up) {
       this.props.saveUserInfo(this.props.data);
@@ -72,7 +77,7 @@ class Navbar extends Component {
         </div>
   
         <div id='lgi-navbar-right'>
-          <div id='lgi-navbar-right-img' onClick={() => this.navigationView('profil')}></div>
+          <div id='lgi-navbar-right-img' className={(statusBar === 'profil') ? 'lgi-navbar-right-img-active' : ''} onClick={() => this.navigationView('profil')}></div>
           <button id='lgi-navbar-right-logout' onClick={this.logOutUser}>déconnexion</button>
         </div>
       </div>

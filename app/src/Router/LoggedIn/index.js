@@ -24,7 +24,7 @@ const LoggedIn = props => (
         if (!error) {
           const { bio, interests, images, location } = data.userInformations;
           if (!bio || !interests || !images || !location)
-            return <NotComplete />
+            return <NotComplete data={{ bio, interests, images, location }} />
           else
             return <Homepage />
         }

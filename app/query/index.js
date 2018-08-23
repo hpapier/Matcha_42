@@ -87,3 +87,9 @@ export const GET_USER_INFO_QUERY = gql`
     }
   }
 `;
+
+export const FORCE_GEOLOCATION_QUERY = gql`
+  {
+    forceGeolocation
+  }
+`;
