@@ -86,14 +86,14 @@ const typeDefs = `
     resetTokenVerification(username: String!, resetToken: String!): MessageStatus
     userInformations: UserInformations
     getInterests: [Interests]
-    forceGeolocation: Boolean
   }
-
+  
   type Mutation {
     signUpMutation(username: String!, email: String!, lastname: String!, firstname: String!, birthDate: String!, genre: String!, interest: String!, password: String): MessageStatus
     userAuth(username: String!, password: String!): AuthStatus
     sendEmailReset(username: String!, email: String!): MessageStatus
     resetPassword(username: String!, resetToken: String!, password: String!): MessageStatus
+    forceGeolocation: Boolean
   }
 
 `;
@@ -188,26 +188,6 @@ const resolvers = {
         const interests = await client.query('SELECT * FROM interests');
         return interests.rows;
       } catch (e) {
-        return new Error(e.message);
-      }
-    },
-
-    forceGeolocation: async (parent, args, ctx) => {
-      try {
-        const user = await verifyUserToken(ctx.headers);
-        if (!user)
-          return new Error('User not found');
-
-        const publicIpAdress = await publicIp.v4();
-        const access_key = 'e0f43f3da5051d101a0ba8d112b9871c';
-        const getLocation = await fetch('http://api.ipstack.com/' + publicIpAdress + '?access_key=' + access_key);
-
-        const location = await getLocation.json();
-        const locationJson = JSON.stringify({ lat: location.lat, lng: location.lng, formatedName: `${location.country_name}, ${location.city}, ${location.zip}` });
-        const mutationClient = await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [locationJson, user.id]);
-        return true;
-      } catch (e) {
-        console.log(e);
         return new Error(e.message);
       }
     }
@@ -317,6 +297,27 @@ const resolvers = {
       } catch (e) {
         console.log(e);
         return { message: 'Server error' };
+      }
+    },
+
+    forceGeolocation: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('User not found');
+
+        const publicIpAdress = await publicIp.v4();
+        const access_key = 'e0f43f3da5051d101a0ba8d112b9871c';
+        const getLocation = await fetch('http://api.ipstack.com/' + publicIpAdress + '?access_key=' + access_key);
+
+        const location = await getLocation.json();
+        const locationJson = JSON.stringify({ lat: location.latitude, lng: location.longitude, formatedName: `${location.country_name}, ${location.city}, ${location.zip}` });
+        console.log(locationJson);
+        const mutationClient = await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [locationJson, user.id]);
+        return true;
+      } catch (e) {
+        console.log(e);
+        return new Error(e.message);
       }
     }
 

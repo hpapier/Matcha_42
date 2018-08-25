@@ -1,13 +1,13 @@
 // Modules imports.
 import React, { Component } from 'react';
-import { Query } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 
 // Local import
 import './index.sass';
-import { FORCE_GEOLOCATION_QUERY } from '../../../query';
+import { FORCE_GEOLOCATION_MUTATION } from '../../../query';
 import { statusBarMechanism } from '../../../store/action/synchronous';
 
 
@@ -21,21 +21,25 @@ class NotComplete extends Component {
 
   render() {
     return (
-      <Query query={FORCE_GEOLOCATION_QUERY}>
+      <Mutation mutation={FORCE_GEOLOCATION_MUTATION}>
       {
-        () => {
-          const { bio, interests, images, location } = this.props;
+        forceGeolocation => {
+          const { bio, interests, images, location } = this.props.data;
+          if (!location)
+            forceGeolocation();
+
           return (
             <div id='lgi-not-complete'>
               <div id='lgi-not-complete-title'>Votre profil n'est pas complet.</div>
               <div id='lgi-not-complete-sub-title'>Veuillez le compléter afin d'accéder au matching.</div>
-              <div id='lgi-not-complete-text'>({!bio ? `Bio${!interests ? ', ' : ''}` : ''}{!interests ? `tags${!images ? ', ' : ''}` : ''}{!images ? `photos${!location ? ', ' : ''}` : ''}{!location ? `localisation` : ''})</div>
+              <div id='lgi-not-complete-text'>
+                ({!bio ? `Bio${interests.length === 0 || images.length === 0 ? ', ' : ''}` : ''}{interests.length === 0 ? `tags${images.length === 0 ? ', ' : ''}` : ''}{images.length === 0 ? `photos` : ''})</div>
               <div id='lgi-not-complete-btn' onClick={this.changeRoute}>compléter</div>
             </div>
           );
         } 
       }
-      </Query>
+      </Mutation>
     );
   }
 };
