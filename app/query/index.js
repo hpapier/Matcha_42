@@ -93,3 +93,20 @@ export const FORCE_GEOLOCATION_MUTATION = gql`
     forceGeolocation
   }
 `;
+
+export const USER_BOX_QUERY = gql`
+  {
+    userInformations {
+      username
+      lastname
+      firstname
+      popularityScore
+      profilPicture
+    }
+
+    userNotif {
+      id
+      action
+    }
+  }
+`;

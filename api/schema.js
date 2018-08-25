@@ -78,6 +78,15 @@ const typeDefs = `
     lastConnexion: String
     interests: [UserInterests]
     images: [UserImages]
+    profilPicture: String
+  }
+
+  type Notification {
+    id: Int
+    isViewed: Int
+    action: String
+    userId: Int
+    fromUserId: Int
   }
 
   type Query {
@@ -86,6 +95,7 @@ const typeDefs = `
     resetTokenVerification(username: String!, resetToken: String!): MessageStatus
     userInformations: UserInformations
     getInterests: [Interests]
+    userNotif: [Notification]
   }
   
   type Mutation {
@@ -172,7 +182,8 @@ const resolvers = {
           creationDate: user.creation_date,
           lastConnexion: new Date(),
           interests: userInterest.rows,
-          images: userImages.rows
+          images: userImages.rows,
+          profilPicture: user.profil_picture
         };
       } catch (e) {
         return new Error(e.message)
@@ -187,6 +198,24 @@ const resolvers = {
   
         const interests = await client.query('SELECT * FROM interests');
         return interests.rows;
+      } catch (e) {
+        return new Error(e.message);
+      }
+    },
+
+    userNotif: async (parent, args, ctx) => {
+      try {
+        const user = verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error(e.message);
+
+        const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
+        if (notif.rowCount === 0)
+          return [];
+        else {
+          const arrayOfNotif = notif.rows.map(item => ({ id: item.id, isViewed: item.is_viewed, action: item.action, userId: item.user_id, fromUserId: item.from }));
+          return arrayOfNotif;
+        }
       } catch (e) {
         return new Error(e.message);
       }

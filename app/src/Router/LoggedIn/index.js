@@ -9,6 +9,7 @@ import { GET_USER_INFO_QUERY } from '../../../query';
 import Navbar from '../../LoggedIn/Navbar';
 import NotComplete from '../../LoggedIn/NotComplete';
 import Homepage from '../../LoggedIn/Homepage';
+import Profil from '../../LoggedIn/Profil';
 
 // LoggedIn Router Component
 const LoggedIn = props => (
@@ -44,7 +45,7 @@ const LoggedIn = props => (
               <Route exact path='/' component={getComponent} />
               { !loading ? <Route exact path='/notification' component={() => <div>notifications</div>} /> : null }
               { !loading ? <Route exact path='/message' component={() => <div>messages</div>} /> : null }
-              { !loading ? <Route exact path='/profil' component={() => <div>profil</div>} /> : null }
+              { !loading ? <Route exact path='/profil' component={Profil} /> : null }
             </Switch>
           </div>
         </Router>

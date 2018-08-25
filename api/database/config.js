@@ -114,7 +114,7 @@
 // notification:
 // --> id
 // --> is_viewed
-// --> action
+// --> action   (visite, like, match)
 // --> user_id
 // --> from
 

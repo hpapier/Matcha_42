@@ -1,0 +1,173 @@
+// VARIABLES
+$ssp: 'Source sans pro', sans-serif
+
+// ANIMATION
+@keyframes user-box-loading
+  0%
+    background: #f2f4f7
+  50%
+    background: #E7E9ED
+  100%
+    background: #f2f4f7
+
+// STYLE
+#lgi-user-box
+  width: 320px
+  background: #fff
+  padding: 20px 0px
+  display: flex
+  flex-direction: column
+  align-items: center
+  margin-left: 100px
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+
+#lgi-user-box-profil-loading
+  width: 85px
+  height: 85px
+  border-radius: 50%
+  background: #f2f4f7
+  margin-bottom: 20px
+  animation-name: user-box-loading
+  animation-duration: 1.5s
+  animation-direction: normal
+  animation-timing-function: ease
+  animation-iteration-count: infinite
+  transition: .2s
+
+#lgi-user-box-profil
+  width: 85px
+  height: 85px
+  border-radius: 50%
+  margin-bottom: 20px
+  object-fit: cover
+
+#lgi-user-box-profil-noloading
+  width: 85px
+  height: 85px
+  border-radius: 50%
+  background: #f2f4f7
+  margin-bottom: 20px
+
+
+#lgi-user-box-score-loading
+  width: 60px
+  margin-bottom: 5px
+  height: 15px
+  border-radius: 3px
+  background: #f2f4f7
+  animation-name: user-box-loading
+  animation-duration: 1.5s
+  animation-direction: normal
+  animation-timing-function: ease
+  animation-iteration-count: infinite
+
+#lgi-user-box-score
+  display: flex
+  height: 15px
+  width: 60px
+  margin-bottom: 5px
+  justify-content: center
+  align-items: center
+
+#lgi-user-box-score-icon
+  margin-right: 10px
+
+#lgi-user-box-score-text
+  font-family: $ssp
+  font-size: .875em
+  font-weight: 400
+  color: #E6C2AA
+
+#lgi-user-box-name-loading
+  width: 100px
+  margin-bottom: 5px
+  height: 20px
+  border-radius: 3px
+  background: #f2f4f7
+  animation-name: user-box-loading
+  animation-duration: 1.5s
+  animation-direction: normal
+  animation-timing-function: ease
+  animation-iteration-count: infinite
+
+#lgi-user-box-name
+  font-family: $ssp
+  font-size: 1em
+  font-weight: 600
+  color: #66757F
+  margin-bottom: 2px
+
+#lgi-user-box-username-loading
+  width: 60px
+  margin-bottom: 5px
+  height: 15px
+  border-radius: 3px
+  background: #f2f4f7
+  animation-name: user-box-loading
+  animation-duration: 1.5s
+  animation-direction: normal
+  animation-timing-function: ease
+  animation-iteration-count: infinite
+
+#lgi-user-box-username
+  margin-bottom: 5px
+  font-family: $ssp
+  font-size: .75em
+  font-weight: 400
+  color: #66757F
+
+#lgi-user-box-bio-loading
+  margin-top: 10px
+  width: 200px
+  background: #f2f4f7
+  height: 20px
+  animation-name: user-box-loading
+  animation-duration: 1.5s
+  animation-direction: normal
+  animation-timing-function: ease
+  animation-iteration-count: infinite
+  transition: .2s
+
+#lgi-user-box-bio
+  margin-top: 10px
+  width: 200px
+  font-family: $ssp
+  font-size: .75em
+  font-weight: 300
+  color: #66757F
+  display: flex
+  justify-content: center
+  text-align: justify
+
+#lgi-user-link
+  display: flex
+  width: 80%
+  justify-content: space-between
+  margin-top: 20px
+
+.lgi-user-box-link-box-title
+  font-family: $ssp
+  font-size: .875em
+  font-weight: 600
+  color: #66757F
+  cursor: pointer
+  transition: .2s
+
+.lgi-user-box-link-box-title:hover
+  text-decoration: underline
+
+.lgi-user-box-link-box-content
+  font-family: $ssp
+  font-size: .875em
+  font-weight: 700
+  color: #E6C2AA
+
+
+// RESPONSIVE
+@media screen and (max-width: 950px)
+  #lgi-user-box
+    margin-left: 30px
+
+@media screen and (max-width: 800px)
+  #lgi-user-box
+    margin-left: 0px
