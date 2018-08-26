@@ -1,5 +1,5 @@
 import initialState from './store';
-import { SAVE_USER_INFO, CHANGE_STATUS_BAR, UPDATE_USER_LASTNAME, UPDATE_USER_FIRSTNAME, UPDATE_USERNAME } from './constant';
+import { SAVE_USER_INFO, CHANGE_STATUS_BAR, UPDATE_USER_LASTNAME, UPDATE_USER_FIRSTNAME, UPDATE_USERNAME, UPDATE_USER_BIRTHDATE } from './constant';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -24,7 +24,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         statusBar: action.payload
-      }
+      };
     case UPDATE_USER_LASTNAME:
       return {
         ...state,
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
           ...state.user,
           lastname: action.payload
         }
-      }
+      };
     case UPDATE_USER_FIRSTNAME:
       return {
         ...state,
@@ -40,7 +40,7 @@ export default (state = initialState, action) => {
           ...state.user,
           firstname: action.payload
         }
-      }
+      };
     case UPDATE_USERNAME:
       return {
         ...state,
@@ -48,7 +48,15 @@ export default (state = initialState, action) => {
           ...state.user,
           username: action.payload
         }
-      }
+      };
+    case UPDATE_USER_BIRTHDATE:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          birthDate: action.payload
+        }
+      };
     default:
       return state;
   }

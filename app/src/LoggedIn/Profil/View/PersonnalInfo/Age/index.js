@@ -29,28 +29,16 @@ class birthdate extends Component {
     }
 
     const date = new Date(dateValue);
+    if (date.getFullYear() > 2018 || date.getFullYear() < 1850) {
+      this.setState({ errorMsg: 'Date invalide. '});
+      return;
+    }
+
     if (date === 'Invalid date') {
       this.setState({ errorMsg: 'Date invalide. '});
       return;
     }
 
-    // const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
-    // if (dateValue.match(regexp)) {
-    //   this.setState({ errorMsg: 'Caractères spéciaux interdits.'});
-    //   return;
-    // }
-
-    // if (dateValue.length > 255) {
-    //   this.setState({ errorMsg: 'Maximum 255 caractères.'});
-    //   return;
-    // }
-
-    // if (this.props.date === dateValue) {
-    //   this.setState({ modifActive: false, errorMsg: '', dateValue: '' });
-    //   return;
-    // }
-
-    console.log(date)
     mutation({ variables: { birthdate: date }})
     .then(r => {
       this.setState({ modifActive: false, errorMsg: '', dateValue: '' });
