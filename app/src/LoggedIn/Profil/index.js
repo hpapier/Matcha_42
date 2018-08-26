@@ -19,11 +19,15 @@ class Profil extends Component {
       <div id='lgi-profil'>
         <UserBox />
         <div id='lgi-profil-infobox'>
-          <ViewPersonnalInfo />
-          <ViewPreferences />
-          <ViewSensibleInfo />
-          <ViewAbout />
-          <ViewImages />
+          <div>
+            <ViewPersonnalInfo />
+            <ViewSensibleInfo />
+          </div>
+          <div>
+            <ViewPreferences />
+            <ViewAbout />
+            <ViewImages />
+          </div>
         </div>
       </div>
     );

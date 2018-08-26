@@ -10,8 +10,8 @@ import './index.sass';
 class About extends Component {
   render() {
     return (
-      <div>
-        About Component
+      <div id='lgi-profil-view-sensible'>
+        <div id='lgi-profil-view-sensible-header'>à propos</div>
       </div>
     );
   }

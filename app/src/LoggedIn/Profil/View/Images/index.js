@@ -10,8 +10,8 @@ import './index.sass';
 class Images extends Component {
   render() {
     return (
-      <div>
-        Images Component
+      <div id='lgi-profil-view-photos'>
+        <div id='lgi-profil-view-photos-header'>photos</div>
       </div>
     );
   }

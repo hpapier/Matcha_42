@@ -10,8 +10,8 @@ import './index.sass';
 class Preferences extends Component {
   render() {
     return (
-      <div>
-        Preferences Component
+      <div id='lgi-profil-view-pref'>
+        <div id='lgi-profil-view-pref-header'>préférences</div>
       </div>
     );
   }

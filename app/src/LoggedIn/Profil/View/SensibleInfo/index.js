@@ -10,8 +10,8 @@ import './index.sass';
 class SensibleInfo extends Component {
   render() {
     return (
-      <div>
-        SensibleInfo Component
+      <div id='lgi-profil-view-sensible'>
+        <div id='lgi-profil-view-sensible-header'>confidentialités</div>
       </div>
     );
   }
