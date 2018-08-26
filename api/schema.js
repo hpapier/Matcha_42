@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const publicIp = require('public-ip');
 const fetch = require('node-fetch');
+var NodeGeocoder = require('node-geocoder');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -112,6 +113,7 @@ const typeDefs = `
     updateUserFirstname(firstname: String!): userData
     updateUsername(username: String!): userData
     updateUserBirthDate(birthdate: String!): userData
+    updateUserGeolocation(geolocation: String!): userData
   }
 
 `;
@@ -349,7 +351,6 @@ const resolvers = {
 
         const location = await getLocation.json();
         const locationJson = JSON.stringify({ lat: location.latitude, lng: location.longitude, formatedName: `${location.country_name}, ${location.city}, ${location.zip}` });
-        console.log(locationJson);
         const mutationClient = await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [locationJson, user.id]);
         return true;
       } catch (e) {
@@ -417,6 +418,33 @@ const resolvers = {
         return new Error(e.message);
       }
     },
+
+    updateUserGeolocation: async (parent, { geolocation }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const options = {
+          provider: 'google',
+          // Optional depending on the providers
+          httpAdapter: 'https', // Default
+          // apiKey: 'e0f43f3da5051d101a0ba8d112b9871c', // for Mapquest, OpenCage, Google Premier 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4'
+          // apiKey: 'SnyCDRVbW_KCGkXb1vrQ'
+          formatter: null,         // 'gpx', 'string', ...
+        };
+        const geocoder = NodeGeocoder(options);
+
+        const coords = JSON.parse(geolocation);
+        const res = await geocoder.reverse({ lat: coords.lat, lon: coords.lng });
+        const address = res[0].formattedAddress;
+        const newAdd = JSON.stringify({ lat: coords.lat, lng: coords.lng, formatedName: address });
+        const result = await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [newAdd, user.id]);
+        return { data: newAdd };
+      } catch (e) {
+        return e;
+      }
+    }
 
 
 

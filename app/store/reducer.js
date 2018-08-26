@@ -1,5 +1,13 @@
 import initialState from './store';
-import { SAVE_USER_INFO, CHANGE_STATUS_BAR, UPDATE_USER_LASTNAME, UPDATE_USER_FIRSTNAME, UPDATE_USERNAME, UPDATE_USER_BIRTHDATE } from './constant';
+import {
+  SAVE_USER_INFO,
+  CHANGE_STATUS_BAR,
+  UPDATE_USER_LASTNAME,
+  UPDATE_USER_FIRSTNAME,
+  UPDATE_USERNAME,
+  UPDATE_USER_BIRTHDATE,
+  UPDATE_GEOLOCATION_MECHANISM
+} from './constant';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -57,6 +65,14 @@ export default (state = initialState, action) => {
           birthDate: action.payload
         }
       };
+    case UPDATE_GEOLOCATION_MECHANISM:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          location: action.payload
+        }
+      }
     default:
       return state;
   }

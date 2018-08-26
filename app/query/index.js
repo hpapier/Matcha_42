@@ -143,3 +143,11 @@ export const UPDATE_DATE_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_GEOLOCATION_MUTATION = gql`
+  mutation updateUserGeolocation($geolocation: String!) {
+    updateUserGeolocation(geolocation: $geolocation) {
+      data
+    }
+  }
+`;

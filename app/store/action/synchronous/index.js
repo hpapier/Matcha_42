@@ -1,4 +1,12 @@
-import { SAVE_USER_INFO, CHANGE_STATUS_BAR, UPDATE_USER_LASTNAME, UPDATE_USER_FIRSTNAME, UPDATE_USERNAME, UPDATE_USER_BIRTHDATE } from '../../constant';
+import {
+  SAVE_USER_INFO,
+  CHANGE_STATUS_BAR,
+  UPDATE_USER_LASTNAME,
+  UPDATE_USER_FIRSTNAME,
+  UPDATE_USERNAME,
+  UPDATE_USER_BIRTHDATE,
+  UPDATE_GEOLOCATION_MECHANISM
+} from '../../constant';
 
 export const saveUserInfo = data => ({
   type: SAVE_USER_INFO,
@@ -23,9 +31,14 @@ export const updateUserFirstnameMechanism = data => ({
 export const updateUsernameMechanism = data => ({
   type: UPDATE_USERNAME,
   payload: data
-})
+});
 
 export const updateUserBirthDateMechanism = data => ({
   type: UPDATE_USER_BIRTHDATE,
+  payload: data
+});
+
+export const updateUserGeolocationMechanism = data => ({
+  type: UPDATE_GEOLOCATION_MECHANISM,
   payload: data
 })
