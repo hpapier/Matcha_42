@@ -17,7 +17,8 @@ import { updateUserLastnameMechanism } from '../../../../../../store/action/sync
 class LastName extends Component {
   state = {
     modifActive: false,
-    lastnameInput: ''
+    lastnameInput: '',
+    errorMsg: ''
   };
 
   updateMechanism = mutation => {

@@ -118,3 +118,20 @@ export const UPDATE_LASTNAME_MUTATION = gql`
     }
   }
 `;
+
+
+export const UPDATE_FIRSTNAME_MUTATION = gql`
+  mutation updateUserFirstname($firstname: String!) {
+    updateUserFirstname(firstname: $firstname) {
+      firstname
+    }
+  }
+`;
+
+export const UPDATE_USERNAME_MUTATION = gql`
+  mutation updateUsername($username: String!) {
+    updateUsername(username: $username) {
+      username
+    }
+  }
+`;

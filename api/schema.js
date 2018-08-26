@@ -26,7 +26,7 @@ const verifyUserToken = async token => {
   
     const tokenJwt = token.authorization.split(' ')[1];
     const decoded = JWT.verify(tokenJwt, JWTSECRET);
-    const res = await client.query('SELECT * FROM user_info WHERE id = $1 AND username = $2', [decoded.id, decoded.username]);
+    const res = await client.query('SELECT * FROM user_info WHERE id = $1', [decoded.id]);
     if (res.rows[0])
       return res.rows[0];
     return false;
@@ -93,6 +93,14 @@ const typeDefs = `
     lastname: String
   }
 
+  type FirstName {
+    firstname: String
+  }
+
+  type UserName {
+    username: String
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -109,6 +117,8 @@ const typeDefs = `
     resetPassword(username: String!, resetToken: String!, password: String!): MessageStatus
     forceGeolocation: Boolean
     updateUserLastname(lastname: String!): LastName
+    updateUserFirstname(firstname: String!): FirstName
+    updateUsername(username: String!): UserName
   }
 
 `;
@@ -275,7 +285,7 @@ const resolvers = {
         if (!res.rows[0].isconfirmed)
           return { message: 'Account not confirmed', token: '' };
 
-        const jwtToken = JWT.sign({ id: res.rows[0].id, username: res.rows[0].username }, JWTSECRET);
+        const jwtToken = JWT.sign({ id: res.rows[0].id }, JWTSECRET);
         return { message: 'Success', token: jwtToken };
       } catch (e) {
         console.log(e);
@@ -367,7 +377,41 @@ const resolvers = {
       } catch(e) {
         return new Error(e.message);
       }
+    },
+
+    updateUserFirstname: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const response = await client.query('UPDATE user_info SET firstname = $1 WHERE id = $2', [args.firstname, user.id]);
+        const refetchUser = await client.query('SELECT firstname FROM user_info WHERE id = $1', [user.id]);
+        return { firstname: refetchUser.rows[0].firstname };
+      } catch(e) {
+        return new Error(e.message);
+      }
+    },
+
+    updateUsername: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const search = await client.query('SELECT * FROM user_info WHERE username = $1', [args.username]);
+        if (search.rowCount > 0)
+          return new Error('Already exist.');
+
+        const response = await client.query('UPDATE user_info SET username = $1 WHERE id = $2', [args.username, user.id]);
+        const refetchUser = await client.query('SELECT username FROM user_info WHERE id = $1', [user.id]);
+        return { username: refetchUser.rows[0].username };
+      } catch(e) {
+        return new Error(e.message);
+      }
     }
+
+
 
     // addPost: async (parent, { content, author }, ctx) => {
     //   const res = await client.query('INSERT INTO post (content, author) VALUES ($1, $2) RETURNING *', [content, author]);

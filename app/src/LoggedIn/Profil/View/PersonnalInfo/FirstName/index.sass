@@ -1,0 +1,91 @@
+// VARIABLES
+$ssp: 'Source sans pro', sans-serif
+$grey: #66757F
+
+// STYLE
+#lgi-profil-view-pi-firstname
+  width: 100%
+  margin-top: 1px
+  background: #fff
+  height: 60px
+  display: flex
+  justify-content: space-between
+  align-items: center
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+
+#lgi-profil-view-pi-firstname-box1
+  width: 200px
+  margin-left: 30px
+
+#lgi-profil-view-pi-firstname-box1-title
+  width: 100%
+  text-transform: uppercase
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 600
+  color: rgba($grey, 0.8)
+
+#lgi-profil-view-pi-firstname-box1-content
+  width: 100%
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 600
+  color: rgba($grey, 1)
+
+#lgi-profil-view-pi-firstname-box1-input
+  width: 100%
+  border: none
+  background: rgba(0, 0, 0, 0)
+  box-shadow: none
+  border-bottom: 1px solid $grey
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 600
+  color: rgba($grey, 1)
+  outline: none
+
+#lgi-profil-view-pi-firstname-box1-input::placeholder
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 400
+  font-style: italic
+  color: rgba($grey, .7)
+
+#lgi-profil-view-pi-firstname-box2
+  width: 65px
+
+#lgi-profil-view-pi-firstname-box2-edit,
+#lgi-profil-view-pi-firstname-box2-update-validate,
+#lgi-profil-view-pi-firstname-box2-update-cancel
+  border: none
+  background: rgba(0, 0, 0, 0)
+  box-shadow: none
+  outline: none
+  cursor: pointer
+
+
+
+// LOADING
+@keyframes lgi-profil-view-pi-firstname-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+    
+#lgi-profil-view-pi-firstname-box2-loading
+  animation-name: lgi-profil-view-pi-firstname-loading
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  width: 20px
+  height: 20px
+  border: 5px solid #f2f4f7
+  border-top-color: #E6C2AA
+  border-radius: 50%
+
+// ERROR
+#lgi-profil-view-pi-firstname-box1-error
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 400
+  color: red
