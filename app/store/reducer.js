@@ -1,5 +1,5 @@
 import initialState from './store';
-import { SAVE_USER_INFO, CHANGE_STATUS_BAR } from './constant';
+import { SAVE_USER_INFO, CHANGE_STATUS_BAR, UPDATE_USER_LASTNAME } from './constant';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -24,6 +24,14 @@ export default (state = initialState, action) => {
       return {
         ...state,
         statusBar: action.payload
+      }
+    case UPDATE_USER_LASTNAME:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          lastname: action.payload
+        }
       }
     default:
       return state;

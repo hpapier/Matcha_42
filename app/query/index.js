@@ -110,3 +110,11 @@ export const USER_BOX_QUERY = gql`
     }
   }
 `;
+
+export const UPDATE_LASTNAME_MUTATION = gql`
+  mutation updateUserLastname($lastname: String!) {
+    updateUserLastname(lastname: $lastname) {
+      lastname
+    }
+  }
+`;

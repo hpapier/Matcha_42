@@ -89,6 +89,10 @@ const typeDefs = `
     fromUserId: Int
   }
 
+  type LastName {
+    lastname: String
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -104,6 +108,7 @@ const typeDefs = `
     sendEmailReset(username: String!, email: String!): MessageStatus
     resetPassword(username: String!, resetToken: String!, password: String!): MessageStatus
     forceGeolocation: Boolean
+    updateUserLastname(lastname: String!): LastName
   }
 
 `;
@@ -346,6 +351,20 @@ const resolvers = {
         return true;
       } catch (e) {
         console.log(e);
+        return new Error(e.message);
+      }
+    },
+
+    updateUserLastname: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const response = await client.query('UPDATE user_info SET lastname = $1 WHERE id = $2', [args.lastname, user.id]);
+        const refetchUser = await client.query('SELECT lastname FROM user_info WHERE id = $1', [user.id]);
+        return { lastname: refetchUser.rows[0].lastname };
+      } catch(e) {
         return new Error(e.message);
       }
     }

@@ -15,7 +15,7 @@ class UserBox extends Component {
     return (
       <Query
         query={USER_BOX_QUERY}
-        // pollInterval={500}
+        pollInterval={500}
       >
         {
           ({ loading, error, data }) => {
