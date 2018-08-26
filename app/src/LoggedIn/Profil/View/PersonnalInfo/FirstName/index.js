@@ -42,8 +42,9 @@ class FirstName extends Component {
     mutation({ variables: { firstname: firstnameInput }})
     .then(r => {
       this.setState({ modifActive: false, errorMsg: '', firstnameInput: '' });
-      this.props.updateUserFirstnameMechanism(r.data.updateUserFirstname.firstname);
-    });
+      this.props.updateUserFirstnameMechanism(r.data.updateUserFirstname.data);
+    })
+    .catch(e => this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." }));
   }
 
   render() {

@@ -89,16 +89,8 @@ const typeDefs = `
     fromUserId: Int
   }
 
-  type LastName {
-    lastname: String
-  }
-
-  type FirstName {
-    firstname: String
-  }
-
-  type UserName {
-    username: String
+  type userData {
+    data: String
   }
 
   type Query {
@@ -116,9 +108,10 @@ const typeDefs = `
     sendEmailReset(username: String!, email: String!): MessageStatus
     resetPassword(username: String!, resetToken: String!, password: String!): MessageStatus
     forceGeolocation: Boolean
-    updateUserLastname(lastname: String!): LastName
-    updateUserFirstname(firstname: String!): FirstName
-    updateUsername(username: String!): UserName
+    updateUserLastname(lastname: String!): userData
+    updateUserFirstname(firstname: String!): userData
+    updateUsername(username: String!): userData
+    updateUserBirthDate(birthdate: String!): userData
   }
 
 `;
@@ -373,7 +366,7 @@ const resolvers = {
 
         const response = await client.query('UPDATE user_info SET lastname = $1 WHERE id = $2', [args.lastname, user.id]);
         const refetchUser = await client.query('SELECT lastname FROM user_info WHERE id = $1', [user.id]);
-        return { lastname: refetchUser.rows[0].lastname };
+        return { data: refetchUser.rows[0].lastname };
       } catch(e) {
         return new Error(e.message);
       }
@@ -387,7 +380,7 @@ const resolvers = {
 
         const response = await client.query('UPDATE user_info SET firstname = $1 WHERE id = $2', [args.firstname, user.id]);
         const refetchUser = await client.query('SELECT firstname FROM user_info WHERE id = $1', [user.id]);
-        return { firstname: refetchUser.rows[0].firstname };
+        return { data: refetchUser.rows[0].firstname };
       } catch(e) {
         return new Error(e.message);
       }
@@ -405,11 +398,25 @@ const resolvers = {
 
         const response = await client.query('UPDATE user_info SET username = $1 WHERE id = $2', [args.username, user.id]);
         const refetchUser = await client.query('SELECT username FROM user_info WHERE id = $1', [user.id]);
-        return { username: refetchUser.rows[0].username };
+        return { data: refetchUser.rows[0].username };
       } catch(e) {
         return new Error(e.message);
       }
-    }
+    },
+
+    updateUserBirthDate: async (parent, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const response = await client.query('UPDATE user_info SET birth_date = $1 WHERE id = $2', [args.birthdate, user.id]);
+        const refetchUser = await client.query('SELECT birth_date FROM user_info WHERE id = $1', [user.id]);
+        return { data: refetchUser.rows[0].birth_date };
+      } catch(e) {
+        return new Error(e.message);
+      }
+    },
 
 
 

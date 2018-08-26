@@ -47,11 +47,13 @@ class UserName extends Component {
     mutation({ variables: { username: usernameInput }})
     .then(r => {
       this.setState({ modifActive: false, errorMsg: '', usernameInput: '' });
-      this.props.updateUsernameMechanism(r.data.updateUsername.username);
+      this.props.updateUsernameMechanism(r.data.updateUsername.data);
     })
     .catch(e => {
-      console.log('--- IN CATCH ---');
-      console.log(e);
+      if (e.message === 'GraphQL error: Already exist.')
+        this.setState({ modifActive: true, errorMsg: "Nom d'utilisateur déjà pris." });
+      else
+        this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." });
     });
   }
 

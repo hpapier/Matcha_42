@@ -114,7 +114,7 @@ export const USER_BOX_QUERY = gql`
 export const UPDATE_LASTNAME_MUTATION = gql`
   mutation updateUserLastname($lastname: String!) {
     updateUserLastname(lastname: $lastname) {
-      lastname
+      data
     }
   }
 `;
@@ -123,7 +123,7 @@ export const UPDATE_LASTNAME_MUTATION = gql`
 export const UPDATE_FIRSTNAME_MUTATION = gql`
   mutation updateUserFirstname($firstname: String!) {
     updateUserFirstname(firstname: $firstname) {
-      firstname
+      data
     }
   }
 `;
@@ -131,7 +131,15 @@ export const UPDATE_FIRSTNAME_MUTATION = gql`
 export const UPDATE_USERNAME_MUTATION = gql`
   mutation updateUsername($username: String!) {
     updateUsername(username: $username) {
-      username
+      data
+    }
+  }
+`;
+
+export const UPDATE_DATE_MUTATION = gql`
+  mutation updateUserBirthDate($birthdate: String!) {
+    updateUserBirthDate(birthdate: $birthdate) {
+      data
     }
   }
 `;

@@ -42,8 +42,9 @@ class LastName extends Component {
     mutation({ variables: { lastname: lastnameInput }})
     .then(r => {
       this.setState({ modifActive: false, errorMsg: '', lastnameInput: '' });
-      this.props.updateUserLastnameMechanism(r.data.updateUserLastname.lastname);
-    });
+      this.props.updateUserLastnameMechanism(r.data.updateUserLastname.data);
+    })
+    .catch(e => this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." }));
   }
 
   render() {
