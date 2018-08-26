@@ -11,6 +11,12 @@ import cupBrownIcon from '../../../assets/cup-brown.svg';
 
 // UserBox Component
 class UserBox extends Component {
+  checkWord = (len, word) => {
+    if (word.length > len)
+      return word.substring(0, len) + '..';
+    return word;
+  }
+
   render() {
     return (
       <Query
@@ -56,13 +62,13 @@ class UserBox extends Component {
                 {
                   loading ?
                   <div id='lgi-user-box-name-loading'></div> :
-                  <div id='lgi-user-box-name'>{data.userInformations.firstname + ' ' + data.userInformations.lastname}</div>
+                  <div id='lgi-user-box-name'>{this.checkWord(15, data.userInformations.firstname) + ' ' + this.checkWord(15, data.userInformations.lastname)}</div>
                 }
 
                 {
                   loading ?
                   <div id='lgi-user-box-username-loading'></div> :
-                  <div id='lgi-user-box-username'>@{data.userInformations.username}</div>
+                  <div id='lgi-user-box-username'>@{this.checkWord(40, data.userInformations.username)}</div>
                 }
 
                 {

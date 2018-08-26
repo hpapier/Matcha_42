@@ -16,13 +16,15 @@ import ViewImages from './View/Images';
 class Profil extends Component {
   render() {
     return (
-      <div>
+      <div id='lgi-profil'>
         <UserBox />
-        <ViewPersonnalInfo />
-        <ViewPreferences />
-        <ViewSensibleInfo />
-        <ViewAbout />
-        <ViewImages />
+        <div id='lgi-profil-infobox'>
+          <ViewPersonnalInfo />
+          <ViewPreferences />
+          <ViewSensibleInfo />
+          <ViewAbout />
+          <ViewImages />
+        </div>
       </div>
     );
   }

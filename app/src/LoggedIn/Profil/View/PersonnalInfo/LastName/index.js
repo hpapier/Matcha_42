@@ -33,11 +33,16 @@ class LastName extends Component {
       return;
     }
 
+    if (lastnameInput.length > 255) {
+      this.setState({ errorMsg: 'Maximum 255 caractères.'});
+      return;
+    }
+
     mutation({ variables: { lastname: lastnameInput }})
     .then(r => {
       this.setState({ modifActive: false, errorMsg: '', lastnameInput: '' });
       this.props.updateUserLastnameMechanism(r.data.updateUserLastname.lastname);
-    })
+    });
   }
 
   render() {
@@ -53,7 +58,7 @@ class LastName extends Component {
                 <div id='lgi-profil-view-pi-lastname-box1-title'>nom</div>
                 {
                   !modifActive ?
-                  <div id='lgi-profil-view-pi-lastname-box1-content'>{userLastname}</div> :
+                  <div id='lgi-profil-view-pi-lastname-box1-content'>{userLastname.length > 30 ? userLastname.substring(0, 30) + '..' : userLastname}</div> :
                   <input
                     id='lgi-profil-view-pi-lastname-box1-input'
                     type='text'
