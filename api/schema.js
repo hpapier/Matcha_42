@@ -69,6 +69,7 @@ const typeDefs = `
     username: String
     lastname: String
     firstname: String
+    email: String
     birthDate: String
     genre: String
     sexualOrientation: String
@@ -114,6 +115,7 @@ const typeDefs = `
     updateUsername(username: String!): userData
     updateUserBirthDate(birthdate: String!): userData
     updateUserGeolocation(geolocation: String!): userData
+    updateUserEmail(email: String!): userData
   }
 
 `;
@@ -178,11 +180,11 @@ const resolvers = {
         const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
         const updateConnexion = await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
-        
         return {
           username: user.username,
           lastname: user.lastname,
           firstname: user.firstname,
+          email: user.email,
           birthDate: user.birth_date,
           genre: user.genre,
           sexualOrientation: user.sexual_orientation,
@@ -444,7 +446,25 @@ const resolvers = {
       } catch (e) {
         return e;
       }
-    }
+    },
+
+    updateUserEmail: async (parent, { email }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const search = await client.query('SELECT * FROM user_info WHERE email = $1', [email]);
+        if (search.rowCount > 0)
+          return new Error('Already exist.');
+
+        const response = await client.query('UPDATE user_info SET email = $1 WHERE id = $2', [email, user.id]);
+        const refetchUser = await client.query('SELECT email FROM user_info WHERE id = $1', [user.id]);
+        return { data: refetchUser.rows[0].email };
+      } catch(e) {
+        return new Error(e.message);
+      }
+    },
 
 
 

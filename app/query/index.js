@@ -79,6 +79,7 @@ export const GET_USER_INFO_QUERY = gql`
         id
         path
       }
+      email
     }
 
     getInterests {
@@ -147,6 +148,14 @@ export const UPDATE_DATE_MUTATION = gql`
 export const UPDATE_GEOLOCATION_MUTATION = gql`
   mutation updateUserGeolocation($geolocation: String!) {
     updateUserGeolocation(geolocation: $geolocation) {
+      data
+    }
+  }
+`;
+
+export const UPDATE_EMAIL_MUTATION = gql`
+  mutation updateUserEmail($email: String!) {
+    updateUserEmail(email: $email) {
       data
     }
   }

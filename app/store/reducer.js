@@ -6,7 +6,8 @@ import {
   UPDATE_USER_FIRSTNAME,
   UPDATE_USERNAME,
   UPDATE_USER_BIRTHDATE,
-  UPDATE_GEOLOCATION_MECHANISM
+  UPDATE_GEOLOCATION_MECHANISM,
+  UPDATE_EMAIL_MECHANISM
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -18,6 +19,7 @@ export default (state = initialState, action) => {
           username: action.payload.username,
           lastname: action.payload.lastname,
           firstname: action.payload.firstname,
+          email: action.payload.email,
           birthDate: action.payload.birthDate,
           genre: action.payload.genre,
           sexualOrientation: action.payload.sexualOrientation,
@@ -71,6 +73,14 @@ export default (state = initialState, action) => {
         user: {
           ...state.user,
           location: action.payload
+        }
+      }
+    case UPDATE_EMAIL_MECHANISM:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          email: action.payload
         }
       }
     default:

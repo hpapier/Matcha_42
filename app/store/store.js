@@ -3,6 +3,7 @@ const store = {
     username: '',
     lastname: '',
     firstname: '',
+    email: '',
     birthDate: '',
     genre: '',
     sexualOrientation: '',
