@@ -40,7 +40,7 @@ const LoggedIn = props => (
       return (
         <Router>
           <div>
-            <Navbar loading={loading} firstRefetch={props.firstRefetch} data={data.userInformations} />
+            <Navbar loading={loading} firstRefetch={props.firstRefetch} data={data.userInformations} interests={data.getInterests} />
             <Switch>
               <Route exact path='/' component={getComponent} />
               { !loading ? <Route exact path='/notification' component={() => <div>notifications</div>} /> : null }

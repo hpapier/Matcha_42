@@ -10,7 +10,8 @@ import {
   UPDATE_EMAIL_MECHANISM,
   UPDATE_GENRE_MECHANISM,
   UPDATE_SEXUAL_ORIENTATION_MECHANISM,
-  UPDATE_USER_BIO_MECHANISM
+  UPDATE_USER_BIO_MECHANISM,
+  SAVE_INTEREST_MECHANISM
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -30,7 +31,9 @@ export default (state = initialState, action) => {
           popularityScore: action.payload.popularityScore,
           location: action.payload.location,
           creationDate: action.payload.creationDate,
-          lastConnexion: action.payload.lastConnexion
+          lastConnexion: action.payload.lastConnexion,
+          userImages: action.payload.images,
+          userTags: action.payload.interests
         }
       };
     case CHANGE_STATUS_BAR:
@@ -110,6 +113,11 @@ export default (state = initialState, action) => {
           bio: action.payload
         }
       };
+    case SAVE_INTEREST_MECHANISM:
+      return {
+        ...state,
+        interests: action.payload
+      }
     default:
       return state;
   }

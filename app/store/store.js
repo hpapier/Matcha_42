@@ -11,8 +11,11 @@ const store = {
     popularityScore: 0,
     location: '',
     creationDate: '',
-    lastConnexion: ''
+    lastConnexion: '',
+    userTags: [],
+    userImages: []
   },
+  interests: [],
   statusBar: 'home'
 };
 

@@ -12,7 +12,7 @@ import notifLineIcon from '../../../assets/notif-line.svg';
 import notifSolidIcon from '../../../assets/notif-solid.svg';
 import msgLineIcon from '../../../assets/msg-line.svg';
 import msgSolidIcon from '../../../assets/msg-solid.svg';
-import { statusBarMechanism, saveUserInfo } from '../../../store/action/synchronous';
+import { statusBarMechanism, saveUserInfo, saveInterest } from '../../../store/action/synchronous';
 
 
 // Navbar component
@@ -28,6 +28,7 @@ class Navbar extends Component {
   componentDidUpdate() {
     if (!this.props.loading && !this.state.up) {
       this.props.saveUserInfo(this.props.data);
+      this.props.saveInterest(this.props.interests);
       this.setState({ up: true });
     }
   }
@@ -92,7 +93,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   statusBarMechanism: status => dispatch(statusBarMechanism(status)),
-  saveUserInfo: info => dispatch(saveUserInfo(info))
+  saveUserInfo: info => dispatch(saveUserInfo(info)),
+  saveInterest: data => dispatch(saveInterest(data))
 });
 
 

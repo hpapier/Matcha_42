@@ -9,7 +9,8 @@ import {
   UPDATE_EMAIL_MECHANISM,
   UPDATE_GENRE_MECHANISM,
   UPDATE_SEXUAL_ORIENTATION_MECHANISM,
-  UPDATE_USER_BIO_MECHANISM
+  UPDATE_USER_BIO_MECHANISM,
+  SAVE_INTEREST_MECHANISM
 } from '../../constant';
 
 export const saveUserInfo = data => ({
@@ -65,4 +66,9 @@ export const updateSexualOrientationMechanism = data => ({
 export const updateUserBioMechanism = data => ({
   type: UPDATE_USER_BIO_MECHANISM,
   payload: data
-})
+});
+
+export const saveInterest = data => ({
+  type: SAVE_INTEREST_MECHANISM,
+  payload: data
+});

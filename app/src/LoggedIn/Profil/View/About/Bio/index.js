@@ -58,7 +58,6 @@ class Bio extends Component {
         (updateUserBio, { loading, error, data }) => {
           const { errorMsg, modifActive, bioInput } = this.state;
           const { bio } = this.props;
-          console.log(bioInput);
           return (
             <div id='lgi-profil-view-pi-bio'>
               <div id='lgi-profil-view-pi-bio-box1'>
