@@ -1,0 +1,142 @@
+// VARIABLES
+$ssp: 'Source sans pro', sans-serif
+$grey: #66757F
+
+// STYLE
+#lgi-profil-view-pi-password
+  width: 100%
+  margin-top: 1px
+  background: #fff
+  height: 60px
+  display: flex
+  justify-content: space-between
+  align-items: center
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+
+#lgi-profil-view-pi-password-box1
+  width: 200px
+  margin-left: 30px
+
+#lgi-profil-view-pi-password-box1-title
+  width: 100%
+  text-transform: uppercase
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 600
+  color: rgba($grey, 0.8)
+
+#lgi-profil-view-pi-password-box1-content
+  width: 100%
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 600
+  color: rgba($grey, 1)
+
+#lgi-profil-view-pi-password-box2
+  width: 65px
+
+#lgi-profil-view-pi-password-box2-edit,
+#lgi-profil-view-pi-password-box2-update-validate,
+#lgi-profil-view-pi-password-box2-update-cancel
+  border: none
+  background: rgba(0, 0, 0, 0)
+  box-shadow: none
+  outline: none
+  cursor: pointer
+
+
+// MODIF BOX
+.lgi-profil-view-pi-password-modif-box
+  width: 100%
+  margin-top: 1px
+  background: #fff
+  height: 60px
+  display: flex
+  flex-direction: column
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  justify-content: center
+
+.lgi-profil-view-pi-password-modif-title
+  width: 100%
+  text-transform: uppercase
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 600
+  color: rgba($grey, 0.8)
+  margin-left: 30px
+
+.lgi-profil-view-pi-password-modif-input
+  width: 250px
+  margin-left: 30px
+  border: none
+  background: rgba(0, 0, 0, 0)
+  box-shadow: none
+  border-bottom: 1px solid $grey
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 600
+  color: rgba($grey, 1)
+  outline: none
+
+.lgi-profil-view-pi-password-modif-input::placeholder
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 400
+  font-style: italic
+  color: rgba($grey, .7)
+
+#lgi-profil-view-pi-password-modif-submit
+  width: 200px
+  height: 30px
+  color: #fff
+  background: #E6C2AA
+  border: none
+  border-bottom: 1px solid #BC9E8A
+  display: flex
+  justify-content: center
+  align-items: center
+  font-family: $ssp
+  font-size: .75em
+  font-weight: 600
+  text-transform: uppercase
+  border-radius: 3px
+  cursor: pointer
+  transition: .2s
+  margin: auto
+  outline: none
+
+#lgi-profil-view-pi-password-modif-submit:hover
+  opacity: .8
+
+// LOADING
+@keyframes lgi-profil-view-pi-password-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+    
+#lgi-profil-view-pi-password-box2-loading
+  animation-name: lgi-profil-view-pi-password-loading
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  width: 20px
+  height: 20px
+  border: 5px solid #f2f4f7
+  border-top-color: #E6C2AA
+  border-radius: 50%
+
+// ERROR
+.lgi-profil-view-pi-password-modif-error
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 400
+  color: red
+  margin-left: 30px
+
+#lgi-profil-view-pi-password-modif-error
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 400
+  color: red
+  margin: auto

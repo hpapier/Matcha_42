@@ -160,3 +160,11 @@ export const UPDATE_EMAIL_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_PASSWORD_MUTATION = gql`
+  mutation updateUserPassword($pPwd: String!, $nPwd: String!) {
+    updateUserPassword(pPwd: $pPwd, nPwd: $nPwd) {
+      data
+    }
+  }
+`;

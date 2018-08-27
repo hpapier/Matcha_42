@@ -66,14 +66,14 @@ class Email extends Component {
           const { email } = this.props;
           console.log(email);
           return (
-            <div id='lgi-profil-view-pi-username'>
-              <div id='lgi-profil-view-pi-username-box1'>
-                <div id='lgi-profil-view-pi-username-box1-title'>email</div>
+            <div id='lgi-profil-view-pi-email'>
+              <div id='lgi-profil-view-pi-email-box1'>
+                <div id='lgi-profil-view-pi-email-box1-title'>email</div>
                 {
                   !modifActive ?
-                  <div id='lgi-profil-view-pi-username-box1-content'>{email.length > 33 ? email.substring(0, 33) + '..' : email}</div> :
+                  <div id='lgi-profil-view-pi-email-box1-content'>{email.length > 33 ? email.substring(0, 33) + '..' : email}</div> :
                   <input
-                    id='lgi-profil-view-pi-username-box1-input'
+                    id='lgi-profil-view-pi-email-box1-input'
                     type='email'
                     value={emailInput}
                     onChange={e => loading ? null : this.setState({ emailInput: e.target.value })}
@@ -81,28 +81,28 @@ class Email extends Component {
                     autoFocus
                   />
                 }
-                { errorMsg && modifActive ? <div id='lgi-profil-view-pi-username-box1-error'>{errorMsg}</div> : null }
+                { errorMsg && modifActive ? <div id='lgi-profil-view-pi-email-box1-error'>{errorMsg}</div> : null }
               </div>
-              <div id='lgi-profil-view-pi-username-box2'>
+              <div id='lgi-profil-view-pi-email-box2'>
               {
                 loading ? 
-                <div id='lgi-profil-view-pi-username-box2-loading'></div> :
+                <div id='lgi-profil-view-pi-email-box2-loading'></div> :
                   !modifActive ?
                   <button
                     onClick={() => this.setState({ modifActive: true })}
-                    id='lgi-profil-view-pi-username-box2-edit'
+                    id='lgi-profil-view-pi-email-box2-edit'
                   >
-                    <img src={editIcon} alt='edit' id='lgi-profil-view-pi-username-box2-edit-icon' />
+                    <img src={editIcon} alt='edit' id='lgi-profil-view-pi-email-box2-edit-icon' />
                   </button> :
-                  <div id='lgi-profil-view-pi-username-box2-update'>
+                  <div id='lgi-profil-view-pi-email-box2-update'>
                     <button
-                      id='lgi-profil-view-pi-username-box2-update-validate'
+                      id='lgi-profil-view-pi-email-box2-update-validate'
                       onClick={() => this.updateMechanism(updateUserEmail)}
                     >
                       <img src={validateIcon} alt='validate' />
                     </button>
                     <button
-                      id='lgi-profil-view-pi-username-box2-update-cancel'
+                      id='lgi-profil-view-pi-email-box2-update-cancel'
                       onClick={() => this.setState({ modifActive: false, emailInput: '', errorMsg: '' })}
                     >
                       <img src={cancelIcon} alt='cancel' />

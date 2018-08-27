@@ -116,6 +116,7 @@ const typeDefs = `
     updateUserBirthDate(birthdate: String!): userData
     updateUserGeolocation(geolocation: String!): userData
     updateUserEmail(email: String!): userData
+    updateUserPassword(pPwd: String!, nPwd: String!): userData
   }
 
 `;
@@ -465,6 +466,24 @@ const resolvers = {
         return new Error(e.message);
       }
     },
+
+    updateUserPassword: async (parent, { pPwd, nPwd }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        if (!bcrypt.compareSync(pPwd, user.password))
+          return new Error('Invalid pwd');
+
+        const salt = bcrypt.genSaltSync(10);
+        const pwd = bcrypt.hashSync(nPwd, salt);
+        const res = await client.query('UPDATE user_info SET password = $1 WHERE id = $2', [pwd, user.id]);
+        return { data: 'Success' };
+      } catch (e) {
+        return e;
+      }
+    }
 
 
 
