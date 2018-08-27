@@ -176,3 +176,11 @@ export const UPDATE_GENRE_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_SEXUAL_ORIENTATION_MUTATION = gql`
+  mutation updateUserSO($sexualOrientation: String!) {
+    updateUserSO(sexualOrientation: $sexualOrientation) {
+      data
+    }
+  }
+`;

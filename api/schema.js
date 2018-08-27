@@ -118,6 +118,7 @@ const typeDefs = `
     updateUserEmail(email: String!): userData
     updateUserPassword(pPwd: String!, nPwd: String!): userData
     updateUserGenre(genre: String!): userData
+    updateUserSO(sexualOrientation: String!): userData
   }
 
 `;
@@ -495,6 +496,20 @@ const resolvers = {
         const response = await client.query('UPDATE user_info SET genre = $1 WHERE id = $2', [genre, user.id]);
         const refetchUser = await client.query('SELECT genre FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].genre };
+      } catch(e) {
+        return new Error(e.message);
+      }
+    },
+
+    updateUserSO: async (parent, { sexualOrientation }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const response = await client.query('UPDATE user_info SET sexual_orientation = $1 WHERE id = $2', [sexualOrientation, user.id]);
+        const refetchUser = await client.query('SELECT sexual_orientation FROM user_info WHERE id = $1', [user.id]);
+        return { data: refetchUser.rows[0].sexual_orientation };
       } catch(e) {
         return new Error(e.message);
       }
