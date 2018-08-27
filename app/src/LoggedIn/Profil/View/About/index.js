@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 
 // Locals imports.
 import './index.sass';
+import Bio from './Bio';
 
 
 // About Component
@@ -12,6 +13,7 @@ class About extends Component {
     return (
       <div id='lgi-profil-view-sensible'>
         <div id='lgi-profil-view-sensible-header'>à propos</div>
+        <Bio />
       </div>
     );
   }

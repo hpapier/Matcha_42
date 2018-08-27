@@ -103,6 +103,7 @@ export const USER_BOX_QUERY = gql`
       firstname
       popularityScore
       profilPicture
+      bio
     }
 
     userNotif {
@@ -180,6 +181,14 @@ export const UPDATE_GENRE_MUTATION = gql`
 export const UPDATE_SEXUAL_ORIENTATION_MUTATION = gql`
   mutation updateUserSO($sexualOrientation: String!) {
     updateUserSO(sexualOrientation: $sexualOrientation) {
+      data
+    }
+  }
+`;
+
+export const UPDATE_BIO_MUTATION = gql`
+  mutation updateUserBio($bio: String!) {
+    updateUserBio(bio: $bio) {
       data
     }
   }

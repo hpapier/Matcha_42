@@ -1,0 +1,101 @@
+// VARIABLES
+$ssp: 'Source sans pro', sans-serif
+$grey: #66757F
+
+// STYLE
+#lgi-profil-view-pi-bio
+  width: 100%
+  background: #fff
+  padding: 15px 0px
+  display: flex
+  justify-content: space-between
+  align-items: center
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  margin-top: 1px
+
+#lgi-profil-view-pi-bio-box1
+  width: 200px
+  margin-left: 30px
+
+#lgi-profil-view-pi-bio-box1-title
+  width: 100%
+  text-transform: uppercase
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 600
+  color: rgba($grey, 0.8)
+
+#lgi-profil-view-pi-bio-box1-content
+  width: 100%
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 600
+  color: rgba($grey, 1)
+
+#lgi-profil-view-pi-bio-box2
+  width: 65px
+
+#lgi-profil-view-pi-bio-box2-edit
+  border: none
+  background: rgba(0, 0, 0, 0)
+  box-shadow: none
+  outline: none
+  cursor: pointer
+
+#lgi-profil-view-pi-bio-box2
+  width: 65px
+
+#lgi-profil-view-pi-bio-box2-update-validate,
+#lgi-profil-view-pi-bio-box2-update-cancel
+  border: none
+  background: rgba(0, 0, 0, 0)
+  box-shadow: none
+  outline: none
+  cursor: pointer
+
+#lgi-profil-view-pi-bio-box1-textarea
+  resize: none
+  width: 190px
+  margin-top: 5px
+  height: 30px
+  outline: none
+  border: 1px solid #dce3e6
+  padding: 5px
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 600
+  color: rgba($grey, 1)
+
+#lgi-profil-view-pi-bio-box1-textarea::placeholder
+  font-family: $ssp
+  font-size: .825em
+  font-weight: 400
+  font-style: italic
+  color: rgba($grey, .7)
+
+
+
+// LOADING
+@keyframes lgi-profil-view-pi-bio-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+    
+#lgi-profil-view-pi-bio-box2-loading
+  animation-name: lgi-profil-view-pi-bio-loading
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  width: 20px
+  height: 20px
+  border: 5px solid #f2f4f7
+  border-top-color: #E6C2AA
+  border-radius: 50%
+
+// ERROR
+#lgi-profil-view-pi-bio-box1-error
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 400
+  color: red

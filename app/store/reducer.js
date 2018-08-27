@@ -9,7 +9,8 @@ import {
   UPDATE_GEOLOCATION_MECHANISM,
   UPDATE_EMAIL_MECHANISM,
   UPDATE_GENRE_MECHANISM,
-  UPDATE_SEXUAL_ORIENTATION_MECHANISM
+  UPDATE_SEXUAL_ORIENTATION_MECHANISM,
+  UPDATE_USER_BIO_MECHANISM
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -99,6 +100,14 @@ export default (state = initialState, action) => {
         user: {
           ...state.user,
           sexualOrientation: action.payload
+        }
+      };
+    case UPDATE_USER_BIO_MECHANISM:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          bio: action.payload
         }
       };
     default:
