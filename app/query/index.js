@@ -168,3 +168,11 @@ export const UPDATE_PASSWORD_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_GENRE_MUTATION = gql`
+  mutation updateUserGenre($genre: String!) {
+    updateUserGenre(genre: $genre) {
+      data
+    }
+  }
+`;

@@ -64,7 +64,6 @@ class Email extends Component {
         (updateUserEmail, { loading }) => {
           const { emailInput, modifActive, errorMsg } = this.state;
           const { email } = this.props;
-          console.log(email);
           return (
             <div id='lgi-profil-view-pi-email'>
               <div id='lgi-profil-view-pi-email-box1'>

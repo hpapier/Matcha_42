@@ -6,7 +6,8 @@ import {
   UPDATE_USERNAME,
   UPDATE_USER_BIRTHDATE,
   UPDATE_GEOLOCATION_MECHANISM,
-  UPDATE_EMAIL_MECHANISM
+  UPDATE_EMAIL_MECHANISM,
+  UPDATE_GENRE_MECHANISM
 } from '../../constant';
 
 export const saveUserInfo = data => ({
@@ -48,3 +49,8 @@ export const updateEmailMechanism = data => ({
   type: UPDATE_EMAIL_MECHANISM,
   payload: data
 });
+
+export const updateGenreMechanism = data => ({
+  type: UPDATE_GENRE_MECHANISM,
+  payload: data
+})

@@ -7,7 +7,8 @@ import {
   UPDATE_USERNAME,
   UPDATE_USER_BIRTHDATE,
   UPDATE_GEOLOCATION_MECHANISM,
-  UPDATE_EMAIL_MECHANISM
+  UPDATE_EMAIL_MECHANISM,
+  UPDATE_GENRE_MECHANISM
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -81,6 +82,14 @@ export default (state = initialState, action) => {
         user: {
           ...state.user,
           email: action.payload
+        }
+      }
+    case UPDATE_GENRE_MECHANISM:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          genre: action.payload
         }
       }
     default:

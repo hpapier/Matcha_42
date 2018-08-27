@@ -117,6 +117,7 @@ const typeDefs = `
     updateUserGeolocation(geolocation: String!): userData
     updateUserEmail(email: String!): userData
     updateUserPassword(pPwd: String!, nPwd: String!): userData
+    updateUserGenre(genre: String!): userData
   }
 
 `;
@@ -482,6 +483,20 @@ const resolvers = {
         return { data: 'Success' };
       } catch (e) {
         return e;
+      }
+    },
+
+    updateUserGenre: async (parent, { genre }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const response = await client.query('UPDATE user_info SET genre = $1 WHERE id = $2', [genre, user.id]);
+        const refetchUser = await client.query('SELECT genre FROM user_info WHERE id = $1', [user.id]);
+        return { data: refetchUser.rows[0].genre };
+      } catch(e) {
+        return new Error(e.message);
       }
     }
 

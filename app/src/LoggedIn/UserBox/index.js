@@ -25,7 +25,7 @@ class UserBox extends Component {
       >
         {
           ({ loading, error, data }) => {
-            console.log('-->', data);
+            console.log('-> UserBox Rendering..');
             let likesArray = [];
             let visiteArray = [];
             let matchArray = [];
