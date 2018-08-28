@@ -11,7 +11,9 @@ import {
   UPDATE_GENRE_MECHANISM,
   UPDATE_SEXUAL_ORIENTATION_MECHANISM,
   UPDATE_USER_BIO_MECHANISM,
-  SAVE_INTEREST_MECHANISM
+  SAVE_INTEREST_MECHANISM,
+  UPDATE_INTERESTS,
+  UPDATE_USER_TAGS
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -117,7 +119,24 @@ export default (state = initialState, action) => {
       return {
         ...state,
         interests: action.payload
-      }
+      };
+    case UPDATE_INTERESTS:
+      return {
+        ...state,
+        interests: action.payload.interests,
+        user: {
+          ...state.user,
+          userTags: action.payload.userTags
+        }
+      };
+    case UPDATE_USER_TAGS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          userTags: action.payload
+        }
+      };
     default:
       return state;
   }

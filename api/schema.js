@@ -62,7 +62,12 @@ const typeDefs = `
 
   type UserInterests {
     id: Int
-    interestId: String
+    interestId: Int
+  }
+
+  type Tags {
+    userTags: [UserInterests],
+    interests: [Interests]
   }
 
   type UserInformations {
@@ -120,6 +125,8 @@ const typeDefs = `
     updateUserGenre(genre: String!): userData
     updateUserSO(sexualOrientation: String!): userData
     updateUserBio(bio: String!): userData
+    addTagToUser(tag: String!): Tags
+    removeTagToUser(tag: Int!): [UserInterests]
   }
 
 `;
@@ -184,6 +191,7 @@ const resolvers = {
         const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
         const updateConnexion = await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
+        const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
         return {
           username: user.username,
           lastname: user.lastname,
@@ -197,7 +205,7 @@ const resolvers = {
           location: user.location,
           creationDate: user.creation_date,
           lastConnexion: new Date(),
-          interests: userInterest.rows,
+          interests: convertedInterests,
           images: userImages.rows,
           profilPicture: user.profil_picture
         };
@@ -525,6 +533,46 @@ const resolvers = {
         const response = await client.query('UPDATE user_info SET bio = $1 WHERE id = $2', [bio, user.id]);
         const refetchUser = await client.query('SELECT bio FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].bio };
+      } catch(e) {
+        return new Error(e.message);
+      }
+    },
+
+    addTagToUser: async (parent, { tag }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const check = await client.query('SELECT * FROM interests WHERE name = $1', [tag]);
+        if (check.rowCount === 0) {
+          const insertion = await client.query('INSERT INTO interests (name) VALUES ($1) RETURNING *', [tag]);
+          await client.query('INSERT INTO user_interests (user_id, interest_id) VALUES ($1, $2)', [user.id, insertion.rows[0].id]);
+        }
+
+        if (check.rowCount !== 0)
+          await client.query('INSERT INTO user_interests (user_id, interest_id) VALUES ($1, $2)', [user.id, check.rows[0].id]);
+
+        const tags = await client.query('SELECT * FROM interests');
+        const userTags = await client.query('SELECT id, interest_id AS interestId FROM user_interests WHERE user_id = $1', [user.id]);
+        const filteredUserTags = userTags.rows.map(item => ({ id: item.id, interestId: item.interestid }));
+        return { userTags: filteredUserTags, interests: tags.rows };
+      } catch(e) {
+        return new Error(e.message);
+      }
+    },
+
+    removeTagToUser: async (parent, { tag }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+        
+        await client.query('DELETE FROM user_interests WHERE user_id = $1 AND interest_id = $2', [user.id, tag]);
+
+        const userTags = await client.query('SELECT id, interest_id AS interestId FROM user_interests WHERE user_id = $1', [user.id]);
+        const filteredUserTags = userTags.rows.map(item => ({ id: item.id, interestId: item.interestid }));
+        return filteredUserTags;
       } catch(e) {
         return new Error(e.message);
       }

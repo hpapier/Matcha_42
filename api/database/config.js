@@ -100,7 +100,7 @@
 // user_interests:
 // --> id
 // --> user_id
-// --> interests_id
+// --> interest_id
 
 /*
   CREATE TABLE user_interests (

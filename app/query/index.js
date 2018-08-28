@@ -193,3 +193,27 @@ export const UPDATE_BIO_MUTATION = gql`
     }
   }
 `;
+
+export const ADD_TAGS_MUTATION = gql`
+  mutation addTagToUser($tag: String!) {
+    addTagToUser(tag: $tag) {
+      userTags {
+        id
+        interestId
+      }
+      interests {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const REMOVE_TAGS_MUTATION = gql`
+  mutation removeTagToUser($tag: Int!) {
+    removeTagToUser(tag: $tag) {
+        id
+        interestId
+    }
+  }
+`;
