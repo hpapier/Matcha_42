@@ -1,14 +1,19 @@
 // VARIABLES
 $ssp: 'Source sans pro', sans-serif
+$grey: #66757F
 
 // STYLE
-
 #lgi-profil-view-photos
+  width: 320px
   display: flex
   flex-direction: column
-  width: 320px
-  margin-right: 10px
   margin-bottom: 20px
+
+
+#lgi-profil-view-photos-box-header
+  display: flex
+  width: 100%
+  margin-right: 10px
 
 #lgi-profil-view-photos-header
   width: 100%
@@ -24,3 +29,139 @@ $ssp: 'Source sans pro', sans-serif
   font-weight: 600
   color: rgba(#66757F, .8)
   text-transform: uppercase
+  position: relative
+
+.lgi-profil-view-photos-header-plus-icon
+  position: absolute
+  right: 20px
+  cursor: pointer
+  border: none
+  outline: none
+  background: rgba(0, 0, 0, 0)
+
+#lgi-profil-view-photos-add-img
+  display: none
+
+.lgi-profil-view-photos-header-plus-icon-label
+  cursor: pointer
+
+.lgi-profil-view-photos-error
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 400
+  color: red
+  width: 100%
+  display: flex
+  justify-content: center
+  margin-top: 5px
+
+.lgi-profil-view-photos-empty
+  font-family: $ssp
+  font-size: .75em
+  font-weight: 400
+  color: $grey
+  width: 100%
+  display: flex
+  justify-content: center
+  margin-top: 10px
+
+#lgi-profil-view-photos-container
+  display: flex
+  flex-wrap: wrap
+  align-items: flex-start
+  justify-content: space-between
+
+.lgi-profil-view-photos-box
+  width: 158px
+  height: 158px
+  margin-top: 4px
+  cursor: pointer
+  transition: .2s
+  position: relative
+
+.lgi-profil-view-photos-box:hover
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3)
+
+.lgi-profil-view-photos-box-img
+  width: 100%
+  height: 100%
+  object-fit: cover
+
+.lgi-profil-view-photos-box:hover div.lgi-profil-view-photos-box-btn
+  display: flex
+
+.lgi-profil-view-photos-box-btn
+  position: absolute
+  display: none
+  justify-content: center
+  flex-direction: column
+  align-items: center
+  z-index: 1
+  width: 100%
+  height: 100%
+  background: rgba(0, 0, 0, 0.6)
+  transition: .2s
+  top: 0
+  left: 0
+
+.lgi-profil-view-photos-box-btn-delete
+  border: 1px solid red
+  background: rgba(red, 0.3)
+  color: #ffffff
+  width: 90px
+  height: 25px
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: pointer
+  text-transform: uppercase
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 600
+  border-radius: 3px
+  margin-bottom: 10px
+  transition: .2s
+
+.lgi-profil-view-photos-box-btn-delete:hover
+  background: rgba(red, 1)
+
+.lgi-profil-view-photos-box-btn-choose
+  border: 1px solid #E6C2AA
+  background: rgba(#E6C2AA, .3)
+  color: #ffffff
+  width: 90px
+  height: 25px
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: pointer
+  text-transform: uppercase
+  font-family: $ssp
+  font-size: .625em
+  font-weight: 600
+  border-radius: 3px
+  margin-bottom: 10px
+  transition: .2s
+
+.lgi-profil-view-photos-box-btn-choose:hover
+  background: rgba(#E6C2AA, 1)
+
+// LOADING
+@keyframes lgi-profil-photo-add-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+    
+.lgi-profil-view-photo-add-loading
+  animation-name: lgi-profil-photo-add-loading
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  width: 20px
+  height: 20px
+  border: 5px solid #f2f4f7
+  border-top-color: #E6C2AA
+  border-radius: 50%
+  position: absolute
+  right: 20px

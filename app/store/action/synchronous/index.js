@@ -12,7 +12,9 @@ import {
   UPDATE_USER_BIO_MECHANISM,
   SAVE_INTEREST_MECHANISM,
   UPDATE_INTERESTS,
-  UPDATE_USER_TAGS
+  UPDATE_USER_TAGS,
+  UPDATE_USER_IMAGES,
+  UPDATE_PROFIL_USER_IMAGES
 } from '../../constant';
 
 export const saveUserInfo = data => ({
@@ -84,3 +86,13 @@ export const updateUserTags = tags => ({
   type: UPDATE_USER_TAGS,
   payload: tags
 });
+
+export const updateUserImages = data => ({
+  type: UPDATE_USER_IMAGES,
+  payload: data
+});
+
+export const updateUserProfilImg = data => ({
+  type: UPDATE_PROFIL_USER_IMAGES,
+  payload: data
+})

@@ -13,7 +13,8 @@ const store = {
     creationDate: '',
     lastConnexion: '',
     userTags: [],
-    userImages: []
+    userImages: [],
+    profilPicture: null
   },
   interests: [],
   statusBar: 'home'

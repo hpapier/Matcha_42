@@ -13,7 +13,9 @@ import {
   UPDATE_USER_BIO_MECHANISM,
   SAVE_INTEREST_MECHANISM,
   UPDATE_INTERESTS,
-  UPDATE_USER_TAGS
+  UPDATE_USER_TAGS,
+  UPDATE_USER_IMAGES,
+  UPDATE_PROFIL_USER_IMAGES
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -35,7 +37,8 @@ export default (state = initialState, action) => {
           creationDate: action.payload.creationDate,
           lastConnexion: action.payload.lastConnexion,
           userImages: action.payload.images,
-          userTags: action.payload.interests
+          userTags: action.payload.interests,
+          profilPicture: action.payload.profilPicture
         }
       };
     case CHANGE_STATUS_BAR:
@@ -135,6 +138,22 @@ export default (state = initialState, action) => {
         user: {
           ...state.user,
           userTags: action.payload
+        }
+      };
+    case UPDATE_USER_IMAGES:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          userImages: action.payload
+        }
+      };
+    case UPDATE_PROFIL_USER_IMAGES:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profilPicture: action.payload
         }
       };
     default:

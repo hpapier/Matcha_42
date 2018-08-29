@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const publicIp = require('public-ip');
 const fetch = require('node-fetch');
+const fs = require('fs');
+const path = require('path');
 var NodeGeocoder = require('node-geocoder');
 
 const transporter = nodemailer.createTransport({
@@ -70,6 +72,10 @@ const typeDefs = `
     interests: [Interests]
   }
 
+  type ProfilImg {
+    path: String
+  }
+
   type UserInformations {
     username: String
     lastname: String
@@ -127,6 +133,9 @@ const typeDefs = `
     updateUserBio(bio: String!): userData
     addTagToUser(tag: String!): Tags
     removeTagToUser(tag: Int!): [UserInterests]
+    addUserImage(img: String!, type: String!): [UserImages]
+    removeUserImage(imgId: Int!, name: String!): [UserImages]
+    updateProfilImg(imgId: Int!, name: String!, imgPath: String!): ProfilImg
   }
 
 `;
@@ -576,7 +585,77 @@ const resolvers = {
       } catch(e) {
         return new Error(e.message);
       }
-    }
+    },
+
+    addUserImage: async (parent, { img, type }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkDir = fs.existsSync(path.resolve(__dirname, `../public/ressources/${user.id}`));
+        if (!checkDir)
+          fs.mkdirSync(path.resolve(__dirname, `../public/ressources/${user.id}`));
+
+        const data = img.replace(/^data:image\/\w+;base64,/, "");
+        const buf = new Buffer(data, 'base64');
+        const name = randtoken.generate(64);
+        const splittype = type.split('/')[1];
+        const pathName = `../public/ressources/${user.id}/${name}.${splittype}`;
+        const res = fs.writeFileSync(path.resolve(__dirname, pathName), buf, { encoding: 'base64' });
+        const frontPath = `/ressources/${user.id}/${name}.${splittype}`;
+        const pushImg = await client.query('INSERT INTO images (user_id, path) VALUES ($1, $2)', [user.id, frontPath]);
+        const getUserImg = await client.query('SELECT id, path FROM images WHERE user_id = $1', [user.id]);
+        return getUserImg.rows;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    removeUserImage: async (parent, { imgId, name }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkDir = fs.existsSync(path.resolve(__dirname, `../public/ressources/${user.id}`));
+        if (!checkDir) {
+          await client.query('DELETE FROM images WHERE user_id = $1', [user.id]);
+          return [];
+        }
+
+        fs.unlinkSync(path.resolve(__dirname, `../public/ressources/${user.id}/${name}`));
+        await client.query('DELETE FROM images WHERE id = $1 AND user_id = $2', [imgId, user.id]);
+
+        if (user.profil_picture === `/ressources/${user.id}/${name}`)
+          await client.query('UPDATE user_info SET profil_picture = $1 WHERE id = $2', [null, user.id]);
+
+        const getUserImg = await client.query('SELECT id, path FROM images WHERE user_id = $1', [user.id]);
+        return getUserImg.rows;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    updateProfilImg: async (parent, { imgId, name, imgPath }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkDir = fs.existsSync(path.resolve(__dirname, `../public/ressources/${user.id}/${name}`));
+        if (!checkDir) {
+          await client.query('UPDATE user_info SET profil_picture = $1 WHERE id = $2', [null, user.id]);
+          return new Error('Img not exist');
+        }
+
+        await client.query('UPDATE user_info SET profil_picture = $1 WHERE id = $2', [imgPath, user.id]);
+        const getProfilImg = await client.query('SELECT profil_picture FROM user_info WHERE id = $1', [user.id]);
+        return { path: getProfilImg.rows[0].profil_picture };
+      } catch (e) {
+        return e;
+      }
+    },
 
 
 

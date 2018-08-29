@@ -80,6 +80,7 @@ export const GET_USER_INFO_QUERY = gql`
         path
       }
       email
+      profilPicture
     }
 
     getInterests {
@@ -214,6 +215,32 @@ export const REMOVE_TAGS_MUTATION = gql`
     removeTagToUser(tag: $tag) {
         id
         interestId
+    }
+  }
+`;
+
+export const ADD_USER_IMAGE_MUTATION = gql`
+  mutation addUserImage($img: String!, $type: String!) {
+    addUserImage(img: $img, type: $type) {
+      id
+      path
+    }
+  }
+`;
+
+export const REMOVE_USER_IMAGE_MUTATION = gql`
+  mutation removeUserImage($imgId: Int!, $name: String!) {
+    removeUserImage(imgId: $imgId, name: $name) {
+      id
+      path
+    }
+  }
+`;
+
+export const UPDATE_USER_PROFIL_IMAGE_MUTATION = gql`
+  mutation updateProfilImg($imgId: Int!, $name: String!, $imgPath: String!) {
+    updateProfilImg(imgId: $imgId, name: $name, imgPath: $imgPath) {
+      path
     }
   }
 `;
