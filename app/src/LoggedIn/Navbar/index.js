@@ -77,7 +77,9 @@ class Navbar extends Component {
         </div>
   
         <div id='lgi-navbar-right'>
-          <div id='lgi-navbar-right-img' className={(statusBar === 'profil') ? 'lgi-navbar-right-img-active' : ''} onClick={() => this.navigationView('profil')}></div>
+          <div id='lgi-navbar-right-img' className={(statusBar === 'profil') ? 'lgi-navbar-right-img-active' : ''} onClick={() => this.navigationView('profil')}>
+          {this.props.user.profilPicture ? <img className='lgi-navbar-right-img-content' src={this.props.user.profilPicture} alt='user-profil-img' /> : null}
+          </div>
           <button id='lgi-navbar-right-logout' onClick={this.logOutUser}>déconnexion</button>
         </div>
       </div>

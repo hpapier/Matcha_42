@@ -53,9 +53,11 @@ class Images extends Component {
     .then(r => {
       this.setState({ loading: false, errorMsg: '' });
       this.props.updateUserImages(r.data.addUserImage);
+      this.inputFile.value = null;
     })
     .catch(e => {
       this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
+      this.inputFile.value = null;
     });
   }
 
@@ -85,6 +87,14 @@ class Images extends Component {
     .then(r => {
       this.setState({ loading: false, errorMsg: '' });
       this.props.updateUserImages(r.data.removeUserImage);
+      let isPresent = false;
+      r.data.removeUserImage.forEach(item => {
+        if (item.path === this.props.profilPicture)
+          isPresent = true;
+      });
+
+      if (!isPresent)
+        this.props.updateUserProfilImg(null);
     })
     .catch(e => {
       this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
@@ -92,6 +102,9 @@ class Images extends Component {
   }
 
   selectProfilImg = (client, image) => {
+    if (image.path === this.props.profilPicture)
+      return;
+
     this.setState({ loading: true, errorMsg: '' });
     client.mutate({
       mutation: UPDATE_USER_PROFIL_IMAGE_MUTATION,
@@ -99,7 +112,7 @@ class Images extends Component {
     })
     .then(r => {
       this.setState({ loading: false, errorMsg: '' });
-      this.props.updateUserProfilImg(r.data.updateProfilImg);
+      this.props.updateUserProfilImg(r.data.updateProfilImg.path);
     })
     .catch(e => {
       this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
@@ -143,7 +156,8 @@ class Images extends Component {
 };
 
 const mapStateToProps = state => ({
-  userImages: state.user.userImages
+  userImages: state.user.userImages,
+  profilPicture: state.user.profilPicture
 });
 
 const mapDispatchToProps = dispatch => ({
