@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,12 +11,13 @@ import { UPDATE_BIO_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateUserBioMechanism } from '../../../../../../store/action/synchronous';
+import { updateUserBioMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // Bio Component
 class Bio extends Component {
   state = {
+    modifActive: false,
     errorMsg: '',
     bioInput: ''
   };
@@ -40,13 +42,24 @@ class Bio extends Component {
 
     mutation({ variables: { bio: bioInput }})
     .then(r => {
-      if (!this._unmount)
-        this.setState({ errorMsg: '', modifActive: false });
-      this.props.updateUserBioMechanism(r.data.updateUserBio.data);
-    })
-    .catch(e => {
       if (!this._unmount) {
-        this.setState({ errorMsg: "Oups! Une erreur est survenue.." });
+        this.setState({ errorMsg: '', modifActive: false });
+        this.props.updateUserBioMechanism(r.data.updateUserBio.data);
+      }
+    })
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        const { message } = error.graphQLErrors[0];
+        if (message === 'Character string too long')
+          this.setState({ modifActive: true, errorMsg: 'Maximum 255 caractères.' });
+        else
+          this.setState({ modifActive: true, errorMsg: 'Oups! Une erreur est survenue..' });
       }
     });
   }
@@ -112,9 +125,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateUserBioMechanism: bio => dispatch(updateUserBioMechanism(bio))
+  updateUserBioMechanism: bio => dispatch(updateUserBioMechanism(bio)),
+  clearStore: () => dispatch(clearStore())
 });
 
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(Bio);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Bio));

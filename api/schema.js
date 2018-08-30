@@ -617,13 +617,6 @@ const resolvers = {
 
     updateUserSO: async (parent, { sexualOrientation }, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // // return new Error('Not auth');
-        // // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -645,8 +638,12 @@ const resolvers = {
         if (!user)
           return new Error('Not auth');
 
-        const response = await client.query('UPDATE user_info SET bio = $1 WHERE id = $2', [bio, user.id]);
+        if (bio.length > 255)
+          return new Error('Character string too long');
+
+        await client.query('UPDATE user_info SET bio = $1 WHERE id = $2', [bio, user.id]);
         const refetchUser = await client.query('SELECT bio FROM user_info WHERE id = $1', [user.id]);
+        await updateStatus(user.id);
         return { data: refetchUser.rows[0].bio };
       } catch(e) {
         return new Error(e.message);
@@ -658,6 +655,13 @@ const resolvers = {
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
+        
+        const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
+        if (tag.match(regexp))
+          return new Error('Contains invalid char');
+
+        if (tag.length > 255)
+          return new Error('Character string too long');
 
         const check = await client.query('SELECT * FROM interests WHERE name = $1', [tag]);
         if (check.rowCount === 0) {
@@ -671,6 +675,7 @@ const resolvers = {
         const tags = await client.query('SELECT * FROM interests');
         const userTags = await client.query('SELECT id, interest_id AS interestId FROM user_interests WHERE user_id = $1', [user.id]);
         const filteredUserTags = userTags.rows.map(item => ({ id: item.id, interestId: item.interestid }));
+        await updateStatus(user.id);
         return { userTags: filteredUserTags, interests: tags.rows };
       } catch(e) {
         return new Error(e.message);
@@ -679,6 +684,13 @@ const resolvers = {
 
     removeTagToUser: async (parent, { tag }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // // return new Error('Not auth');
+        // // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -687,6 +699,7 @@ const resolvers = {
 
         const userTags = await client.query('SELECT id, interest_id AS interestId FROM user_interests WHERE user_id = $1', [user.id]);
         const filteredUserTags = userTags.rows.map(item => ({ id: item.id, interestId: item.interestid }));
+        await updateStatus(user.id);
         return filteredUserTags;
       } catch(e) {
         return new Error(e.message);

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { ApolloConsumer } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -11,7 +12,7 @@ import { REMOVE_TAGS_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import whiteCancelIcon from '../../../../../../assets/white-cancel.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateInterest, updateUserTags } from '../../../../../../store/action/synchronous';
+import { updateInterest, updateUserTags, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // Tags Component
@@ -22,6 +23,12 @@ class Tags extends Component {
     tagsInput: '',
     errorMsg: ''
   };
+
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
 
   addTag = (client, tag, exist) => {
     const { userTags, interests } = this.props;
@@ -51,11 +58,27 @@ class Tags extends Component {
       variables: { tag: gTag }
     })
     .then(r => {
-      this.props.updateInterest(r.data.addTagToUser.userTags, r.data.addTagToUser.interests);
-      this.setState({ isLoading: false, tagsInput: '', errorMsg: '' });
+      if (!this._unmount) {
+        this.props.updateInterest(r.data.addTagToUser.userTags, r.data.addTagToUser.interests);
+        this.setState({ isLoading: false, tagsInput: '', errorMsg: '' });
+      }
     })
-    .catch(e => {
-      this.setState({ isLoading: false, errorMsg: 'Oups! Une erreur est survenu..' });
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        const { message } = error.graphQLErrors[0];
+        if (message === 'Character string too long')
+          this.setState({ modifActive: true, isLoading: false, errorMsg: 'Maximum 255 caractères.' });
+        else if (message === 'Contains invalid char')
+          this.setState({ modifActive: true, isLoading: false, errorMsg: 'Caractères spéciaux interdits.' });
+        else
+          this.setState({ modifActive: true, isLoading: false, errorMsg: 'Oups! Une erreur est survenue..' });
+      }
     });
   }
 
@@ -66,11 +89,21 @@ class Tags extends Component {
       variables: { tag: tag.id }
     })
     .then(r => {
-      this.props.updateUserTags(r.data.removeTagToUser);
-      this.setState({ isLoading: false, errorMsg: '' });
+      if (!this._unmount) {
+        this.props.updateUserTags(r.data.removeTagToUser);
+        this.setState({ isLoading: false, errorMsg: '' });
+      }
     })
-    .catch(e => {
-      this.setState({ isLoading: false, errorMsg: 'Oups! Une erreur est survenu..' });
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        this.setState({ modifActive: true, isLoading: false, errorMsg: 'Oups! Une erreur est survenue..' });
+      }
     });
   }
 
@@ -178,9 +211,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToPropss = dispatch => ({
   updateInterest: (userTags, interests) => dispatch(updateInterest(userTags, interests)),
-  updateUserTags: tags => dispatch(updateUserTags(tags))
+  updateUserTags: tags => dispatch(updateUserTags(tags)),
+  clearStore: () => dispatch(clearStore())
 });
 
 
 // Export.
-export default connect(mapStateToProps, mapDispatchToPropss)(Tags);
+export default connect(mapStateToProps, mapDispatchToPropss)(withRouter(Tags));
