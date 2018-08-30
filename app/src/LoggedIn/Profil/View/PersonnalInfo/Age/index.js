@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import { UPDATE_DATE_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateUserBirthDateMechanism } from '../../../../../../store/action/synchronous';
+import { updateUserBirthDateMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // birthdate Component
@@ -21,31 +22,51 @@ class birthdate extends Component {
     errorMsg: ''
   };
 
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
+
   updateMechanism = mutation => {
     const { dateValue } = this.state;
     if (!dateValue) {
-      this.setState({ errorMsg: 'Date invalide. '});
+      this.setState({ errorMsg: 'Date invalide.' });
       return;
     }
 
     const date = new Date(dateValue);
     if (date.getFullYear() > 2018 || date.getFullYear() < 1850) {
-      this.setState({ errorMsg: 'Date invalide. '});
+      this.setState({ errorMsg: 'Date invalide.' });
       return;
     }
 
     if (date === 'Invalid date') {
-      this.setState({ errorMsg: 'Date invalide. '});
+      this.setState({ errorMsg: 'Date invalide.' });
       return;
     }
 
     mutation({ variables: { birthdate: date }})
     .then(r => {
-      this.setState({ modifActive: false, errorMsg: '', dateValue: '' });
-      this.props.updateUserBirthDateMechanism(r.data.updateUserBirthDate.data);
+      if (!this._unmount) {
+        this.setState({ modifActive: false, errorMsg: '', dateValue: '' });
+        this.props.updateUserBirthDateMechanism(r.data.updateUserBirthDate.data);
+      }
     })
-    .catch(e => {
-      this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." });
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        const { message } = error.graphQLErrors[0];
+        if (message === 'Invalid date')
+          this.setState({ modifActive: true, errorMsg: 'Date invalide.' });
+        else
+          this.setState({ modifActive: true, errorMsg: 'Oups! Une erreur est survenue..' });
+      }
     });
   }
 
@@ -124,8 +145,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateUserBirthDateMechanism: birthdate => dispatch(updateUserBirthDateMechanism(birthdate))
+  updateUserBirthDateMechanism: birthdate => dispatch(updateUserBirthDateMechanism(birthdate)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(birthdate);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(birthdate));

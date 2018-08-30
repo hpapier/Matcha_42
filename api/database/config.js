@@ -25,7 +25,7 @@
   CREATE TABLE user_info (
     id                  SERIAL            UNIQUE PRIMARY KEY,
     email               VARCHAR(100)      NOT NULL,
-    username            VARCHAR(25)       NOT NULL,
+    username            VARCHAR(255)       NOT NULL,
     lastname            VARCHAR(255)      NOT NULL,
     firstname           VARCHAR(255)      NOT NULL,
     password            VARCHAR(255)       NOT NULL,

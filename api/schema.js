@@ -416,12 +416,6 @@ const resolvers = {
 
     updateUserFirstname: async (parent, { firstname }, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -441,17 +435,30 @@ const resolvers = {
       }
     },
 
-    updateUsername: async (parent, args, ctx) => {
+    updateUsername: async (parent, { username }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
-        const search = await client.query('SELECT * FROM user_info WHERE username = $1', [args.username]);
-        if (search.rowCount > 0)
-          return new Error('Already exist.');
+        const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
+        if (username.match(regexp))
+          return new Error('Contains invalid char');
 
-        const response = await client.query('UPDATE user_info SET username = $1 WHERE id = $2', [args.username, user.id]);
+        if (username.length > 255)
+          return new Error('Character string too long');
+
+        const search = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
+        if (search.rowCount > 0)
+          return new Error('Already exist');
+
+        await client.query('UPDATE user_info SET username = $1 WHERE id = $2', [username, user.id]);
         const refetchUser = await client.query('SELECT username FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].username };
       } catch(e) {
@@ -459,13 +466,17 @@ const resolvers = {
       }
     },
 
-    updateUserBirthDate: async (parent, args, ctx) => {
+    updateUserBirthDate: async (parent, { birthdate }, ctx) => {
       try {
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
-        const response = await client.query('UPDATE user_info SET birth_date = $1 WHERE id = $2', [args.birthdate, user.id]);
+        const verifyDate = new Date(birthdate);
+        if (verifyDate === 'Invalid date')
+          return new Error('Invalid date');
+
+        await client.query('UPDATE user_info SET birth_date = $1 WHERE id = $2', [verifyDate, user.id]);
         const refetchUser = await client.query('SELECT birth_date FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].birth_date };
       } catch(e) {

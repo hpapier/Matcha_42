@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
 import './index.sass';
 import { UPDATE_GEOLOCATION_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
-import { updateUserGeolocationMechanism } from '../../../../../../store/action/synchronous';
+import { updateUserGeolocationMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // Geolocation Component
@@ -27,20 +28,27 @@ class Geolocation extends Component {
   updateMechanism = (mutation, position) => {
     mutation({ variables: { geolocation: JSON.stringify({ lat: position.coords.latitude, lng: position.coords.longitude }) }})
     .then(r => {
-      console.log(r);
-      if (!this._unmount)
+      if (!this._unmount) {
         this.setState({ geolocationLoading: false, errorMsg: '' });
-      this.props.updateUserGeolocationMechanism(r.data.updateUserGeolocation.data);
+        this.props.updateUserGeolocationMechanism(r.data.updateUserGeolocation.data);
+      }
     })
-    .catch(e => {
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
       if (!this._unmount) {
         this.setState({ geolocationLoading: false, errorMsg: "Oups! Une erreur est survenue.." });
       }
     });
   }
 
-  formatedLocation = location => {
-    const locationObject = JSON.parse(location);
+  formatedLocation = geolocation => {
+    console.log(geolocation);
+    const locationObject = JSON.parse(geolocation);
     return (locationObject.formatedName.length > 33 ? locationObject.formatedName.substring(0, 33) + '..' : locationObject.formatedName);
   }
 
@@ -65,12 +73,12 @@ class Geolocation extends Component {
       {
         (updateUserGeolocation, { loading, error, data }) => {
           const { errorMsg, geolocationLoading } = this.state;
-          const { location } = this.props;
+          const { geolocation } = this.props;
           return (
             <div id='lgi-profil-view-pi-geolocation'>
               <div id='lgi-profil-view-pi-geolocation-box1'>
                 <div id='lgi-profil-view-pi-geolocation-box1-title'>Localisation</div>
-                <div id='lgi-profil-view-pi-geolocation-box1-content'>{location ? this.formatedLocation(location) : 'Aucune localisation'}</div>
+                <div id='lgi-profil-view-pi-geolocation-box1-content'>{geolocation ? this.formatedLocation(geolocation) : 'Aucune localisation'}</div>
                 { errorMsg ? <div id='lgi-profil-view-pi-geolocation-box1-error'>{errorMsg}</div> : null }
               </div>
               <div id='lgi-profil-view-pi-geolocation-box2'>
@@ -95,12 +103,13 @@ class Geolocation extends Component {
 }
 
 const mapStateToProps = state => ({
-  location: state.user.location
+  geolocation: state.user.location
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateUserGeolocationMechanism: geolocation => dispatch(updateUserGeolocationMechanism(geolocation))
+  updateUserGeolocationMechanism: geolocation => dispatch(updateUserGeolocationMechanism(geolocation)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(Geolocation);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Geolocation));
