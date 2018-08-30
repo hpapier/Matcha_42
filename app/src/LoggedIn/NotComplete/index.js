@@ -24,7 +24,7 @@ class NotComplete extends Component {
       <Mutation mutation={FORCE_GEOLOCATION_MUTATION}>
       {
         forceGeolocation => {
-          const { bio, interests, images, location } = this.props.data;
+          const { bio, interests, images, location, profilPicture } = this.props.data;
           if (!location)
             forceGeolocation();
 
@@ -33,7 +33,13 @@ class NotComplete extends Component {
               <div id='lgi-not-complete-title'>Votre profil n'est pas complet.</div>
               <div id='lgi-not-complete-sub-title'>Veuillez le compléter afin d'accéder au matching.</div>
               <div id='lgi-not-complete-text'>
-                ({!bio ? `Bio${interests.length === 0 || images.length === 0 ? ', ' : ''}` : ''}{interests.length === 0 ? `tags${images.length === 0 ? ', ' : ''}` : ''}{images.length === 0 ? `photos` : ''})</div>
+                {!bio || interests.length === 0 || images.length === 0 || !profilPicture ? '(' : ''}
+                {!bio ? `Bio${interests.length === 0 || images.length === 0 || !profilPicture ? ', ' : ''}` : ''}
+                {interests.length === 0 ? `tags${images.length === 0 || !profilPicture ? ', ' : ''}` : ''}
+                {images.length === 0 ? `photos${ !profilPicture ? ', ' : ''}` : ''}
+                {!profilPicture ? 'photo de profil' : ''}
+                {!bio || interests.length === 0 || images.length === 0 || !profilPicture ? ')' : ''}
+              </div>
               <div id='lgi-not-complete-btn' onClick={this.changeRoute}>compléter</div>
             </div>
           );

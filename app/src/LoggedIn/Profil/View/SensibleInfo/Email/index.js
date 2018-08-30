@@ -92,7 +92,7 @@ class Email extends Component {
                 <div id='lgi-profil-view-pi-email-box1-title'>email</div>
                 {
                   !modifActive ?
-                  <div id='lgi-profil-view-pi-email-box1-content'>{email.length > 33 ? email.substring(0, 33) + '..' : email}</div> :
+                  <div id='lgi-profil-view-pi-email-box1-content'>{email ? email.length > 33 ? email.substring(0, 33) + '..' : email : null}</div> :
                   <input
                     id='lgi-profil-view-pi-email-box1-input'
                     type='email'

@@ -19,11 +19,18 @@ import Logout from '../Utils/Logout';
 
 // Profil Component
 class Profil extends Component {
+  onCompletedHandler = (data) => {
+    console.log('__ ON COMPLETED FUNCTION __');
+    console.log(data);
+    this.props.saveUserInfo(data.userInformations);
+    this.props.saveInterest(data.getInterests);
+  }
+
   render() {
     return (
-      <Query query={GET_USER_INFO_QUERY} fetchPolicy='cache-and-network'>
+      <Query query={GET_USER_INFO_QUERY} fetchPolicy='cache-and-network' onCompleted={data => this.onCompletedHandler(data)}>
       {
-        ({ loading, data, error }) => {
+        ({ loading, data, error, refetch }) => {
           if (loading)
             return <div id='profil-loading-box'><div id='profil-loading'></div></div>;
  
@@ -32,14 +39,6 @@ class Profil extends Component {
               return <Logout />;
             else
               return <div id='lgi-profil-error'>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
-          }
-
-          if (!loading) {
-            const saveAfterRender = () => new Promise((r, f) => r());
-            saveAfterRender().then(r => {
-              this.props.saveUserInfo(data.userInformations);
-              this.props.saveInterest(data.getInterests);   
-            });
           }
             
           return (

@@ -71,6 +71,7 @@ export const GET_USER_INFO_QUERY = gql`
       location
       creationDate
       lastConnexion
+      isComplete
       interests {
         id
         interestId
@@ -98,7 +99,7 @@ export const FORCE_GEOLOCATION_MUTATION = gql`
 
 export const USER_BOX_QUERY = gql`
   {
-    userInformations {
+    userInformationsBox {
       username
       lastname
       firstname

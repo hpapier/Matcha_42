@@ -25,7 +25,6 @@ class UserBox extends Component {
       >
         {
           ({ loading, error, data }) => {
-            console.log('-> UserBox Rendering..');
             let likesArray = [];
             let visiteArray = [];
             let matchArray = [];
@@ -45,8 +44,8 @@ class UserBox extends Component {
                 {
                   loading ?
                   <div id='lgi-user-box-profil-loading'></div> :
-                    data.userInformations.profilPicture ? 
-                    <img src={data.userInformations.profilPicture} alt='profil-picture' id='lgi-user-box-profil' /> :
+                    data.userInformationsBox.profilPicture ? 
+                    <img src={data.userInformationsBox.profilPicture} alt='profil-picture' id='lgi-user-box-profil' /> :
                     <div id='lgi-user-box-profil-noloading'></div>
                 }
 
@@ -55,26 +54,26 @@ class UserBox extends Component {
                   <div id='lgi-user-box-score-loading'></div> :
                   <div id='lgi-user-box-score'>
                     <img src={cupBrownIcon} alt='score-icon' id='lgi-user-box-score-icon' />
-                    <div id='lgi-user-box-score-text'>{data.userInformations.popularityScore}</div>
+                    <div id='lgi-user-box-score-text'>{data.userInformationsBox.popularityScore}</div>
                   </div>
                 }
 
                 {
                   loading ?
                   <div id='lgi-user-box-name-loading'></div> :
-                  <div id='lgi-user-box-name'>{this.checkWord(15, data.userInformations.firstname) + ' ' + this.checkWord(15, data.userInformations.lastname)}</div>
+                  <div id='lgi-user-box-name'>{this.checkWord(15, data.userInformationsBox.firstname) + ' ' + this.checkWord(15, data.userInformationsBox.lastname)}</div>
                 }
 
                 {
                   loading ?
                   <div id='lgi-user-box-username-loading'></div> :
-                  <div id='lgi-user-box-username'>@{this.checkWord(40, data.userInformations.username)}</div>
+                  <div id='lgi-user-box-username'>@{this.checkWord(40, data.userInformationsBox.username)}</div>
                 }
 
                 {
                   loading ?
                   <div id='lgi-user-box-bio-loading'></div> :
-                  <div id='lgi-user-box-bio'>{data.userInformations.bio || 'Veuillez compléter votre bio..'}</div>
+                  <div id='lgi-user-box-bio'>{data.userInformationsBox.bio || 'Veuillez compléter votre bio..'}</div>
                 }
 
                 <div id='lgi-user-link'>

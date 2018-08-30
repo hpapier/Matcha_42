@@ -114,6 +114,7 @@ const typeDefs = `
     interests: [UserInterests]
     images: [UserImages]
     profilPicture: String
+    isComplete: Int
   }
 
   type Notification {
@@ -133,6 +134,7 @@ const typeDefs = `
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
     resetTokenVerification(username: String!, resetToken: String!): MessageStatus
     userInformations: UserInformations
+    userInformationsBox: UserInformations
     getInterests: [Interests]
     userNotif: [Notification]
   }
@@ -226,7 +228,7 @@ const resolvers = {
   
         const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
-        const updateConnexion = await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
+        await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
         const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
         return {
           username: user.username,
@@ -243,7 +245,46 @@ const resolvers = {
           lastConnexion: new Date(),
           interests: convertedInterests,
           images: userImages.rows,
-          profilPicture: user.profil_picture
+          profilPicture: user.profil_picture,
+          isComplete: user.iscomplete
+        };
+      } catch (e) {
+        return new Error(e.message)
+      }
+    },
+
+    userInformationsBox: async (parent, args, ctx) => {
+      try {
+        //  const lol = () => new Promise((r, f) => {
+        //    setTimeout(() => r(), 5000);
+        //  });
+
+        //  const ll = await lol();
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('User not found');
+  
+        const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
+        const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
+        await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
+        const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
+        return {
+          username: user.username,
+          lastname: user.lastname,
+          firstname: user.firstname,
+          email: user.email,
+          birthDate: user.birth_date,
+          genre: user.genre,
+          sexualOrientation: user.sexual_orientation,
+          bio: user.bio,
+          popularityScore: user.popularity_score,
+          location: user.location,
+          creationDate: user.creation_date,
+          lastConnexion: new Date(),
+          interests: convertedInterests,
+          images: userImages.rows,
+          profilPicture: user.profil_picture,
+          isComplete: user.iscomplete
         };
       } catch (e) {
         return new Error(e.message)

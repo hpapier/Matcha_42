@@ -79,7 +79,7 @@ class Bio extends Component {
                   !modifActive ? 
                   <div id='lgi-profil-view-pi-bio-box1-content'>{bio ? bio : 'Aucune bio'}</div> :
                   <div>
-                    <textarea id='lgi-profil-view-pi-bio-box1-textarea' cols={4} placeholder='Saisissez une bio..' onChange={e => this.setState({ bioInput: e.target.value })}></textarea>
+                    <textarea autoFocus id='lgi-profil-view-pi-bio-box1-textarea' cols={4} placeholder='Saisissez une bio..' onChange={e => this.setState({ bioInput: e.target.value })}></textarea>
                   </div>
                 }
                 { errorMsg && modifActive ? <div id='lgi-profil-view-pi-bio-box1-error'>{errorMsg}</div> : null }
