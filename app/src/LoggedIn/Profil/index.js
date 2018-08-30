@@ -31,7 +31,7 @@ class Profil extends Component {
             if (error.graphQLErrors[0].message === 'Not auth')
               return <Logout />;
             else
-            return <div id='lgi-profil-error'>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
+              return <div id='lgi-profil-error'>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
           }
 
           if (!loading) {

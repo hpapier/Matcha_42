@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import { UPDATE_LASTNAME_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateUserLastnameMechanism } from '../../../../../../store/action/synchronous';
+import { updateUserLastnameMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // LastName Component
@@ -21,6 +22,12 @@ class LastName extends Component {
     errorMsg: ''
   };
 
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
+
   updateMechanism = mutation => {
     const { lastnameInput } = this.state;
     if (!lastnameInput) {
@@ -30,21 +37,38 @@ class LastName extends Component {
 
     const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
     if (lastnameInput.match(regexp)) {
-      this.setState({ errorMsg: 'Caractères spéciaux interdits.'});
+      this.setState({ errorMsg: 'Caractères spéciaux interdits.' });
       return;
     }
 
     if (lastnameInput.length > 255) {
-      this.setState({ errorMsg: 'Maximum 255 caractères.'});
+      this.setState({ errorMsg: 'Maximum 255 caractères.' });
       return;
     }
 
     mutation({ variables: { lastname: lastnameInput }})
     .then(r => {
-      this.setState({ modifActive: false, errorMsg: '', lastnameInput: '' });
-      this.props.updateUserLastnameMechanism(r.data.updateUserLastname.data);
+      if (!this._unmount) {
+        this.setState({ modifActive: false, errorMsg: '', lastnameInput: '' });
+        this.props.updateUserLastnameMechanism(r.data.updateUserLastname.data);
+      }
     })
-    .catch(e => this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." }));
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        if (error.graphQLErrors[0].message === 'Contains invalid char')
+          this.setState({ modifActive: true, errorMsg: 'Caractères spéciaux interdits.' });
+        else if (error.graphQLErrors[0].message === 'Character string too long')
+          this.setState({ modifActive: true, errorMsg: 'Maximum 255 caractères.' });
+        else
+          this.setState({ modifActive: true, errorMsg: 'Oups! Une erreur est survenue..' });
+      }
+    });
   }
 
   render() {
@@ -113,8 +137,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateUserLastnameMechanism: lastname => dispatch(updateUserLastnameMechanism(lastname))
+  updateUserLastnameMechanism: lastname => dispatch(updateUserLastnameMechanism(lastname)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(LastName);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LastName));

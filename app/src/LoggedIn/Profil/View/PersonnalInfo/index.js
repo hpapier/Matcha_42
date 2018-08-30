@@ -1,5 +1,5 @@
 // Modules imports.
-import React, { Component } from 'react';
+import React from 'react';
 
 
 // Locals imports.
@@ -12,21 +12,19 @@ import Geolocation from './Geolocation';
 
 
 // PersonnalInfo Component
-class PersonnalInfo extends Component {
-  render() {
-    return (
-      <div id='lgi-profil-view-pi'>
-        <div id='lgi-profil-view-pi-header'>informations personelles</div>
-        <LastName />
-        <FirstName />
-        <UserName />
-        <Age />
-        <Geolocation />
-      </div>
-    );
-  }
-}
+const PersonnalInfo = props => {
+  return (
+    <div id='lgi-profil-view-pi'>
+      <div id='lgi-profil-view-pi-header'>informations personelles</div>
+      <LastName />
+      <FirstName />
+      <UserName />
+      <Age />
+      <Geolocation />
+    </div>
+  );
+};
 
 
-// Exports.
+// Export.
 export default PersonnalInfo;

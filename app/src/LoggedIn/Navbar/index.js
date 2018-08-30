@@ -12,7 +12,7 @@ import notifLineIcon from '../../../assets/notif-line.svg';
 import notifSolidIcon from '../../../assets/notif-solid.svg';
 import msgLineIcon from '../../../assets/msg-line.svg';
 import msgSolidIcon from '../../../assets/msg-solid.svg';
-import { statusBarMechanism, saveUserInfo, saveInterest } from '../../../store/action/synchronous';
+import { statusBarMechanism, clearStore } from '../../../store/action/synchronous';
 
 
 // Navbar component
@@ -22,12 +22,13 @@ class Navbar extends Component {
   }
 
   componentWillMount() {
+    console.log('lol');
     this.props.statusBarMechanism((this.props.location.pathname.split('/')[1] !== '') ? this.props.location.pathname.split('/')[1] : 'home');
   }
 
   logOutUser = () => {
     localStorage.removeItem('auth_token');
-    this.props.firstRefetch();
+    this.props.clearStore();
     this.props.history.push('/');
   }
 
@@ -86,7 +87,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  statusBarMechanism: status => dispatch(statusBarMechanism(status))
+  statusBarMechanism: status => dispatch(statusBarMechanism(status)),
+  clearStore: () => dispatch(clearStore())
 });
 
 
