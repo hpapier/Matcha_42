@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import { UPDATE_SEXUAL_ORIENTATION_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateSexualOrientationMechanism } from '../../../../../../store/action/synchronous';
+import { updateSexualOrientationMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // Genre Component
@@ -20,6 +21,12 @@ class Genre extends Component {
     sexualOrentationInput: '',
     errorMsg: ''
   };
+
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
 
   updateMechanism = mutation => {
     const { sexualOrentationInput } = this.state;
@@ -35,10 +42,19 @@ class Genre extends Component {
 
     mutation({ variables: { sexualOrientation: sexualOrentationInput }})
     .then(r => {
-      this.setState({ modifActive: false, errorMsg: '', sexualOrentationInput: '' });
-      this.props.updateSexualOrientationMechanism(r.data.updateUserSO.data);
+      if (!this._unmount) {
+        this.setState({ modifActive: false, errorMsg: '', sexualOrentationInput: '' });
+        this.props.updateSexualOrientationMechanism(r.data.updateUserSO.data);
+      }
     })
-    .catch(e => {
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount)
         this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." });
     });
   }
@@ -111,8 +127,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateSexualOrientationMechanism: sexualOrientation => dispatch(updateSexualOrientationMechanism(sexualOrientation))
+  updateSexualOrientationMechanism: sexualOrientation => dispatch(updateSexualOrientationMechanism(sexualOrientation)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(Genre);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Genre));

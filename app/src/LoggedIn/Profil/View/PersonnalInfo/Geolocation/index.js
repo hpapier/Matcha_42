@@ -47,7 +47,6 @@ class Geolocation extends Component {
   }
 
   formatedLocation = geolocation => {
-    console.log(geolocation);
     const locationObject = JSON.parse(geolocation);
     return (locationObject.formatedName.length > 33 ? locationObject.formatedName.substring(0, 33) + '..' : locationObject.formatedName);
   }

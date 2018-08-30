@@ -604,7 +604,10 @@ const resolvers = {
         if (!user)
           return new Error('Not auth');
 
-        const response = await client.query('UPDATE user_info SET genre = $1 WHERE id = $2', [genre, user.id]);
+        if (genre !== 'man' && genre !== 'woman')
+          return new Error('Not a good choice');
+
+        await client.query('UPDATE user_info SET genre = $1 WHERE id = $2', [genre, user.id]);
         const refetchUser = await client.query('SELECT genre FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].genre };
       } catch(e) {
@@ -614,11 +617,21 @@ const resolvers = {
 
     updateUserSO: async (parent, { sexualOrientation }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // // return new Error('Not auth');
+        // // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
-        const response = await client.query('UPDATE user_info SET sexual_orientation = $1 WHERE id = $2', [sexualOrientation, user.id]);
+        if (sexualOrientation !== 'man' && sexualOrientation !== 'woman' && sexualOrientation !== 'bisexual')
+          return new Error('Not a good choice');
+
+        await client.query('UPDATE user_info SET sexual_orientation = $1 WHERE id = $2', [sexualOrientation, user.id]);
         const refetchUser = await client.query('SELECT sexual_orientation FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].sexual_orientation };
       } catch(e) {

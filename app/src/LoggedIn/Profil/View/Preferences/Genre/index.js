@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import { UPDATE_GENRE_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateGenreMechanism } from '../../../../../../store/action/synchronous';
+import { updateGenreMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // Genre Component
@@ -20,6 +21,12 @@ class Genre extends Component {
     genreSelection: '',
     errorMsg: ''
   };
+
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
 
   updateMechanism = mutation => {
     const { genreSelection } = this.state;
@@ -35,11 +42,21 @@ class Genre extends Component {
 
     mutation({ variables: { genre: genreSelection }})
     .then(r => {
-      this.setState({ modifActive: false, errorMsg: '', genreSelection: '' });
-      this.props.updateGenreMechanism(r.data.updateUserGenre.data);
+      if (!this._unmount) {
+        this.setState({ modifActive: false, errorMsg: '', genreSelection: '' });
+        this.props.updateGenreMechanism(r.data.updateUserGenre.data);
+      }
     })
-    .catch(e => {
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
         this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." });
+      }
     });
   }
 
@@ -110,8 +127,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateGenreMechanism: genre => dispatch(updateGenreMechanism(genre))
+  updateGenreMechanism: genre => dispatch(updateGenreMechanism(genre)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(Genre);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Genre));
