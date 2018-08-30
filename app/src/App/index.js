@@ -5,21 +5,24 @@ import { Query } from 'react-apollo';
 import { USER_STATUS_QUERY } from '../../query';
 import LoggedIn from '../Router/LoggedIn';
 import LoggedOut from '../Router/LoggedOut';
+import './index.sass';
 
 const App = props => {
   return (
-    <Query query={USER_STATUS_QUERY}>
+    <Query query={USER_STATUS_QUERY} pollInterval={500}>
       {
         response => {
-          console.log('---> ');
-          // console.log(props.isLoggedIn);
-          // console.log(response);
-          if (response.networkStatus === 4) console.log("Refetching!");
-          if (response.loading)
-            return <div>Loading...</div>;
+          console.log('--> RENDERING APP COMPONENT..');
+          if (response.loading) {
+            return (
+              <div id='app-loading'>
+                <div id='app-loading-animation'></div>
+              </div>
+            );
+          }
 
           if (response.error)
-            return <div>Server error</div>;
+            return <div id='app-error'>Oups! Une erreur est survenu..</div>;
 
           return (
             <div>

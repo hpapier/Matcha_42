@@ -15,7 +15,9 @@ import {
   UPDATE_INTERESTS,
   UPDATE_USER_TAGS,
   UPDATE_USER_IMAGES,
-  UPDATE_PROFIL_USER_IMAGES
+  UPDATE_PROFIL_USER_IMAGES,
+  UPDATE_REFETCHING,
+  CLEAR_STORE
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -156,6 +158,15 @@ export default (state = initialState, action) => {
           profilPicture: action.payload
         }
       };
+    case UPDATE_REFETCHING:
+      return {
+        ...state,
+        refetching: action.payload
+      };
+    case CLEAR_STORE:
+      return {
+        ...initialState
+      }
     default:
       return state;
   }

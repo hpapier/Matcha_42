@@ -16,6 +16,7 @@ const store = {
     userImages: [],
     profilPicture: null
   },
+  refetching: false,
   interests: [],
   statusBar: 'home'
 };

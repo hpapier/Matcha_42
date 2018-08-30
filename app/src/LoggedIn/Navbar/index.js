@@ -25,14 +25,6 @@ class Navbar extends Component {
     this.props.statusBarMechanism((this.props.location.pathname.split('/')[1] !== '') ? this.props.location.pathname.split('/')[1] : 'home');
   }
 
-  componentDidUpdate() {
-    if (!this.props.loading && !this.state.up) {
-      this.props.saveUserInfo(this.props.data);
-      this.props.saveInterest(this.props.interests);
-      this.setState({ up: true });
-    }
-  }
-
   logOutUser = () => {
     localStorage.removeItem('auth_token');
     this.props.firstRefetch();
@@ -94,9 +86,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  statusBarMechanism: status => dispatch(statusBarMechanism(status)),
-  saveUserInfo: info => dispatch(saveUserInfo(info)),
-  saveInterest: data => dispatch(saveInterest(data))
+  statusBarMechanism: status => dispatch(statusBarMechanism(status))
 });
 
 

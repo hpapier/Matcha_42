@@ -193,6 +193,11 @@ const resolvers = {
 
     userInformations: async (parent, args, ctx) => {
       try {
+        //  const lol = () => new Promise((r, f) => {
+        //    setTimeout(() => r(), 5000);
+        //  });
+
+        //  const ll = await lol();
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('User not found');

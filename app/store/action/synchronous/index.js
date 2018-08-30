@@ -14,8 +14,14 @@ import {
   UPDATE_INTERESTS,
   UPDATE_USER_TAGS,
   UPDATE_USER_IMAGES,
-  UPDATE_PROFIL_USER_IMAGES
+  UPDATE_PROFIL_USER_IMAGES,
+  UPDATE_REFETCHING,
+  CLEAR_STORE
 } from '../../constant';
+
+export const clearStore = () => ({
+  type: CLEAR_STORE
+});
 
 export const saveUserInfo = data => ({
   type: SAVE_USER_INFO,
@@ -95,4 +101,9 @@ export const updateUserImages = data => ({
 export const updateUserProfilImg = data => ({
   type: UPDATE_PROFIL_USER_IMAGES,
   payload: data
-})
+});
+
+export const updateRefetch = bool => ({
+  type: UPDATE_REFETCHING,
+  payload: bool
+});

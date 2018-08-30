@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import './index.sass';
 import plusIconGrey from '../../../../../assets/plus-grey.svg';
 import { ADD_USER_IMAGE_MUTATION, REMOVE_USER_IMAGE_MUTATION, UPDATE_USER_PROFIL_IMAGE_MUTATION } from '../../../../../query';
-import { updateUserImages, updateUserProfilImg } from '../../../../../store/action/synchronous';
+import { updateUserImages, updateUserProfilImg, updateRefetch } from '../../../../../store/action/synchronous';
 
 
 // Images Component
@@ -54,6 +54,7 @@ class Images extends Component {
       this.setState({ loading: false, errorMsg: '' });
       this.props.updateUserImages(r.data.addUserImage);
       this.inputFile.value = null;
+      // this.props.updateRefetch(true);
     })
     .catch(e => {
       this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
@@ -95,6 +96,8 @@ class Images extends Component {
 
       if (!isPresent)
         this.props.updateUserProfilImg(null);
+      
+      // this.props.updateRefetch(true);
     })
     .catch(e => {
       this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
@@ -113,6 +116,7 @@ class Images extends Component {
     .then(r => {
       this.setState({ loading: false, errorMsg: '' });
       this.props.updateUserProfilImg(r.data.updateProfilImg.path);
+      // this.props.updateRefetch(true);
     })
     .catch(e => {
       this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
@@ -162,7 +166,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateUserImages: data => dispatch(updateUserImages(data)),
-  updateUserProfilImg: img => dispatch(updateUserProfilImg(img))
+  updateUserProfilImg: img => dispatch(updateUserProfilImg(img)),
+  updateRefetch: bool => dispatch(updateRefetch(bool))
 })
 
 // Exports.

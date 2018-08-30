@@ -1,0 +1,35 @@
+#app-error
+  width: 100%
+  height: 100vh
+  display: flex
+  justify-content: center
+  align-items: center
+  color: rgba(#66757F, .3)
+  font-family: 'Source sans pro', sans-serif
+  font-size: 4em
+  font-weight: 600
+
+
+@keyframes app-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+#app-loading
+  width: 100%
+  height: 100vh
+  display: flex
+  justify-content: center
+  align-items: center
+
+#app-loading-animation
+  width: 60px
+  height: 60px
+  border: 7px solid #f2f4f7
+  border-radius: 50%
+  border-top: 7px solid #E6C2AA
+  animation-name: app-loading
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease

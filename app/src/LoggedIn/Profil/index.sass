@@ -11,6 +11,44 @@
   width: 660px
   margin-left: 15px
 
+#lgi-profil-error
+  width: 100%
+  margin-top: 100px
+  display: flex
+  justify-content: center
+  align-items: center
+  color: rgba(#66757F, .3)
+  font-family: 'Source sans pro', sans-serif
+  font-size: 1em
+  font-weight: 600
+
+// LOADING
+@keyframes profil-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+#profil-loading-box
+  width: 100%
+  height: 100px
+  display: flex
+  justify-content: center
+  align-items: center
+  margin-top: 100px
+
+#profil-loading
+  animation-name: profil-loading
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  width: 20px
+  height: 20px
+  border: 5px solid #f2f4f7
+  border-top-color: #E6C2AA
+  border-radius: 50%
+
+
 // MEDIA QUERIES
 @media screen and (max-width: 800px)
   #lgi-profil
