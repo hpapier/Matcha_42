@@ -414,13 +414,26 @@ const resolvers = {
       }
     },
 
-    updateUserFirstname: async (parent, args, ctx) => {
+    updateUserFirstname: async (parent, { firstname }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
-        const response = await client.query('UPDATE user_info SET firstname = $1 WHERE id = $2', [args.firstname, user.id]);
+        const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
+        if (firstname.match(regexp))
+          return new Error('Contains invalid char');
+
+        if (firstname.length > 255)
+          return new Error('Character string too long');
+
+        await client.query('UPDATE user_info SET firstname = $1 WHERE id = $2', [firstname, user.id]);
         const refetchUser = await client.query('SELECT firstname FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].firstname };
       } catch(e) {

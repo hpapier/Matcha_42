@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import { UPDATE_FIRSTNAME_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateUserFirstnameMechanism } from '../../../../../../store/action/synchronous';
+import { updateUserFirstnameMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // FirstName Component
@@ -21,10 +22,16 @@ class FirstName extends Component {
     errorMsg: ''
   };
 
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
+
   updateMechanism = mutation => {
     const { firstnameInput } = this.state;
     if (!firstnameInput) {
-      this.setState({ errorMsg: 'Veuillez remplir le champs. '});
+      this.setState({ errorMsg: 'Veuillez remplir le champs. ' });
       return;
     }
 
@@ -41,10 +48,27 @@ class FirstName extends Component {
 
     mutation({ variables: { firstname: firstnameInput }})
     .then(r => {
-      this.setState({ modifActive: false, errorMsg: '', firstnameInput: '' });
-      this.props.updateUserFirstnameMechanism(r.data.updateUserFirstname.data);
+      if (!this._unmount) {
+        this.setState({ modifActive: false, errorMsg: '', firstnameInput: '' });
+        this.props.updateUserFirstnameMechanism(r.data.updateUserFirstname.data);
+      }
     })
-    .catch(e => this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." }));
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        if (error.graphQLErrors[0].message === 'Contains invalid char')
+          this.setState({ modifActive: true, errorMsg: 'Caractères spéciaux interdits.' });
+        else if (error.graphQLErrors[0].message === 'Character string too long')
+          this.setState({ modifActive: true, errorMsg: 'Maximum 255 caractères.' });
+        else
+          this.setState({ modifActive: true, errorMsg: 'Oups! Une erreur est survenue..' });
+      }
+    });
   }
 
   render() {
@@ -113,8 +137,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateUserFirstnameMechanism: firstname => dispatch(updateUserFirstnameMechanism(firstname))
+  updateUserFirstnameMechanism: firstname => dispatch(updateUserFirstnameMechanism(firstname)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(FirstName);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FirstName));
