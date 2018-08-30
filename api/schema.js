@@ -28,15 +28,37 @@ const verifyUserToken = async token => {
       return false;
   
     const tokenJwt = token.authorization.split(' ')[1];
+    if (token.authorization.split(' ')[0] !== 'Bearer')
+      return false;
+
     const decoded = JWT.verify(tokenJwt, JWTSECRET);
     const res = await client.query('SELECT * FROM user_info WHERE id = $1', [decoded.id]);
-    if (res.rows[0])
-      return res.rows[0];
-    return false;
+    if (res.rowCount === 0)
+      return false;
+
+    return res.rows[0];
   } catch (e) {
     return false;
   }
-}
+};
+
+const updateStatus = async (userId) => {
+  try {
+    const user = await client.query('SELECT * FROM user_info WHERE id = $1', [userId]);
+    const img = await client.query('SELECT * FROM images WHERE user_id = $1', [userId]);
+    const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userId]);
+
+    const { bio, profil_picture, location } = user.rows[0];
+    if (img.rowCount === 0 || userInterest.rowCount === 0 || !bio || !location || !profil_picture)
+      await client.query('UPDATE user_info SET iscomplete = $1 WHERE id = $2', [0, userId]);
+    else
+      await client.query('UPDATE user_info SET iscomplete = $1 WHERE id = $2', [1, userId]);
+    
+    return true;
+  } catch (e) {
+    return e;
+  }
+};
 
 const typeDefs = `
   type Status {
@@ -504,7 +526,8 @@ const resolvers = {
         const res = await geocoder.reverse({ lat: coords.lat, lon: coords.lng });
         const address = res[0].formattedAddress;
         const newAdd = JSON.stringify({ lat: coords.lat, lng: coords.lng, formatedName: address });
-        const result = await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [newAdd, user.id]);
+        await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [newAdd, user.id]);
+        await updateStatus(user.id);
         return { data: newAdd };
       } catch (e) {
         return e;
@@ -513,15 +536,29 @@ const resolvers = {
 
     updateUserEmail: async (parent, { email }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        //  return new Error('Not auth');
+        // // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
+        
+        const regexp = /^([a-zA-Z0-9._-]+)@([a-zA-Z]+)\.([a-zA-Z]+)$/;
+        if (!email.match(regexp))
+          return new Error('Invalid email');
+
+        if (email.length > 255)
+          return new Error('Character string too long');
 
         const search = await client.query('SELECT * FROM user_info WHERE email = $1', [email]);
         if (search.rowCount > 0)
-          return new Error('Already exist.');
+          return new Error('Already exist');
 
-        const response = await client.query('UPDATE user_info SET email = $1 WHERE id = $2', [email, user.id]);
+        await client.query('UPDATE user_info SET email = $1 WHERE id = $2', [email, user.id]);
         const refetchUser = await client.query('SELECT email FROM user_info WHERE id = $1', [user.id]);
         return { data: refetchUser.rows[0].email };
       } catch(e) {
@@ -531,16 +568,30 @@ const resolvers = {
 
     updateUserPassword: async (parent, { pPwd, nPwd }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // //  return new Error('Not auth');
+        // // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
+
+        const regexp = /('|<|;|>|\/|\(|\)|\.|&|"|§|!|\$|\^|\+|\\|\-|,|\?|=|\*|£|%|°|¨|\`|:|#|\||›|\/|‚|™)/;
+        if (pPwd.match(regexp) || nPwd.match(regexp))
+          return new Error('Contains invalid char');
+
+        if (pPwd.length > 255 || nPwd.length > 255)
+          return new Error('Character string too long');
 
         if (!bcrypt.compareSync(pPwd, user.password))
           return new Error('Invalid pwd');
 
         const salt = bcrypt.genSaltSync(10);
         const pwd = bcrypt.hashSync(nPwd, salt);
-        const res = await client.query('UPDATE user_info SET password = $1 WHERE id = $2', [pwd, user.id]);
+        await client.query('UPDATE user_info SET password = $1 WHERE id = $2', [pwd, user.id]);
         return { data: 'Success' };
       } catch (e) {
         return e;

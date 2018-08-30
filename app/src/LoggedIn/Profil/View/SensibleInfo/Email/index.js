@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import { UPDATE_EMAIL_MUTATION } from '../../../../../../query';
 import editIcon from '../../../../../../assets/edit.svg';
 import validateIcon from '../../../../../../assets/validate.svg';
 import cancelIcon from '../../../../../../assets/cancel.svg';
-import { updateEmailMechanism } from '../../../../../../store/action/synchronous';
+import { updateEmailMechanism, clearStore } from '../../../../../../store/action/synchronous';
 
 
 // Email Component
@@ -20,6 +21,12 @@ class Email extends Component {
     emailInput: '',
     errorMsg: ''
   };
+
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
 
   updateMechanism = mutation => {
     const { emailInput } = this.state;
@@ -34,8 +41,8 @@ class Email extends Component {
       return;
     }
 
-    if (emailInput.length > 100) {
-      this.setState({ errorMsg: 'Maximum 100 caractères.'});
+    if (emailInput.length > 255) {
+      this.setState({ errorMsg: 'Maximum 255 caractères.'});
       return;
     }
 
@@ -46,14 +53,29 @@ class Email extends Component {
 
     mutation({ variables: { email: emailInput }})
     .then(r => {
-      this.setState({ modifActive: false, errorMsg: '', emailInput: '' });
-      this.props.updateEmailMechanism(r.data.updateUserEmail.data);
+      if (!this._unmount) {
+        this.setState({ modifActive: false, errorMsg: '', emailInput: '' });
+        this.props.updateEmailMechanism(r.data.updateUserEmail.data);
+      }
     })
-    .catch(e => {
-      if (e.message === 'GraphQL error: Already exist.')
-        this.setState({ modifActive: true, errorMsg: "Email déjà pris." });
-      else
-        this.setState({ modifActive: true, errorMsg: "Oups! Une erreur est survenue.." });
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        const { message } = error.graphQLErrors[0];
+        if (message === 'Invalid email')
+          this.setState({ modifActive: true, errorMsg: 'Caractères spéciaux interdits.' });
+        else if (message === 'Character string too long')
+          this.setState({ modifActive: true, errorMsg: 'Maximum 255 caractères.' });
+        else if (message === 'Already exist')
+          this.setState({ modifActive: true, errorMsg: 'Cet email existe déjà.' });
+        else
+          this.setState({ modifActive: true, errorMsg: 'Oups! Une erreur est survenue..' });
+      }
     });
   }
 
@@ -123,8 +145,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateEmailMechanism: email => dispatch(updateEmailMechanism(email))
+  updateEmailMechanism: email => dispatch(updateEmailMechanism(email)),
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(Email);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Email));
