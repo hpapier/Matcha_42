@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import { ApolloConsumer } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
 import './index.sass';
 import plusIconGrey from '../../../../../assets/plus-grey.svg';
 import { ADD_USER_IMAGE_MUTATION, REMOVE_USER_IMAGE_MUTATION, UPDATE_USER_PROFIL_IMAGE_MUTATION } from '../../../../../query';
-import { updateUserImages, updateUserProfilImg, updateRefetch } from '../../../../../store/action/synchronous';
+import { updateUserImages, updateUserProfilImg, clearStore } from '../../../../../store/action/synchronous';
 
 
 // Images Component
@@ -17,6 +18,12 @@ class Images extends Component {
     loading: false,
     errorMsg: ''
   };
+
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
 
   convertFile = file => {
     const reader = new FileReader();
@@ -51,14 +58,26 @@ class Images extends Component {
       variables: { img: newFile, type: file.type }
     })
     .then(r => {
-      this.setState({ loading: false, errorMsg: '' });
-      this.props.updateUserImages(r.data.addUserImage);
-      this.inputFile.value = null;
-      // this.props.updateRefetch(true);
+      if (!this._unmount) {
+        this.setState({ loading: false, errorMsg: '' });
+        this.props.updateUserImages(r.data.addUserImage);
+        this.inputFile.value = null;
+      }
     })
-    .catch(e => {
-      this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
-      this.inputFile.value = null;
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount) {
+        if (error.graphQLErrors[0].message === 'Invalid type')
+          this.setState({ loading: false, errorMsg: 'Image invalide' });
+        else
+          this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
+        this.inputFile.value = null;
+      }
     });
   }
 
@@ -86,21 +105,28 @@ class Images extends Component {
       variables: { imgId: image.id, name: image.path.split('/')[3] }
     })
     .then(r => {
-      this.setState({ loading: false, errorMsg: '' });
-      this.props.updateUserImages(r.data.removeUserImage);
-      let isPresent = false;
-      r.data.removeUserImage.forEach(item => {
-        if (item.path === this.props.profilPicture)
-          isPresent = true;
-      });
-
-      if (!isPresent)
-        this.props.updateUserProfilImg(null);
-      
-      // this.props.updateRefetch(true);
+      if (!this._unmount) {
+        this.setState({ loading: false, errorMsg: '' });
+        this.props.updateUserImages(r.data.removeUserImage);
+        let isPresent = false;
+        r.data.removeUserImage.forEach(item => {
+          if (item.path === this.props.profilPicture)
+            isPresent = true;
+        });
+  
+        if (!isPresent)
+          this.props.updateUserProfilImg(null);
+      }
     })
-    .catch(e => {
-      this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount)
+        this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
     });
   }
 
@@ -114,12 +140,20 @@ class Images extends Component {
       variables: { imgId: image.id, name: image.path.split('/')[3], imgPath: image.path }
     })
     .then(r => {
-      this.setState({ loading: false, errorMsg: '' });
-      this.props.updateUserProfilImg(r.data.updateProfilImg.path);
-      // this.props.updateRefetch(true);
+      if (!this._unmount) {
+        this.setState({ loading: false, errorMsg: '' });
+        this.props.updateUserProfilImg(r.data.updateProfilImg.path);
+      }
     })
-    .catch(e => {
-      this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount)
+        this.setState({ loading: false, errorMsg: 'Oups! Une erreur est survenue..' });
     });
   }
 
@@ -167,8 +201,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateUserImages: data => dispatch(updateUserImages(data)),
   updateUserProfilImg: img => dispatch(updateUserProfilImg(img)),
-  updateRefetch: bool => dispatch(updateRefetch(bool))
+  clearStore: () => dispatch(clearStore())
 })
 
 // Exports.
-export default connect(mapStateToProps, mapDispatchToProps)(Images);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Images));

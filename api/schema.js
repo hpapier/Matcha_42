@@ -684,13 +684,6 @@ const resolvers = {
 
     removeTagToUser: async (parent, { tag }, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // // return new Error('Not auth');
-        // // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -712,6 +705,14 @@ const resolvers = {
         if (!user)
           return new Error('Not auth');
 
+        const imgType = img.substring(img.indexOf('/') + 1, img.indexOf(';base64'));
+        if (imgType !== 'jpeg' && imgType !== 'jpg' && imgType !== 'png')
+          return new Error('Invalid type');
+
+        const typeCheck = type.split('/')[1];
+        if (typeCheck !== 'jpeg' && typeCheck !== 'jpg' && typeCheck !== 'png')
+          return new Error('Invalid type');
+
         const checkDir = fs.existsSync(path.resolve(__dirname, `../public/ressources/${user.id}`));
         if (!checkDir)
           fs.mkdirSync(path.resolve(__dirname, `../public/ressources/${user.id}`));
@@ -725,6 +726,7 @@ const resolvers = {
         const frontPath = `/ressources/${user.id}/${name}.${splittype}`;
         const pushImg = await client.query('INSERT INTO images (user_id, path) VALUES ($1, $2)', [user.id, frontPath]);
         const getUserImg = await client.query('SELECT id, path FROM images WHERE user_id = $1', [user.id]);
+        await updateStatus(user.id);
         return getUserImg.rows;
       } catch (e) {
         return e;
@@ -750,6 +752,7 @@ const resolvers = {
           await client.query('UPDATE user_info SET profil_picture = $1 WHERE id = $2', [null, user.id]);
 
         const getUserImg = await client.query('SELECT id, path FROM images WHERE user_id = $1', [user.id]);
+        await updateStatus(user.id);
         return getUserImg.rows;
       } catch (e) {
         return e;
@@ -758,6 +761,13 @@ const resolvers = {
 
     updateProfilImg: async (parent, { imgId, name, imgPath }, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // return new Error('Not auth');
+        // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -770,6 +780,7 @@ const resolvers = {
 
         await client.query('UPDATE user_info SET profil_picture = $1 WHERE id = $2', [imgPath, user.id]);
         const getProfilImg = await client.query('SELECT profil_picture FROM user_info WHERE id = $1', [user.id]);
+        await updateStatus(user.id);
         return { path: getProfilImg.rows[0].profil_picture };
       } catch (e) {
         return e;
