@@ -25,7 +25,7 @@ const store = {
   userPref: {
     ageStart: 18,
     ageEnd: 100,
-    scoreStart: 18,
+    scoreStart: 10,
     scoreEnd: 100,
     location: 10,
     tags: []

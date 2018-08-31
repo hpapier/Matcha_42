@@ -47,6 +47,8 @@
   display: flex
   flex-direction: column
   align-items: flex-start
+  margin-bottom: 10px
+  margin-top: 10px
 
 .lgi-complete-search-body-box-title
   color: rgba(#66757F, 0.7)
@@ -87,3 +89,138 @@
 
 .lgi-complete-search-body-box-content-selector:focus
   border: 1px solid rgba(#66757F, .1)
+
+.lgi-complete-search-body-box-content-input
+  width: 100%
+  -webkit-appearance: none
+  -moz-appearance: none
+  appearance: none
+  height: 5px
+  background: #f2f4f7
+  margin-top: 10px
+  outline: none
+  padding: 0px
+
+.lgi-complete-search-body-box-content-input::-webkit-slider-thumb
+  -webkit-appearance: none
+  -moz-appearance: none
+  appearance: none
+  width: 15px
+  height: 15px
+  background: #E6C2AA !important
+  border-radius: 50%
+
+.lgi-complete-search-body-box-content-input::-moz-range-thumb
+  background: blue !important
+
+
+.lgi-complete-search-body-box-content-interest
+  width: 100%
+  display: flex
+  flex-direction: column
+
+.lgi-complete-search-body-box-content-interest-input
+  width: calc(100% - 10px)
+  height: 35px
+  border: 1px solid #f2f4f7
+  border-radius: 3px
+  color: rgba(#66757F, .8)
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  outline: none
+  transition: .2s
+  padding: 0px
+  padding-left: 10px
+
+.lgi-complete-search-body-box-content-interest-input::placeholder
+  color: rgba(#66757F, .6)
+  font-family: 'Source sans pro', sans-serif
+  font-size: .875em
+  font-weight: 300
+
+.lgi-complete-search-body-box-content-interest-input:focus
+  border-color: rgba(#66757F, .2)
+
+.lgi-complete-search-body-box-content-interest-input-result
+  width: calc(100% - 18px)
+  padding: 10px 10px
+  background: #fff
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05)
+  color: rgba(#66757F, 1)
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  font-style: italic
+  cursor: pointer
+  transition: .1s
+
+.lgi-complete-search-body-box-content-interest-input-result:hover
+  background: rgba(#66757F, .05)
+
+.lgi-complete-search-body-box-content-interest-input-noresult
+  width: 100%
+  display: flex
+  justify-content: center
+  color: rgba(#66757F, .6)
+  font-family: 'Source sans pro', sans-serif
+  margin-top: 5px
+  font-size: .75em
+  font-weight: 400
+
+#lgi-complete-search-body-box-content-interest-tags
+  width: 100%
+  display: flex
+  flex-wrap: wrap
+
+.lgi-complete-search-body-box-content-interest-tags-item
+  background: #E6C2AA
+  padding: 5px 5px 7px 10px
+  display: flex
+  justify-content: space-between
+  border-radius: 3px
+  margin-right: 5px
+  margin-top: 3px
+
+.lgi-complete-search-body-box-content-interest-tags-text
+  color: #ffffff
+  font-family: 'Source sans pro', sans-serif
+  margin-right: 15px
+  font-size: .75em
+  font-weight: 400
+
+.lgi-complete-search-body-box-content-interest-tags-btn
+  border: none
+  height: 100%
+  background: rgba(0, 0, 0, 0)
+  cursor: pointer
+  outline: none
+
+.lgi-complete-search-body-box-content-interest-tags-icon
+  width: 7px
+  cursor: pointer
+
+.lgi-complete-search-body-submit
+  width: 235px
+  padding: 0px
+  margin: 0px
+  margin-top: 10px
+  height: 35px
+  background: #E6C2AA
+  border: none
+  border-bottom: 1px solid #BC9E8A
+  border-radius: 3px
+  text-transform: uppercase
+  color: #ffffff
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 600
+  letter-spacing: .5px
+  cursor: pointer
+  transition: .2s
+
+.lgi-complete-search-body-submit:hover
+  opacity: .8
+
+.tags-present
+  margin-top: 10px

@@ -177,7 +177,7 @@ export default (state = initialState, action) => {
           scoreStart: action.payload.scoreStart,
           scoreEnd: action.payload.scoreEnd,
           location: action.payload.location,
-          tags: action.payload.tags
+          tags: !action.payload.tags ? [] : JSON.parse(action.payload.tags)
         }
       }
     default:
