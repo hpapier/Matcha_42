@@ -1,0 +1,89 @@
+#lgi-complete-search
+  margin-left: 100px
+  margin-top: 10px
+  width: 320px
+  
+#lgi-complete-search-header
+  width: 100%
+  height: 50px
+  display: flex
+  justify-content: center
+  align-items: center
+  background: #fff
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  cursor: pointer
+
+#lgi-complete-search-header-title
+  font-family: 'Source sans pro', sans-serif
+  font-size: .875em
+  font-weight: 600
+  color: #66757F
+
+#lgi-complete-search-header-arrow
+  opacity: .6
+  width: 8px
+  margin-left: 10px
+  margin-top: 2px
+  transition: .2s
+
+#lgi-complete-search-header:hover img#lgi-complete-search-header-arrow
+  opacity: 1
+
+.search-box-active
+  transform: rotate(180deg)
+
+#lgi-complete-search-body
+  width: 100%
+  padding: 20px 0px
+  background: #fff
+  margin-top: 1px
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.lgi-complete-search-body-box
+  width: 235px
+  display: flex
+  flex-direction: column
+  align-items: flex-start
+
+.lgi-complete-search-body-box-title
+  color: rgba(#66757F, 0.7)
+  font-family: 'Source sans pro', sans-serif
+  font-size: .625em
+  font-weight: 600
+  text-transform: uppercase
+  margin-bottom: 5px
+
+.lgi-complete-search-body-box-content
+  display: flex
+  justify-content: space-between
+  width: 100%
+
+.lgi-complete-search-body-box-content-selector
+  width: 105px
+  margin: 0px
+  padding: 0px
+  -webkit-appearance: none
+  -moz-appearance: none
+  appearance: none
+  height: 45px
+  border: none
+  background: #f2f4f7
+    // background-color: rgba(0, 0, 0, 0)
+  background-image: url('../../../../../assets/lined-bottom-arrow.svg')
+  background-repeat: no-repeat
+  background-position: calc(100% - 30%) calc(100% - 45%)
+  background-size: 10px
+  padding-left: 40px
+  color: rgba(#66757F, .8)
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  outline: none
+  transition: .2s
+  border: 1px solid rgba(#66757F, 0)
+
+.lgi-complete-search-body-box-content-selector:focus
+  border: 1px solid rgba(#66757F, .1)

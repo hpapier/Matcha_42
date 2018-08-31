@@ -17,7 +17,8 @@ import {
   UPDATE_USER_IMAGES,
   UPDATE_PROFIL_USER_IMAGES,
   UPDATE_REFETCHING,
-  CLEAR_STORE
+  CLEAR_STORE,
+  SAVE_USER_PREF
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -166,6 +167,18 @@ export default (state = initialState, action) => {
     case CLEAR_STORE:
       return {
         ...initialState
+      };
+    case SAVE_USER_PREF:
+      return {
+        ...state,
+        userPref: {
+          ageStart: action.payload.ageStart,
+          ageEnd: action.payload.ageEnd,
+          scoreStart: action.payload.scoreStart,
+          scoreEnd: action.payload.scoreEnd,
+          location: action.payload.location,
+          tags: action.payload.tags
+        }
       }
     default:
       return state;

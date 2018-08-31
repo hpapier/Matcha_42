@@ -245,3 +245,29 @@ export const UPDATE_USER_PROFIL_IMAGE_MUTATION = gql`
     }
   }
 `;
+
+export const GET_USER_PREFERENCE_QUERY = gql`
+  {
+    getUserPreference {
+      ageStart
+      ageEnd
+      scoreStart
+      scoreEnd
+      location
+      tags
+    }
+  }
+`;
+
+export const UPDATE_USER_PREFERENCE_MUTATION = gql`
+  mutation updateUserPreferences($ageStart: Int!, $ageEnd: Int!, $scoreStart: Int!, $scoreEnd: Int!, $location: Int!, $tags: String!) {
+    updateUserPreferences(ageStart: $ageStart, ageEnd: $ageEnd, scoreStart: $scoreStart, scoreEnd: $scoreEnd, location: $location, tags: $tags) {
+      ageStart
+      ageEnd
+      scoreStart
+      scoreEnd
+      location
+      tags
+    }
+  }
+`;

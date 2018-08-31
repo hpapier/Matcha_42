@@ -18,7 +18,18 @@ const store = {
   },
   refetching: false,
   interests: [],
-  statusBar: 'home'
+  statusBar: 'home',
+  homepage: {
+    statusView: 'suggestion'
+  },
+  userPref: {
+    ageStart: 18,
+    ageEnd: 100,
+    scoreStart: 18,
+    scoreEnd: 100,
+    location: 10,
+    tags: []
+  }
 };
 
 export default store;

@@ -9,6 +9,7 @@ import { GET_USER_INFO_QUERY } from '../../../query';
 import Logout from '../Utils/Logout';
 import { saveUserInfo, saveInterest } from '../../../store/action/synchronous';
 import NotComplete from '../NotComplete';
+import Complete from '../Complete';
 
 
 // Homepage Component
@@ -35,7 +36,7 @@ const Homepage = props => {
         const getComponent = () => {
           const { isComplete, bio, location, interests, images, profilPicture  } = data.userInformations;
           if (isComplete)
-            return <div>Complete</div>;
+            return <Complete />;
           else
             return <NotComplete data={{ bio, location, images, interests, profilPicture }} />;
         };

@@ -117,6 +117,15 @@ const typeDefs = `
     isComplete: Int
   }
 
+  type UserPreferences {
+    ageStart: Int
+    ageEnd: Int
+    scoreStart: Int
+    scoreEnd: Int
+    location: Int
+    tags: String
+  }
+
   type Notification {
     id: Int
     isViewed: Int
@@ -137,6 +146,7 @@ const typeDefs = `
     userInformationsBox: UserInformations
     getInterests: [Interests]
     userNotif: [Notification]
+    getUserPreference: UserPreferences
   }
   
   type Mutation {
@@ -160,6 +170,7 @@ const typeDefs = `
     addUserImage(img: String!, type: String!): [UserImages]
     removeUserImage(imgId: Int!, name: String!): [UserImages]
     updateProfilImg(imgId: Int!, name: String!, imgPath: String!): ProfilImg
+    updateUserPreferences(ageStart: Int!, ageEnd: Int!, scoreStart: Int!, scoreEnd: Int!, location: Int!, tags: String!): UserPreferences
   }
 
 `;
@@ -308,7 +319,7 @@ const resolvers = {
       try {
         const user = verifyUserToken(ctx.headers);
         if (!user)
-          return new Error(e.message);
+          return new Error('Not auth');
 
         const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
         if (notif.rowCount === 0)
@@ -320,8 +331,32 @@ const resolvers = {
       } catch (e) {
         return new Error(e.message);
       }
-    }
+    },
+
+    getUserPreference: async (parent, args, ctx) => {
+      try {
+        const user = verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+  
+        const resPref = await client.query('SELECT * FROM user_pref WHERE user_id = $1', [user.id]);
+        if (resPref.rowCount === 0)
+          return { ageStart: 18, ageEnd: 100, scoreStart: 10, scoreEnd: 100, location: 10, tags: null };
+
+        return {
+          ageStart: resPref.rows[0].age_start,
+          ageEnd: resPref.rows[0].age_end,
+          scoreStart: resPref.rows[0].score_start,
+          scoreEnd: resPref.rows[0].score_end,
+          location: resPref.rows[0].location,
+          tags: resPref.rows[0].tags
+        };
+      } catch (e) {
+        return e;
+      }
+    },
   },
+
 
   Mutation: {
     signUpMutation: async (parent, { username, email, lastname, firstname, birthDate, genre, interest, password }, ctx) => {
@@ -823,6 +858,39 @@ const resolvers = {
         const getProfilImg = await client.query('SELECT profil_picture FROM user_info WHERE id = $1', [user.id]);
         await updateStatus(user.id);
         return { path: getProfilImg.rows[0].profil_picture };
+      } catch (e) {
+        return e;
+      }
+    },
+
+    updateUserPreferences: async (parent, { ageStart, ageEnd, scoreStart, scoreEnd, location, tags}, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkPref = await client.query('SELECT * FROM user_pref WHERE user_id = $1', [user.id]);
+        if (checkPref.rowCount === 0) {
+          await client.query(
+            'INSERT INTO user_pref (user_id, age_start, age_end, score_start, score_end, location, tags) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+            [user.id, ageStart, ageEnd, scoreStart, scoreEnd, location, tags]
+          );
+        } else {
+          await client.query(
+            'UPDATE user_pref SET (age_start, age_end, score_start, score_end, location, tags) = ($1, $2, $3, $4, $5, $6) WHERE user_id = $7',
+            [ageStart, ageEnd, scoreStart, scoreEnd, location, tags, user.id]
+          );
+        }
+
+        const resUserPref = await client.query('SELECT * FROM user_pref WHERE user_id = $1', [user.id]);
+        return {
+          ageStart: resUserPref.rows[0].age_start,
+          ageEnd: resUserPref.rows[0].age_end,
+          scoreStart: resUserPref.rows[0].score_start,
+          scoreEnd: resUserPref.rows[0].score_end,
+          location: resUserPref.rows[0].location,
+          tags: resUserPref.rows[0].tags
+        };
       } catch (e) {
         return e;
       }

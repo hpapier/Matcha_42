@@ -60,7 +60,7 @@
 /*
   CREATE TABLE user_pref (
     id          SERIAL    NOT NULL PRIMARY KEY,
-    user_id     UUID      NOT NULL,
+    user_id     INTEGER   NOT NULL,
     age_start   SMALLINT  NOT NULL DEFAULT 18,
     age_end     SMALLINT  NOT NULL DEFAULT 100,
     score_start SMALLINT  NOT NULL DEFAULT 10,
