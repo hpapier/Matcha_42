@@ -18,7 +18,8 @@ import {
   UPDATE_PROFIL_USER_IMAGES,
   UPDATE_REFETCHING,
   CLEAR_STORE,
-  SAVE_USER_PREF
+  SAVE_USER_PREF,
+  UPDATE_FILTRE
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -179,6 +180,11 @@ export default (state = initialState, action) => {
           location: action.payload.location,
           tags: !action.payload.tags ? [] : JSON.parse(action.payload.tags)
         }
+      };
+    case UPDATE_FILTRE:
+      return {
+        ...state,
+        currentFiltre: action.payload
       }
     default:
       return state;

@@ -224,3 +224,40 @@
 
 .tags-present
   margin-top: 10px
+
+.lgi-complete-search-body-submit-loading
+  width: 235px
+  padding: 0px
+  margin: 0px
+  margin-top: 10px
+  height: 35px
+  background: #fff
+  border: none
+  display: flex
+  justify-content: center
+
+@keyframes search-loading-animation-box
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+  
+.lgi-complete-search-body-submit-loading-animation
+  animation-name: search-loading-animation-box
+  animation-duration: 1s
+  animation-direction: normal
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  border: 5px solid #f2f4f7
+  border-radius: 50%
+  width: 20px
+  height: 20px
+  border-top: 5px solid #E6C2AA
+  background: rgba(0, 0, 0, 0)
+  
+.lgi-complete-search-body-error
+  color: red
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  margin-top: 5px

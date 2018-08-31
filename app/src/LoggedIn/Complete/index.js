@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import './index.sass';
 import UserBox from '../UserBox';
 import Search from './Search';
+import Filtre from './Filtre';
 
 
 // Complete Component.
@@ -20,7 +21,7 @@ const Complete = props => {
           statusView !== 'profil' ?
           <div id='lgi-complete-left-box-btn'>
             <Search />
-            <div>Filtre</div>
+            <Filtre />
           </div> :
           null
         }

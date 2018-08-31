@@ -837,13 +837,6 @@ const resolvers = {
 
     updateProfilImg: async (parent, { imgId, name, imgPath }, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // return new Error('Not auth');
-        // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -865,6 +858,13 @@ const resolvers = {
 
     updateUserPreferences: async (parent, { ageStart, ageEnd, scoreStart, scoreEnd, location, tags}, ctx) => {
       try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // return new Error('Not auth');
+        // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');

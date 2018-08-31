@@ -225,11 +225,11 @@ class SearchMutation extends Component {
 
                   {
                     loading ?
-                    <div className='lgi-complete-search-body-submit-loading'></div> :
+                    <div className='lgi-complete-search-body-submit-loading'><div className='lgi-complete-search-body-submit-loading-animation'></div></div> :
                     <button className='lgi-complete-search-body-submit' type='submit'>sauvegarder</button>
                   }
 
-                  {errorMsg ? <div>{errorMsg}</div> : null}
+                  {errorMsg ? <div className='lgi-complete-search-body-error'>{errorMsg}</div> : null}
                 </form> :
                 null
               }

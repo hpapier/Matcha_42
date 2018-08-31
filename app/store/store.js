@@ -29,7 +29,8 @@ const store = {
     scoreEnd: 100,
     location: 10,
     tags: []
-  }
+  },
+  currentFiltre: []
 };
 
 export default store;

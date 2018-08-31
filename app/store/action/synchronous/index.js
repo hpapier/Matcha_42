@@ -17,7 +17,8 @@ import {
   UPDATE_PROFIL_USER_IMAGES,
   UPDATE_REFETCHING,
   CLEAR_STORE,
-  SAVE_USER_PREF
+  SAVE_USER_PREF,
+  UPDATE_FILTRE
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -111,5 +112,10 @@ export const updateRefetch = bool => ({
 
 export const saveUserPref = data => ({
   type: SAVE_USER_PREF,
+  payload: data
+});
+
+export const updateFiltre = data => ({
+  type: UPDATE_FILTRE,
   payload: data
 });
