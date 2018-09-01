@@ -18,7 +18,7 @@ class RandomChoice extends Component {
 
   render() {
     return (
-      <Query query={GET_LIST_OF_USER_QUERY} onCompleted={data => this.onCompletedHandler(data)}>
+      <Query query={GET_LIST_OF_USER_QUERY} onCompleted={data => this.onCompletedHandler(data)} fetchPolicy='cache-and-network'>
       {
         ({ loading, error }) => {
           return (

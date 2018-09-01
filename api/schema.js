@@ -328,7 +328,7 @@ const resolvers = {
 
     userNotif: async (parent, args, ctx) => {
       try {
-        const user = verifyUserToken(ctx.headers);
+        const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
@@ -346,7 +346,7 @@ const resolvers = {
 
     getUserPreference: async (parent, args, ctx) => {
       try {
-        const user = verifyUserToken(ctx.headers);
+        const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
   
@@ -369,7 +369,7 @@ const resolvers = {
 
     getListOfUser: async (parent, args, ctx) => {
       try {
-        const user = verifyUserToken(ctx.headers);
+        const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
@@ -377,7 +377,7 @@ const resolvers = {
         if (user.sexual_orientation === 'bisexual')
           res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND id != $2', [1, user.id]);
         else
-          res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND genre = $2 AND id != $3', [1, user.sexual_orientation, user.id]);
+          res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND genre = $2', [1, user.sexual_orientation]);
 
         const getAge = date => {
           var today = new Date();
@@ -390,11 +390,37 @@ const resolvers = {
           return age;
         };
 
-        const result = res.rows.map(async item => {
+        const distance = (lat1, lon1, lat2, lon2, unit) => {
+          var radlat1 = Math.PI * lat1/180;
+          var radlat2 = Math.PI * lat2/180;
+          var radlon1 = Math.PI * lon1/180;
+          var radlon2 = Math.PI * lon2/180;
+          var theta = lon1-lon2;
+          var radtheta = Math.PI * theta/180;
+          var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+          dist = Math.acos(dist);
+          dist = dist * 180/Math.PI;
+          dist = dist * 60 * 1.1515;
+          if (unit === "K") { dist = dist * 1.609344 };
+          if (unit === "N") { dist = dist * 0.8684 };
+          return dist;
+        };
+
+        const userLat = JSON.parse(user.location).lat;
+        const userLng = JSON.parse(user.location).lng;
+        
+        let trimedByDistanceList = [];
+        for (item of res.rows) {
+          if (distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 101)
+            trimedByDistanceList.push(item);
+        }
+
+        let result = [];
+        for (item of trimedByDistanceList) {
           const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
           const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
-          return { id: item.id, location: item.location, popularityScore: item.popularity_score, username: item.username, age: getAge(item.birth_date), tags: formatedTagsList, profilPicture: item.profil_picture };
-        });
+          result.push({ id: item.id, location: item.location, popularityScore: item.popularity_score, username: item.username, age: getAge(item.birth_date), tags: formatedTagsList, profilPicture: item.profil_picture });
+        };
 
         return result;
       } catch(e) {
