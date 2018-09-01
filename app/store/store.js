@@ -30,7 +30,8 @@ const store = {
     location: 10,
     tags: []
   },
-  currentFiltre: []
+  currentFiltre: [],
+  simpleUserList: []
 };
 
 export default store;

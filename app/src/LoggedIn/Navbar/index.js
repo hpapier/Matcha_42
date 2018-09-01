@@ -22,7 +22,6 @@ class Navbar extends Component {
   }
 
   componentWillMount() {
-    console.log('lol');
     this.props.statusBarMechanism((this.props.location.pathname.split('/')[1] !== '') ? this.props.location.pathname.split('/')[1] : 'home');
   }
 

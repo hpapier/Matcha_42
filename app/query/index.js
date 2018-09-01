@@ -271,3 +271,20 @@ export const UPDATE_USER_PREFERENCE_MUTATION = gql`
     }
   }
 `;
+
+export const GET_LIST_OF_USER_QUERY = gql`
+  {
+    getListOfUser {
+      id
+      location
+      popularityScore
+      username
+      age
+      tags {
+        id
+        interestId
+      }
+      profilPicture
+    }
+  }
+`;

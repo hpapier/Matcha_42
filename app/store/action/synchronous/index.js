@@ -18,7 +18,9 @@ import {
   UPDATE_REFETCHING,
   CLEAR_STORE,
   SAVE_USER_PREF,
-  UPDATE_FILTRE
+  UPDATE_FILTRE,
+  SAVE_LIST_OF_USER,
+  CHANGE_STATUS_VIEW
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -118,4 +120,14 @@ export const saveUserPref = data => ({
 export const updateFiltre = data => ({
   type: UPDATE_FILTRE,
   payload: data
+});
+
+export const saveListOfUser = data => ({
+  type: SAVE_LIST_OF_USER,
+  payload: data
+});
+
+export const changeStatusView = status => ({
+  type: CHANGE_STATUS_VIEW,
+  payload: status
 });

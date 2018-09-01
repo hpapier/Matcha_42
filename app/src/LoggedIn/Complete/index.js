@@ -8,6 +8,7 @@ import './index.sass';
 import UserBox from '../UserBox';
 import Search from './Search';
 import Filtre from './Filtre';
+import RandomChoice from './RandomChoice';
 
 
 // Complete Component.
@@ -31,7 +32,7 @@ const Complete = props => {
       {
         statusView !== 'profil' ?
         <div>
-          <div>Sugg/Search</div>
+          <RandomChoice />
           <div>Visited</div>
           <div>Liked by</div>
           <div>like</div>

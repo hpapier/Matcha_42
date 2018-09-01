@@ -74,7 +74,7 @@ class Filtre extends Component {
     return (
       <div id='lgi-complete-filtre'>
         <div id='lgi-complete-filtre-header' onClick={() => this.setState({ isActive: !isActive })}>
-          <div id='lgi-complete-filtre-header-title'>Filtre</div>
+          <div id='lgi-complete-filtre-header-title'>Filtres</div>
           <img id='lgi-complete-filtre-header-icon' className={isActive ? 'filtre-box-active' : ''} src={bottomArrow} alt='bottom-arrow-icon' />
         </div>
   

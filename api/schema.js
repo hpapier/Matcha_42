@@ -138,6 +138,16 @@ const typeDefs = `
     data: String
   }
 
+  type UserSimpleList {
+    id: Int
+    location: String
+    popularityScore: Int
+    username: String
+    age: Int
+    tags: [UserInterests]
+    profilPicture: String
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -147,6 +157,7 @@ const typeDefs = `
     getInterests: [Interests]
     userNotif: [Notification]
     getUserPreference: UserPreferences
+    getListOfUser: [UserSimpleList]
   }
   
   type Mutation {
@@ -355,6 +366,41 @@ const resolvers = {
         return e;
       }
     },
+
+    getListOfUser: async (parent, args, ctx) => {
+      try {
+        const user = verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        let res;
+        if (user.sexual_orientation === 'bisexual')
+          res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND id != $2', [1, user.id]);
+        else
+          res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND genre = $2 AND id != $3', [1, user.sexual_orientation, user.id]);
+
+        const getAge = date => {
+          var today = new Date();
+          var birthDate = new Date(date);
+          var age = today.getFullYear() - birthDate.getFullYear();
+          var m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
+          }
+          return age;
+        };
+
+        const result = res.rows.map(async item => {
+          const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
+          const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
+          return { id: item.id, location: item.location, popularityScore: item.popularity_score, username: item.username, age: getAge(item.birth_date), tags: formatedTagsList, profilPicture: item.profil_picture };
+        });
+
+        return result;
+      } catch(e) {
+        return e;
+      }
+    }
   },
 
 

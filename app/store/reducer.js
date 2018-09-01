@@ -19,7 +19,9 @@ import {
   UPDATE_REFETCHING,
   CLEAR_STORE,
   SAVE_USER_PREF,
-  UPDATE_FILTRE
+  UPDATE_FILTRE,
+  SAVE_LIST_OF_USER,
+  CHANGE_STATUS_VIEW
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -185,8 +187,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentFiltre: action.payload
-      }
+      };
+    case SAVE_LIST_OF_USER:
+      return {
+        ...state,
+        simpleUserList: action.payload
+      };
+    case CHANGE_STATUS_VIEW:
+      return {
+        ...state,
+        homepage: {
+          statusView: action.payload
+        },
+      };
     default:
       return state;
   }
-}
+};
