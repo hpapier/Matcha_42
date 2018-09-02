@@ -280,6 +280,7 @@ export const GET_LIST_OF_USER_QUERY = gql`
       popularityScore
       username
       age
+      distance
       tags {
         id
         interestId

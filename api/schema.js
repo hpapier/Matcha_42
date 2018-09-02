@@ -146,6 +146,7 @@ const typeDefs = `
     age: Int
     tags: [UserInterests]
     profilPicture: String
+    distance: Int
   }
 
   type Query {
@@ -411,7 +412,7 @@ const resolvers = {
         
         let trimedByDistanceList = [];
         for (item of res.rows) {
-          if (distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 101)
+          if (distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 200)
             trimedByDistanceList.push(item);
         }
 
@@ -419,7 +420,16 @@ const resolvers = {
         for (item of trimedByDistanceList) {
           const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
           const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
-          result.push({ id: item.id, location: item.location, popularityScore: item.popularity_score, username: item.username, age: getAge(item.birth_date), tags: formatedTagsList, profilPicture: item.profil_picture });
+          result.push({
+            id: item.id,
+            location: item.location,
+            popularityScore: item.popularity_score,
+            username: item.username,
+            age: getAge(item.birth_date),
+            tags: formatedTagsList,
+            profilPicture: item.profil_picture,
+            distance: parseInt(distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
+          });
         };
 
         return result;
