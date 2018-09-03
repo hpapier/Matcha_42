@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import './index.sass';
 import heartIcon from '../../../../../assets/heart-white.svg';
 import scoreIcon from '../../../../../assets/popScore.svg';
+import linedArrowBtm from '../../../../../assets/lined-bottom-arrow.svg';
 
 
 // Suggestion Component.
@@ -163,7 +164,16 @@ class Suggestion extends Component {
                 { isLoading ? 'loading' : this.displayUser() }
               </div>
               <div>
-                { isLoading ? 'loading' : (list.length - limit > 0) ? <div onClick={() => this.setState({ limit: this.state.limit + 8})}>Plus de résultats</div> : null }
+                {
+                  isLoading ?
+                  'loading' :
+                    (list.length - limit > 0) ?
+                    <div onClick={() => this.setState({ limit: this.state.limit + 8})} className='lgi-suggestion-list-item-more-result'>
+                      <div className='lgi-suggestion-list-item-more-result-text'>Plus de résultats</div>
+                      <img src={linedArrowBtm} alt='more-result-icon' className='lgi-suggestion-list-item-more-result-icon' />
+                    </div> : 
+                    null
+                }
               </div>
             </div>
           );

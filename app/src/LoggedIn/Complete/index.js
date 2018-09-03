@@ -31,7 +31,7 @@ const Complete = props => {
       <div id='lgi-complete-right-box'>
       {
         statusView !== 'profil' ?
-        <div>
+        <div id='lgi-complete-right-subbox'>
           <RandomChoice />
           <div>Visited</div>
           <div>Liked by</div>

@@ -25,7 +25,7 @@ class RandomChoice extends Component {
       {
         ({ loading, error }) => {
           if (loading)
-            return <div>loading..</div>;
+            return <div id='lgi-random-choice-loading'><div id='lgi-random-choice-loading-animation'></div></div>;
 
           if (error) {
             if (error.graphQLErrors[0].message === 'Not auth')
@@ -34,12 +34,13 @@ class RandomChoice extends Component {
               return <div>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
           }
 
-          const { statusView } = this.props;
+          const { statusView, changeStatusView } = this.props;
           return (
             <div>
-              <div>
-                <div>Suggestion</div>
-                <div>Recherche</div>
+              <div id='lgi-random-choice-header'>
+                <div className={statusView === 'suggestion' ? 'lgi-random-choice-header-title-active' : 'lgi-random-choice-header-title'} onClick={() => changeStatusView('suggestion')}>Suggestion</div>
+                {/* <div className='lgi-random-choice-header-title'>|</div> */}
+                <div className={statusView === 'search' ? 'lgi-random-choice-header-title-active' : 'lgi-random-choice-header-title'} onClick={() => changeStatusView('search')}>Recherche</div>
               </div>
 
               { statusView === 'suggestion' ? <Suggestion /> : null }
