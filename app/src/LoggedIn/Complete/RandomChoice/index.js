@@ -43,8 +43,7 @@ class RandomChoice extends Component {
                 <div className={statusView === 'search' ? 'lgi-random-choice-header-title-active' : 'lgi-random-choice-header-title'} onClick={() => changeStatusView('search')}>Recherche</div>
               </div>
 
-              { statusView === 'suggestion' ? <Suggestion /> : null }
-              {/* { statusView === 'search' ? <Searchable /> : null } */}
+              { statusView === 'suggestion' || statusView === 'search' ? <Suggestion /> : null }
             </div>
           );
         }

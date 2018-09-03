@@ -22,7 +22,7 @@ class Suggestion extends Component {
     this.getUserList();
   }
 
-  displayUser = () => {
+  displayUserSuggestion = () => {
     const { limit, list } = this.state;
     return list.map((item, index) => {
       if (index < limit) {
@@ -51,6 +51,35 @@ class Suggestion extends Component {
     });
   }
 
+  displayUserPreference = () => {
+    const { limit, list } = this.state;
+    const { userPref } = this.props;
+    return list.map((item, index) => {
+      if (index < limit) {
+        return (
+          <div className='lgi-suggestion-list-item' key={item.id * Math.random()}>
+            <div className='lgi-suggestion-list-item-img'>
+              <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
+            </div>
+            <div className='lgi-suggestion-list-item-event'>
+              <button className='lgi-suggestion-list-item-event-like'>
+                <img src={heartIcon} alt='like-icon' className='lgi-suggestion-list-item-event-like-img' />
+              </button>
+              <div className='lgi-suggestion-list-item-event-score'>
+                <img src={scoreIcon} alt='score-icon' className='lgi-suggestion-list-item-event-score-icon' />
+                <div className='lgi-suggestion-list-item-event-score-txt'>{item.popularityScore}</div>
+              </div>
+            </div>
+            <div className='lgi-suggestion-list-item-content'>
+              <div className='lgi-suggestion-list-item-content-title'>{item.username}</div>
+              <div className='lgi-suggestion-list-item-content-text'>{item.age} ans - {item.distance} km</div>
+            </div>
+          </div>
+        );
+      }
+      return;
+    });
+  }
 
   getage = date => {
     var today = new Date();
@@ -154,6 +183,7 @@ class Suggestion extends Component {
 
   render() {
     const { isLoading, list, limit } = this.state;
+    const { statusView, userPref, interests } = this.props;
     return (
       <ApolloConsumer>
       {
@@ -161,7 +191,21 @@ class Suggestion extends Component {
           return (
             <div>
               <div id='lgi-suggestion-list'>
-                { isLoading ? 'loading' : this.displayUser() }
+                {
+                  isLoading ?
+                  'loading' :
+                    (statusView === 'suggestion') ?
+                    this.displayUserSuggestion() :
+                    <div className='lgi-suggestion-list-pref'>
+                      <div className='lgi-suggestion-list-pref-list'>
+                        <div className='lgi-suggestion-list-pref-list-element'>AGE: {userPref.ageStart} - {userPref.ageEnd}</div>
+                        <div className='lgi-suggestion-list-pref-list-element'>SCORE: {userPref.scoreStart} - {userPref.scoreEnd}</div>
+                        <div className='lgi-suggestion-list-pref-list-element'>PROXIMITÉ: {userPref.location} km</div>
+                        <div className='lgi-suggestion-list-pref-list-element'>TAG: {userPref.tags.length > 0 ? userPref.tags.map(item => <div key={item.id}>{item.name}</div>) : 'Aucun tag'}</div>
+                      </div>
+                      { this.displayUserPreference() }
+                    </div>
+                }
               </div>
               <div>
                 {
@@ -190,7 +234,10 @@ const mapStateToProps = state => ({
   simpleUserList: state.simpleUserList,
   userTags: state.user.userTags,
   userBd: state.user.birthDate,
-  popularityScore: state.user.popularityScore
+  popularityScore: state.user.popularityScore,
+  statusView: state.homepage.statusView,
+  userPref: state.userPref,
+  interests: state.interests
 });
 
 // const mapDispatchToProps = dispatch => ({
