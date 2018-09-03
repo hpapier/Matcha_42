@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 
 // Locals imports.
 import './index.sass';
+import heartIcon from '../../../../../assets/heart-white.svg';
+import scoreIcon from '../../../../../assets/popScore.svg';
 
 
 // Suggestion Component.
@@ -24,17 +26,22 @@ class Suggestion extends Component {
     return list.map((item, index) => {
       if (index < limit) {
         return (
-          <div className='lgi-suggestion-list-item' key={item.id}>
+          <div className='lgi-suggestion-list-item' key={item.id * Math.random()}>
             <div className='lgi-suggestion-list-item-img'>
               <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} id="lol" />
             </div>
-            <div>
-              <button></button>
-              <div>{item.score}</div>
+            <div className='lgi-suggestion-list-item-event'>
+              <button className='lgi-suggestion-list-item-event-like'>
+                <img src={heartIcon} alt='like-icon' className='lgi-suggestion-list-item-event-like-img' />
+              </button>
+              <div className='lgi-suggestion-list-item-event-score'>
+                <img src={scoreIcon} alt='score-icon' className='lgi-suggestion-list-item-event-score-icon' />
+                <div className='lgi-suggestion-list-item-event-score-txt'>{item.popularityScore}</div>
+              </div>
             </div>
-            <div>
-              <div>{item.username}</div>
-              <div>{item.age} ans - {item.distance} km</div>
+            <div className='lgi-suggestion-list-item-content'>
+              <div className='lgi-suggestion-list-item-content-title'>{item.username}</div>
+              <div className='lgi-suggestion-list-item-content-text'>{item.age} ans - {item.distance} km</div>
             </div>
           </div>
         );
@@ -43,13 +50,41 @@ class Suggestion extends Component {
     });
   }
 
+
+  getage = date => {
+    var today = new Date();
+    var birthDate = new Date(date);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+  }
+
+  checkAge = element => {
+    const { userBd } = this.props;
+    const age = this.getage(userBd);
+
+    if (Math.abs(age - element.age) <= 10)
+      return 5;
+    if (Math.abs(age - element.age) <= 20)
+      return 3;
+    if (Math.abs(age - element.age) <= 40)
+      return 2;
+    if (Math.abs(age - element.age) <= 60)
+      return 1;
+
+    return 0;
+  }
+
   checkDistance = element => {
     const { distance } = element;
     
     if (distance <= 20)
-      return 5;
+      return 7;
     else if (distance > 20 && distance <= 40)
-      return 4;
+      return 5;
     else if (distance > 40 && distance <= 60)
       return 3;
     else if (distance > 60 && distance <= 80)
@@ -104,6 +139,7 @@ class Suggestion extends Component {
     const userSuggestion = simpleUserList.map(element => {
       let p = 0;
 
+      p += this.checkAge(element);
       p += this.checkDistance(element);
       p += this.checkTags(element);
       p += this.checkScore(element);
@@ -116,7 +152,7 @@ class Suggestion extends Component {
   }
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, list, limit } = this.state;
     return (
       <ApolloConsumer>
       {
@@ -127,7 +163,7 @@ class Suggestion extends Component {
                 { isLoading ? 'loading' : this.displayUser() }
               </div>
               <div>
-                { isLoading ? 'loading' : (this.state.list.length > 8) ? <div onClick={() => this.setState({ limit: this.state.limit + 8})}>Plus de résultats</div> : null }
+                { isLoading ? 'loading' : (list.length - limit > 0) ? <div onClick={() => this.setState({ limit: this.state.limit + 8})}>Plus de résultats</div> : null }
               </div>
             </div>
           );
@@ -143,6 +179,7 @@ class Suggestion extends Component {
 const mapStateToProps = state => ({
   simpleUserList: state.simpleUserList,
   userTags: state.user.userTags,
+  userBd: state.user.birthDate,
   popularityScore: state.user.popularityScore
 });
 
