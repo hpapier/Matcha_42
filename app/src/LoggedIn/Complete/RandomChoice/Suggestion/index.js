@@ -54,31 +54,58 @@ class Suggestion extends Component {
   displayUserPreference = () => {
     const { limit, list } = this.state;
     const { userPref } = this.props;
-    return list.map((item, index) => {
-      if (index < limit) {
-        return (
-          <div className='lgi-suggestion-list-item' key={item.id * Math.random()}>
-            <div className='lgi-suggestion-list-item-img'>
-              <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
-            </div>
-            <div className='lgi-suggestion-list-item-event'>
-              <button className='lgi-suggestion-list-item-event-like'>
-                <img src={heartIcon} alt='like-icon' className='lgi-suggestion-list-item-event-like-img' />
-              </button>
-              <div className='lgi-suggestion-list-item-event-score'>
-                <img src={scoreIcon} alt='score-icon' className='lgi-suggestion-list-item-event-score-icon' />
-                <div className='lgi-suggestion-list-item-event-score-txt'>{item.popularityScore}</div>
+    const checkTags = element => {
+      let count = 0;
+      userPref.tags.forEach(tag => {
+        element.tags.forEach(e => {
+          if (tag.id === e.interestId)
+            count++;
+          return;
+        });
+      });
+      if (count === userPref.tags.length)
+        return true;
+      return false;
+    }
+
+    let listArray = [];
+    list.forEach((item, index) => {
+      const isTagsPresent = checkTags(item);
+      if (item.age >= userPref.ageStart
+        && item.age <= userPref.ageEnd
+        && item.popularityScore >= userPref.scoreStart
+        && item.popularityScore <= userPref.scoreEnd
+        && item.distance <= userPref.location
+        && isTagsPresent) {
+          listArray.push((
+            <div className='lgi-suggestion-list-item' key={item.id * Math.random()}>
+              <div className='lgi-suggestion-list-item-img'>
+                <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
+              </div>
+              <div className='lgi-suggestion-list-item-event'>
+                <button className='lgi-suggestion-list-item-event-like'>
+                  <img src={heartIcon} alt='like-icon' className='lgi-suggestion-list-item-event-like-img' />
+                </button>
+                <div className='lgi-suggestion-list-item-event-score'>
+                  <img src={scoreIcon} alt='score-icon' className='lgi-suggestion-list-item-event-score-icon' />
+                  <div className='lgi-suggestion-list-item-event-score-txt'>{item.popularityScore}</div>
+                </div>
+              </div>
+              <div className='lgi-suggestion-list-item-content'>
+                <div className='lgi-suggestion-list-item-content-title'>{item.username}</div>
+                <div className='lgi-suggestion-list-item-content-text'>{item.age} ans - {item.distance} km</div>
               </div>
             </div>
-            <div className='lgi-suggestion-list-item-content'>
-              <div className='lgi-suggestion-list-item-content-title'>{item.username}</div>
-              <div className='lgi-suggestion-list-item-content-text'>{item.age} ans - {item.distance} km</div>
-            </div>
-          </div>
-        );
+          ));
       }
       return;
     });
+
+    return listArray.map((item, index) => {
+      if (index < limit)
+        return item;
+      return;
+    })
   }
 
   getage = date => {
@@ -198,10 +225,22 @@ class Suggestion extends Component {
                     this.displayUserSuggestion() :
                     <div className='lgi-suggestion-list-pref'>
                       <div className='lgi-suggestion-list-pref-list'>
-                        <div className='lgi-suggestion-list-pref-list-element'>AGE: {userPref.ageStart} - {userPref.ageEnd}</div>
-                        <div className='lgi-suggestion-list-pref-list-element'>SCORE: {userPref.scoreStart} - {userPref.scoreEnd}</div>
-                        <div className='lgi-suggestion-list-pref-list-element'>PROXIMITÉ: {userPref.location} km</div>
-                        <div className='lgi-suggestion-list-pref-list-element'>TAG: {userPref.tags.length > 0 ? userPref.tags.map(item => <div key={item.id}>{item.name}</div>) : 'Aucun tag'}</div>
+                        <div className='lgi-suggestion-list-pref-list-element'>
+                          <div className='lgi-suggestion-list-pref-list-element-title'>âge</div>
+                          <div className='lgi-suggestion-list-pref-list-element-content'>{userPref.ageStart} - {userPref.ageEnd}</div>
+                        </div>
+                        <div className='lgi-suggestion-list-pref-list-element'>
+                          <div className='lgi-suggestion-list-pref-list-element-title'>score de popularité</div>
+                          <div className='lgi-suggestion-list-pref-list-element-content'>{userPref.scoreStart} - {userPref.scoreEnd}</div>
+                        </div>
+                        <div className='lgi-suggestion-list-pref-list-element'>
+                          <div className='lgi-suggestion-list-pref-list-element-title'>proximité géographique</div>
+                          <div className='lgi-suggestion-list-pref-list-element-content'>{userPref.location} km</div>
+                        </div>
+                        <div className='lgi-suggestion-list-pref-list-element'>
+                          <div className='lgi-suggestion-list-pref-list-element-title'>Tags</div>
+                          <div className='lgi-suggestion-list-pref-list-element-content'>{userPref.tags.length > 0 ? userPref.tags.map(item => <div key={item.id}>{item.name}</div>) : 'Aucun tag'}</div>
+                        </div>
                       </div>
                       { this.displayUserPreference() }
                     </div>

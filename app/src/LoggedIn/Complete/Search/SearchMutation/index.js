@@ -150,7 +150,7 @@ class SearchMutation extends Component {
                     <div className='lgi-complete-search-body-box-content'>
                       <select
                         className='lgi-complete-search-body-box-content-selector'
-                        onChange={e => this.setState({ ageStart: parseInt(e.target.value) })}
+                        onChange={e => this.setState({ ageStart: parseInt(e.target.value), ageEnd: (parseInt(e.target.value) >= this.state.ageEnd) ? parseInt(e.target.value) + 1 : this.state.ageEnd })}
                       >
                         {this.selectAgeStart()}
                       </select>
@@ -169,7 +169,7 @@ class SearchMutation extends Component {
                     <div className='lgi-complete-search-body-box-content'>
                       <select
                         className='lgi-complete-search-body-box-content-selector'
-                        onChange={e => this.setState({ scoreStart: parseInt(e.target.value) })}
+                        onChange={e => this.setState({ scoreStart: parseInt(e.target.value), scoreEnd: (parseInt(e.target.value) >= this.state.scoreEnd) ? parseInt(e.target.value) + 1 : this.state.scoreEnd })}
                       >
                         {this.selectScoreStart()}
                       </select>
