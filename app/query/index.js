@@ -289,3 +289,31 @@ export const GET_LIST_OF_USER_QUERY = gql`
     }
   }
 `;
+
+export const GET_USER_PROFIL_QUERY = gql`
+  query getUserProfilInformation($userId: Int!){
+    getUserProfilInformation(userId: $userId) {
+      id
+      images {
+        id
+        path
+      }
+      actions {
+        id
+        action
+      }
+      lastConnexion
+      username
+      firstname
+      lastname
+      age
+      location
+      scorePopularity
+      bio
+      genre
+      sexualOrientation
+      tags
+      isMatched
+    }
+  }
+`;

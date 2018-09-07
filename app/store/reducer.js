@@ -21,7 +21,8 @@ import {
   SAVE_USER_PREF,
   UPDATE_FILTRE,
   SAVE_LIST_OF_USER,
-  CHANGE_STATUS_VIEW
+  CHANGE_STATUS_VIEW,
+  GET_USER_PROFIL
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -200,6 +201,11 @@ export default (state = initialState, action) => {
           statusView: action.payload
         },
       };
+    case GET_USER_PROFIL:
+      return {
+        ...state,
+        userProfilToGet: action.payload
+      }
     default:
       return state;
   }

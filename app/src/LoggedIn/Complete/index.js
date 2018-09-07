@@ -9,6 +9,7 @@ import UserBox from '../UserBox';
 import Search from './Search';
 import Filtre from './Filtre';
 import RandomChoice from './RandomChoice';
+import Profil from './Profil';
 
 
 // Complete Component.
@@ -37,9 +38,7 @@ const Complete = props => {
           <div>Liked by</div>
           <div>like</div>
         </div> :
-        <div>
-          Profil
-        </div>
+        <Profil />
       }
       </div>
     </div>

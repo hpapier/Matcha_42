@@ -9,6 +9,7 @@ import './index.sass';
 import heartIcon from '../../../../../assets/heart-white.svg';
 import scoreIcon from '../../../../../assets/popScore.svg';
 import linedArrowBtm from '../../../../../assets/lined-bottom-arrow.svg';
+import { getUserProfil, changeStatusView } from '../../../../../store/action/synchronous';
 
 
 // Suggestion Component.
@@ -17,15 +18,21 @@ class Suggestion extends Component {
     limit: 8
   };
 
+  getUserProfilMech = user => {
+    const { getUserProfil, changeStatusView } = this.props;
+    getUserProfil(user);
+    changeStatusView('profil');
+  }
+
   displayUserSuggestion = () => {
     const { limit } = this.state;
     const { data } = this.props;
     return data.map((item, index) => {
       if (index < limit) {
         return (
-          <div className='lgi-suggestion-list-item' key={item.id * Math.random()}>
+          <div className='lgi-suggestion-list-item' key={item.id * Math.random()} onClick={() => this.getUserProfilMech(item)}>
             <div className='lgi-suggestion-list-item-img'>
-              <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} id="lol" />
+              <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
             </div>
             <div className='lgi-suggestion-list-item-event'>
               <button className='lgi-suggestion-list-item-event-like'>
@@ -82,9 +89,11 @@ const mapStateToProps = state => ({
   interests: state.interests
 });
 
-// const mapDispatchToProps = dispatch => ({
-// });
+const mapDispatchToProps = dispatch => ({
+  getUserProfil: data => dispatch(getUserProfil(data)),
+  changeStatusView: data => dispatch(changeStatusView(data))
+});
 
 
 // Export.
-export default connect(mapStateToProps, null)(Suggestion);
+export default connect(mapStateToProps, mapDispatchToProps)(Suggestion);

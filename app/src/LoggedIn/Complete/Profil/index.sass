@@ -1,0 +1,49 @@
+#lgi-complete-profil-loading
+  width: 100%
+  height: 200px
+  display: flex
+  justify-content: center
+  align-items: flex-end
+
+@keyframes profil-loading
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+#lgi-complete-profil-loading-animation
+  width: 25px
+  height: 25px
+  border: 5px solid #f2f4f7
+  border-top: 5px solid #E6C2AA
+  border-radius: 50%
+  animation-name: profil-loading
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  animation-duration: 1s
+
+
+#lgi-complete-profil-error
+  width: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+
+#lgi-complete-profil-error-text
+  color: #66757F
+  font-family: 'Source sans pro', sans-serif
+  font-size: .875em
+  font-weight: 400
+  margin-top: 50px
+
+#lgi-complete-profil-error-btn
+  color: rgba(#66757F, .6)
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  cursor: pointer
+  margin-top: 5px
+  transition: .2s
+
+#lgi-complete-profil-error-btn:hover
+  color: rgba(#66757F, .8)

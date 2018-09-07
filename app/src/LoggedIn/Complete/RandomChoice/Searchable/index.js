@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 // Locals imports.
 import './index.sass';
-import { changeStatusView } from '../../../../../store/action/synchronous';
+import { changeStatusView, getUserProfil } from '../../../../../store/action/synchronous';
 import heartIcon from '../../../../../assets/heart-white.svg';
 import scoreIcon from '../../../../../assets/popScore.svg';
 import linedArrowBtm from '../../../../../assets/lined-bottom-arrow.svg';
@@ -14,57 +14,13 @@ import linedArrowBtm from '../../../../../assets/lined-bottom-arrow.svg';
 // Searchable Component.
 class Searchable extends Component {
   state = {
-    limit: 8,
-    getter: true,
-    list: [],
-    userPref: null
+    limit: 8
   };
 
   _unmount = false;
 
   componentWillUnmount() {
     this._unmount = true;
-  }
-
-  // checkPrefChange = (prevProps) => {
-  //   const { userPref } = prevProps;
-  //   if (userPref === null)
-  //     return false;
-
-  //   const { ageStart, ageEnd, scoreStart, scoreEnd, location, tags } = this.props.userPref;
-
-  //   let tagsDiff = false;
-    
-  //   let count = 0;
-  //   userPref.tags.forEach(item => {
-  //     tags.forEach(el => {
-  //       if (el.id === item.id)
-  //         count++;
-  //     });
-  //   });
-
-  //   if (count === userPref.tags.length)
-  //     tagsDiff = true;
-
-  //   if (
-  //     userPref.ageStart !== ageStart
-  //     || userPref.ageEnd !== ageEnd
-  //     || userPref.scoreStart !== scoreStart
-  //     || userPref.scoreEnd !== scoreEnd
-  //     || userPref.location !== location
-  //     || tagsDiff
-  //   ) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
-  componentDidMount() {
-    this.getUserPreference();
-    if (!this._unmount) {
-      this.setState({ getter: false, userPref: { ...this.props.userPref }});
-    }
   }
 
   getUserPreference = () => {
@@ -100,6 +56,12 @@ class Searchable extends Component {
     return listArray;
   }
 
+  getUserProfilMech = user => {
+    const { getUserProfil, changeStatusView } = this.props;
+    getUserProfil(user);
+    changeStatusView('profil');
+  }
+
   displayUserPreference = (list) => {
     if (list.length === 0)
       return <div className='lgi-suggestion-list-item-empty'>Aucun résultats</div>;
@@ -107,7 +69,7 @@ class Searchable extends Component {
       return list.map((item, index) => {
         if (index < this.state.limit) {
           return (
-            <div className='lgi-suggestion-list-item' key={item.id * Math.random()}>
+            <div className='lgi-suggestion-list-item' key={item.id * Math.random()} onClick={() => this.getUserProfilMech(item)}>
               <div className='lgi-suggestion-list-item-img'>
                 <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
               </div>
@@ -188,8 +150,13 @@ class Searchable extends Component {
 // Redux connexion.
 const mapStateToProps = state => ({
   userPref: state.userPref
+});
+
+const mapDispatchToProps = dispatch => ({
+  changeStatusView: data => dispatch(changeStatusView(data)),
+  getUserProfil: data => dispatch(getUserProfil(data))
 })
 
 
 // Export.
-export default connect(mapStateToProps, null)(Searchable);
+export default connect(mapStateToProps, mapDispatchToProps)(Searchable);

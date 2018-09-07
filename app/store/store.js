@@ -31,7 +31,9 @@ const store = {
     tags: []
   },
   currentFiltre: [],
-  simpleUserList: []
+  simpleUserList: [],
+  userProfilToGet: null,
+  currentUserProfilInfo: null
 };
 
 export default store;
