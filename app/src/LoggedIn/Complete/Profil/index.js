@@ -10,6 +10,7 @@ import { GET_USER_PROFIL_QUERY } from '../../../../query';
 import Logout from '../../Utils/Logout';
 import { changeStatusView, getUserProfil, saveUserProfilInfo } from '../../../../store/action/synchronous';
 import ProfilImg from './ProfilImg';
+import ProfilBody from './ProfilBody';
 
 
 // Profil Component.
@@ -30,7 +31,7 @@ class Profil extends Component {
 
   render() {
     return (
-      <Query query={GET_USER_PROFIL_QUERY} onCompleted={data => this.onCompletedHandler(data)} variables={{ userId: this.props.userProfilToGet.id }}>
+      <Query query={GET_USER_PROFIL_QUERY} onCompleted={data => this.onCompletedHandler(data)} variables={{ userId: this.props.userProfilToGet.id }} fetchPolicy='network-only'>
       {
         ({ loading, error }) => {
           if (loading)
@@ -53,8 +54,8 @@ class Profil extends Component {
           return (
             <div id='lgi-complete-profil'>
               <ProfilImg />
-              {/* <ProfilBody />
-              <ProfilActions />
+              <ProfilBody />
+              {/* <ProfilActions />
               <ProfilBio />
               <ProfilSexualOrientation />
               <ProfilTags /> */}

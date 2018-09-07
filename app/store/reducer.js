@@ -23,7 +23,8 @@ import {
   SAVE_LIST_OF_USER,
   CHANGE_STATUS_VIEW,
   GET_USER_PROFIL,
-  SAVE_USER_PROFIL_INFO
+  SAVE_USER_PROFIL_INFO,
+  CLEAN_USER_PROFIL
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -211,6 +212,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentUserProfilInfo: action.payload
+      };
+    case CLEAN_USER_PROFIL:
+      return {
+        ...state,
+        userProfilToGet: null,
+        currentUserProfilInfo: null,
+        homepage: {
+          statusView: 'suggestion'
+        }
       };
     default:
       return state;
