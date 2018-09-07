@@ -20,8 +20,6 @@ class Main extends Component {
   _unmount = false;
 
   componentDidMount() {
-    // console.log('COMPONENT DID UPDATE');
-
     this.getUserList();
   }
 
