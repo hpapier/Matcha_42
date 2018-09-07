@@ -22,7 +22,8 @@ import {
   UPDATE_FILTRE,
   SAVE_LIST_OF_USER,
   CHANGE_STATUS_VIEW,
-  GET_USER_PROFIL
+  GET_USER_PROFIL,
+  SAVE_USER_PROFIL_INFO
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -205,7 +206,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userProfilToGet: action.payload
-      }
+      };
+    case SAVE_USER_PROFIL_INFO:
+      return {
+        ...state,
+        currentUserProfilInfo: action.payload
+      };
     default:
       return state;
   }

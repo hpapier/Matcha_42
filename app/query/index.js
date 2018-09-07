@@ -303,16 +303,20 @@ export const GET_USER_PROFIL_QUERY = gql`
         action
       }
       lastConnexion
+      isConnected
       username
       firstname
       lastname
       age
       location
-      scorePopularity
+      popularityScore
       bio
       genre
       sexualOrientation
-      tags
+      tags {
+        id
+        interestId
+      }
       isMatched
     }
   }

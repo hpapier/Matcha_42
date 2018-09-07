@@ -22,6 +22,17 @@ const transporter = nodemailer.createTransport({
 
 const pubSub = new PostgresPubSub({ client });
 
+const getAge = date => {
+  var today = new Date();
+  var birthDate = new Date(date);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+};
+
 const verifyUserToken = async token => {
   try {
     if (token.authorization === '')
@@ -149,6 +160,30 @@ const typeDefs = `
     distance: Int
   }
 
+  type UserActions {
+    id: Int
+    action: String
+  }
+
+  type UserProfilInfo {
+    id: Int
+    images: [UserImages]
+    actions: [UserActions]
+    lastConnexion: String
+    isConnected: Boolean
+    username: String
+    firstname: String
+    lastname: String
+    age: Int
+    location: String
+    popularityScore: Int
+    bio: String
+    genre: String
+    sexualOrientation: String
+    tags: [UserInterests]
+    isMatched: Boolean
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -159,6 +194,7 @@ const typeDefs = `
     userNotif: [Notification]
     getUserPreference: UserPreferences
     getListOfUser: [UserSimpleList]
+    getUserProfilInformation(userId: Int!): UserProfilInfo
   }
   
   type Mutation {
@@ -433,6 +469,66 @@ const resolvers = {
         };
 
         return result;
+      } catch(e) {
+        return e;
+      }
+    },
+
+    getUserProfilInformation: async (parent, { userId }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const profil = await client.query('SELECT * FROM user_info WHERE id = $1', [userId]);
+        if (profil.rowCount === 0)
+          return new Error('Profil doesn\'t exist');
+
+        const profilAge = getAge(profil.rows[0].birth_date);
+        const profilImg = await client.query('SELECT id, path FROM images WHERE user_id = $1', [userId]);
+        if (profilImg.rowCount === 0)
+          return new Error('Profil doesn\'t have image');
+
+        const profilActions = await client.query('SELECT * FROM notification WHERE user_id = $1 AND from_user = $2', [user.id, userId]);
+        let actionArray = [];
+        if (profilActions.rowCount !== 0) {
+          profilActions.rows.forEach(item => {
+            let isPresent = false;
+            actionArray.forEach(el => {
+              if (el.action === item.action)
+                isPresent = true;
+            });
+
+            if (!isPresent)
+              actionArray.push({ id: item.id, action: item.action });
+          });
+        };
+
+        const profilTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userId]);
+        if (profilTags.rowCount === 0)
+          return new Error('Profil not complete');
+
+        const profilMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+
+        return {
+          id: profil.rows[0].id,
+          images: profilImg.rows,
+          actions: actionArray,
+          lastConnexion: profil.rows[0].last_connexion,
+          isConnected: profil.rows[0].isconnected,
+          username: profil.rows[0].username,
+          firstname: profil.rows[0].firstname,
+          lastname: profil.rows[0].lastname,
+          age: profilAge,
+          location: profil.rows[0].location,
+          popularityScore: profil.rows[0].popularity_score,
+          bio: profil.rows[0].bio,
+          genre: profil.rows[0].genre,
+          sexualOrientation: profil.rows[0].sexual_orientation,
+          tags: profilTags.rows.map(item => ({ id: item.id, interestId: item.interest_id })),
+          isMatched: profilMatch.rowCount === 0 ? false : true
+        };
+        
       } catch(e) {
         return e;
       }

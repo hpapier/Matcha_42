@@ -8,14 +8,18 @@ import { connect } from 'react-redux';
 import './index.sass';
 import { GET_USER_PROFIL_QUERY } from '../../../../query';
 import Logout from '../../Utils/Logout';
-import { changeStatusView, getUserProfil } from '../../../../store/action/synchronous';
+import { changeStatusView, getUserProfil, saveUserProfilInfo } from '../../../../store/action/synchronous';
+import ProfilImg from './ProfilImg';
 
 
 // Profil Component.
 class Profil extends Component {
   onCompletedHandler = data => {
-    console.log('ON DATA COMPLETED HANDLER');
+    console.log('___ ON DATA COMPLETED HANDLER ___');
     console.log(data);
+    const { saveUserProfilInfo } = this.props;
+    const { getUserProfilInformation } = data;
+    saveUserProfilInfo(getUserProfilInformation);
   };
 
   handleErrorCallback = () => {
@@ -47,8 +51,13 @@ class Profil extends Component {
           }
 
           return (
-            <div>
-              Profil Component
+            <div id='lgi-complete-profil'>
+              <ProfilImg />
+              {/* <ProfilBody />
+              <ProfilActions />
+              <ProfilBio />
+              <ProfilSexualOrientation />
+              <ProfilTags /> */}
             </div>
           );
         }
@@ -66,7 +75,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   changeStatusView: data => dispatch(changeStatusView(data)),
-  getUserProfil: data => dispatch(getUserProfil(data))
+  getUserProfil: data => dispatch(getUserProfil(data)),
+  saveUserProfilInfo: data => dispatch(saveUserProfilInfo(data))
 });
 
 

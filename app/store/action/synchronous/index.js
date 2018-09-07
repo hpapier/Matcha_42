@@ -21,7 +21,8 @@ import {
   UPDATE_FILTRE,
   SAVE_LIST_OF_USER,
   CHANGE_STATUS_VIEW,
-  GET_USER_PROFIL
+  GET_USER_PROFIL,
+  SAVE_USER_PROFIL_INFO
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -136,4 +137,9 @@ export const changeStatusView = status => ({
 export const getUserProfil = user => ({
   type: GET_USER_PROFIL,
   payload: user
+});
+
+export const saveUserProfilInfo = data => ({
+  type: SAVE_USER_PROFIL_INFO,
+  payload: data
 });
