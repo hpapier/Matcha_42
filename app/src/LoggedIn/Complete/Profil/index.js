@@ -13,6 +13,7 @@ import ProfilImg from './ProfilImg';
 import ProfilBody from './ProfilBody';
 import ProfilActions from './ProfilActions';
 import ProfilBio from './ProfilBio';
+import ProfilSexualOrientation from './ProfilSexualOrientation';
 
 
 // Profil Component.
@@ -55,12 +56,20 @@ class Profil extends Component {
 
           return (
             <div id='lgi-complete-profil'>
-              <ProfilImg />
-              <ProfilBody />
-              <ProfilActions />
-              <ProfilBio />
-              {/* <ProfilSexualOrientation /> */}
-              {/* <ProfilTags /> */}
+              <div id='lgi-complete-profil-up-box'>
+                <ProfilImg />
+                <ProfilBody />
+              </div>
+              <div id='lgi-complete-profil-down-box'>
+                <div id='lgi-complete-profil-down-box-left'>
+                  <ProfilActions />
+                </div>
+                <div id='lgi-complete-profil-down-box-right'>
+                  <ProfilBio />
+                  <ProfilSexualOrientation />
+                  {/* <ProfilTags /> */}
+                </div>
+              </div>
             </div>
           );
         }
