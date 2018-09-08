@@ -12,6 +12,7 @@ import { changeStatusView, getUserProfil, saveUserProfilInfo } from '../../../..
 import ProfilImg from './ProfilImg';
 import ProfilBody from './ProfilBody';
 import ProfilActions from './ProfilActions';
+import ProfilBio from './ProfilBio';
 
 
 // Profil Component.
@@ -57,7 +58,7 @@ class Profil extends Component {
               <ProfilImg />
               <ProfilBody />
               <ProfilActions />
-              {/* <ProfilBio /> */}
+              <ProfilBio />
               {/* <ProfilSexualOrientation /> */}
               {/* <ProfilTags /> */}
             </div>
