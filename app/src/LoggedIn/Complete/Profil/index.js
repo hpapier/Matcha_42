@@ -11,6 +11,7 @@ import Logout from '../../Utils/Logout';
 import { changeStatusView, getUserProfil, saveUserProfilInfo } from '../../../../store/action/synchronous';
 import ProfilImg from './ProfilImg';
 import ProfilBody from './ProfilBody';
+import ProfilActions from './ProfilActions';
 
 
 // Profil Component.
@@ -55,10 +56,10 @@ class Profil extends Component {
             <div id='lgi-complete-profil'>
               <ProfilImg />
               <ProfilBody />
-              {/* <ProfilActions />
-              <ProfilBio />
-              <ProfilSexualOrientation />
-              <ProfilTags /> */}
+              <ProfilActions />
+              {/* <ProfilBio /> */}
+              {/* <ProfilSexualOrientation /> */}
+              {/* <ProfilTags /> */}
             </div>
           );
         }

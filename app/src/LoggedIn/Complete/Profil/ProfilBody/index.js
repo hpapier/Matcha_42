@@ -43,7 +43,7 @@ class ProfilBody extends Component {
             <img id='lgi-complete-profil-body-match-icon' src={matchIcon} alt='match-icon' />
             <div id='lgi-complete-profil-body-match-text'>Vous avez matché avec cette personne</div>
           </div> :
-          null
+          <div id='lgi-complete-profil-body-match-empty'></div>
         }
 
         <div id='lgi-complete-profil-body-user'>
