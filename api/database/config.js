@@ -120,11 +120,12 @@
 
 /*
   CREATE TABLE notification (
-    id          SERIAL        PRIMARY KEY,
-    is_viewed   SMALLINT      NOT NULL DEFAULT 0,
-    action      VARCHAR(255)  NOT NULL,
-    user_id     VARCHAR(255)  NOT NULL,
-    from_user   VARCHAR(255)  NOT NULL
+    id            SERIAL        PRIMARY KEY,
+    is_viewed     SMALLINT      NOT NULL DEFAULT 0,
+    action        VARCHAR(255)  NOT NULL,
+    user_id       VARCHAR(255)  NOT NULL,
+    from_user     VARCHAR(255)  NOT NULL,
+    creation_date DATE          NOT NULL
   );
 */
 
@@ -189,6 +190,20 @@
    room_id      INTEGER       NOT NULL,
    is_viewed    SMALLINT      NOT NULL DEFAULT 0,
    date         timestamp     NOT NULL
+ );
+*/
+
+// Table `user_like`
+// user_like:
+// --> id
+// --> from_user
+// --> to_user
+
+/*
+ CREATE TABLE user_like (
+   id           SERIAL          PRIMARY KEY,
+   from_user    VARCHAR(255)    NOT NULL,
+   to_user      VARCHAR(255)    NOT NULL
  );
 */
 

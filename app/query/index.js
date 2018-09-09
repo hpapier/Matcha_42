@@ -321,3 +321,15 @@ export const GET_USER_PROFIL_QUERY = gql`
     }
   }
 `;
+
+export const LIKE_USER_MUTATION = gql`
+  mutation likeUser($userId: Int!) {
+    likeUser(userId: $userId)
+  }
+`;
+
+export const UNLIKE_USER_MUTATION = gql`
+  mutation unlikeUser($userId: Int!) {
+    unlikeUser(userId: $userId)
+  }
+`;

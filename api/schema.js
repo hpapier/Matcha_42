@@ -219,6 +219,8 @@ const typeDefs = `
     removeUserImage(imgId: Int!, name: String!): [UserImages]
     updateProfilImg(imgId: Int!, name: String!, imgPath: String!): ProfilImg
     updateUserPreferences(ageStart: Int!, ageEnd: Int!, scoreStart: Int!, scoreEnd: Int!, location: Int!, tags: String!): UserPreferences
+    likeUser(userId: Int!): Boolean
+    unlikeUser(userId: Int!): Boolean
   }
 
 `;
@@ -454,18 +456,21 @@ const resolvers = {
 
         let result = [];
         for (item of trimedByDistanceList) {
-          const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
-          const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
-          result.push({
-            id: item.id,
-            location: item.location,
-            popularityScore: item.popularity_score,
-            username: item.username,
-            age: getAge(item.birth_date),
-            tags: formatedTagsList,
-            profilPicture: item.profil_picture,
-            distance: parseInt(distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
-          });
+          const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, item.id]);
+          if (checkIfLiked.rowCount === 0) {
+            const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
+            const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
+            result.push({
+              id: item.id,
+              location: item.location,
+              popularityScore: item.popularity_score,
+              username: item.username,
+              age: getAge(item.birth_date),
+              tags: formatedTagsList,
+              profilPicture: item.profil_picture,
+              distance: parseInt(distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
+            });
+          }
         };
 
         return result;
@@ -1069,6 +1074,49 @@ const resolvers = {
           location: resUserPref.rows[0].location,
           tags: resUserPref.rows[0].tags
         };
+      } catch (e) {
+        return e;
+      }
+    },
+
+    likeUser: async (parent, { userId }, ctx) => {
+      try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // return new Error('Not auth');
+        ///----
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkLikeExist = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, userId]);
+        if (checkLikeExist.rowCount > 0)
+          return new Error('Already liked');
+
+        await client.query('INSERT INTO user_like (from_user, to_user) VALUES ($1, $2)', [user.id, userId]);
+        await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['like', userId, user.id, new Date()]);
+        return true;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    unlikeUser: async (parent, { userId }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkLikeExist = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, userId]);
+        if (checkLikeExist.rowCount === 0)
+          return new Error('Like doesn\'t exist');
+
+        await client.query('DELETE FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, userId]);
+        await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unlike', userId, user.id, new Date()]);
+        return true;
       } catch (e) {
         return e;
       }

@@ -64,11 +64,13 @@
   border: none
   cursor: pointer
   transition: .2s
+  outline: none
 
 .lgi-suggestion-list-item-event-like:hover
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25)
 
-.lgi-suggestion-list-item-event-like-img
+.lgi-suggestion-list-item-event-like-img,
+.lgi-suggestion-list-item-event-like-img-active
   margin-top: 2px
 
 .lgi-suggestion-list-item-event-score
@@ -175,3 +177,22 @@
   color: rgba(#66757F, .7)
   margin-bottom: 5px
   display: flex
+
+.lgi-suggestion-list-item-event-like-active
+  width: 35px
+  height: 100%
+  border-radius: 50%
+  box-shadow: none
+  padding: 0px
+  display: flex
+  justify-content: center
+  align-items: center
+  background: #fff
+  border: none
+  cursor: pointer
+  transition: .2s
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1)
+  outline: none
+
+.lgi-suggestion-list-item-event-like-active:hover
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25)

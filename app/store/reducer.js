@@ -24,7 +24,8 @@ import {
   CHANGE_STATUS_VIEW,
   GET_USER_PROFIL,
   SAVE_USER_PROFIL_INFO,
-  CLEAN_USER_PROFIL
+  CLEAN_USER_PROFIL,
+  CHANGE_LIKE_STATUS_FOR_USER_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -194,7 +195,7 @@ export default (state = initialState, action) => {
     case SAVE_LIST_OF_USER:
       return {
         ...state,
-        simpleUserList: action.payload
+        simpleUserList: action.payload.map(item => ({ ...item, isLiked: false }))
       };
     case CHANGE_STATUS_VIEW:
       return {
@@ -221,6 +222,17 @@ export default (state = initialState, action) => {
         homepage: {
           statusView: 'suggestion'
         }
+      };
+    case CHANGE_LIKE_STATUS_FOR_USER_LIST:
+      const newList = state.simpleUserList.map(item => {
+        if (item.id === action.payload.id)
+          return { ...item, isLiked: !action.payload.isLiked };
+        else
+          return item;
+      });
+      return {
+        ...state,
+        simpleUserList: newList
       };
     default:
       return state;

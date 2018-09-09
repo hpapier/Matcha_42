@@ -12,16 +12,7 @@ import Searchable from '../Searchable';
 
 // Main Component.
 class Main extends Component {
-  state = {
-    isLoading: true,
-    list: []
-  };
-
   _unmount = false;
-
-  componentDidMount() {
-    this.getUserList();
-  }
 
   getage = date => {
     var today = new Date();
@@ -120,8 +111,7 @@ class Main extends Component {
     });
 
     userSuggestion.sort((a, b) => b.ponderation - a.ponderation);
-    if (!this._unmount)
-      this.setState({ isLoading: false, list: userSuggestion });
+    return userSuggestion;
   }
 
   componentWillUnmount() {
@@ -130,7 +120,7 @@ class Main extends Component {
 
   render() {
     const { statusView, changeStatusView } = this.props;
-    const { isLoading, list } = this.state;
+    const list = this.getUserList();
     return (
       <div>
         <div id='lgi-random-choice-header'>
@@ -138,9 +128,8 @@ class Main extends Component {
           <div className={statusView === 'search' ? 'lgi-random-choice-header-title-active' : 'lgi-random-choice-header-title'} onClick={() => changeStatusView('search')}>Recherche</div>
         </div>
 
-        { isLoading ? <div>Loading.......</div> : null }
-        { statusView === 'suggestion' && !isLoading ? <Suggestion data={list} /> : null }
-        { statusView === 'search' && !isLoading ? <Searchable data={list} /> : null }
+        { statusView === 'suggestion' ? <Suggestion data={list} /> : null }
+        { statusView === 'search' ? <Searchable data={list} /> : null }
       </div>
     );
   }
