@@ -14,12 +14,14 @@ import { saveVisitorList } from '../../../../store/action/synchronous';
 // VisitedBy Component.
 class VisitedBy extends Component {
   onCompletedHandler = data => {
+    console.log('VISITOR LIST ->');
+    console.log(data.getVisitorList);
     this.props.saveVisitorList(data.getVisitorList);
   }
 
   render() {
     return (
-      <Query query={GET_VISITOR_QUERY} onCompleted={data => this.onCompletedHandler(data)}>
+      <Query query={GET_VISITOR_QUERY} onCompleted={data => this.onCompletedHandler(data)} fetchPolicy='cache-and-network'>
       {
         ({ loading, error }) => {
           if (loading)

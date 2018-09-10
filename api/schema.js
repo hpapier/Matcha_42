@@ -524,6 +524,15 @@ const resolvers = {
         if (profilImg.rowCount === 0)
           return new Error('Profil doesn\'t have image');
 
+        const profilBlock = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [userId, user.id]);
+        if (profilBlock.rowCount > 0)
+          return new Error('Profil blocked');
+
+        if (profilBlock.rowCount === 0)
+          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['visite', userId, user.id, new Date()]);
+        
+        await client.query('INSERT INTO user_visite (from_user, to_user, creation_date) VALUES ($1, $2, $3)', [user.id, userId, new Date()]);
+        
         const profilActions = await client.query('SELECT * FROM notification WHERE user_id = $1 AND from_user = $2', [user.id, userId]);
         let actionArray = [];
         if (profilActions.rowCount !== 0) {
@@ -588,7 +597,7 @@ const resolvers = {
         let trimedVisitor = [];
         for (let visitor of userList.rows) {
           let isVisitor = false;
-          visiteList.forEach(item => {
+          visiteList.rows.forEach(item => {
             if (parseInt(item.from_user) ===  visitor.id)
               isVisitor = true;
           });
@@ -600,18 +609,17 @@ const resolvers = {
             const userLat = JSON.parse(user.location).lat;
             const userLng = JSON.parse(user.location).lng;
             const dist = getDistance(userLat, userLng, visitorLat, visitorLng, 'K');
-            console.log(typeof dist);
             trimedVisitor.push({
               id: visitor.id,
               popularityScore: visitor.popularity_score,
               username: visitor.username,
               age: getAge(visitor.birth_date),
-              distance: dist,
+              distance: parseInt(dist),
               profilPicture: visitor.profil_picture,
               isLiked: isLikedVisitor.rowCount === 0 ? false : true
             });
           }
-        }        
+        }
 
         return trimedVisitor;
       } catch (e) {
