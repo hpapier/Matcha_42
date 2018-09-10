@@ -483,20 +483,23 @@ const resolvers = {
 
         let result = [];
         for (item of trimedByDistanceList) {
-          const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, item.id]);
-          if (checkIfLiked.rowCount === 0) {
-            const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
-            const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
-            result.push({
-              id: item.id,
-              location: item.location,
-              popularityScore: item.popularity_score,
-              username: item.username,
-              age: getAge(item.birth_date),
-              tags: formatedTagsList,
-              profilPicture: item.profil_picture,
-              distance: parseInt(distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
-            });
+          const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [item.id, user.id]);
+          if (checkIfBlocked.rowCount === 0) {
+            const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, item.id]);
+            if (checkIfLiked.rowCount === 0) {
+              const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
+              const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
+              result.push({
+                id: item.id,
+                location: item.location,
+                popularityScore: item.popularity_score,
+                username: item.username,
+                age: getAge(item.birth_date),
+                tags: formatedTagsList,
+                profilPicture: item.profil_picture,
+                distance: parseInt(distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
+              });
+            }
           }
         };
 
@@ -583,7 +586,7 @@ const resolvers = {
           userList = await client.query('SELECT * FROM user_info WHERE iscomplete = $1', [1]);
 
         let trimedVisitor = [];
-        for (let visitor in userList.rows) {
+        for (let visitor of userList.rows) {
           let isVisitor = false;
           visiteList.forEach(item => {
             if (parseInt(item.from_user) ===  visitor.id)
