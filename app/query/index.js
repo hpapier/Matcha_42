@@ -333,3 +333,17 @@ export const UNLIKE_USER_MUTATION = gql`
     unlikeUser(userId: $userId)
   }
 `;
+
+export const GET_VISITOR_QUERY = gql`
+  {
+    getVisitorList {
+      id
+      popularityScore
+      username
+      age
+      distance
+      profilPicture
+      isLiked
+    }
+  }
+`;

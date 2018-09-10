@@ -32,6 +32,7 @@ const store = {
   },
   currentFiltre: [],
   simpleUserList: [],
+  visitorList: [],
   userProfilToGet: null,
   currentUserProfilInfo: null
 };

@@ -207,11 +207,19 @@
  );
 */
 
-
+// Table `user_visite`
+// user_visite:
+// --> id
+// --> from_user
+// --> to_user
 
 /*
-    INSERT INTO images (user_id, path)
-    VALUES ('00701b20-8a94-11e8-aaa7-3fa5cd884214', 'kljkl');
+ CREATE TABLE user_visite (
+   id             SERIAL          PRIMARY KEY,
+   from_user      VARCHAR(255)    NOT NULL,
+   to_user        VARCHAR(255)    NOT NULL,
+   creation_date  DATE            NOT NULL
+ );
 */
 
 

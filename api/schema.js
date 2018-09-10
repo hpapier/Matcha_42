@@ -33,6 +33,22 @@ const getAge = date => {
   return age;
 };
 
+const getDistance = (lat1, lon1, lat2, lon2, unit) => {
+  var radlat1 = Math.PI * lat1/180;
+  var radlat2 = Math.PI * lat2/180;
+  var radlon1 = Math.PI * lon1/180;
+  var radlon2 = Math.PI * lon2/180;
+  var theta = lon1-lon2;
+  var radtheta = Math.PI * theta/180;
+  var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  dist = Math.acos(dist);
+  dist = dist * 180/Math.PI;
+  dist = dist * 60 * 1.1515;
+  if (unit === "K") { dist = dist * 1.609344 };
+  if (unit === "N") { dist = dist * 0.8684 };
+  return dist;
+};
+
 const verifyUserToken = async token => {
   try {
     if (token.authorization === '')
@@ -184,6 +200,16 @@ const typeDefs = `
     isMatched: Boolean
   }
 
+  type VisitorList {
+    id: Int
+    popularityScore: Int
+    username: String
+    age: Int
+    distance: Int
+    profilPicture: String
+    isLiked: Boolean
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -195,6 +221,7 @@ const typeDefs = `
     getUserPreference: UserPreferences
     getListOfUser: [UserSimpleList]
     getUserProfilInformation(userId: Int!): UserProfilInfo
+    getVisitorList: [VisitorList]
   }
   
   type Mutation {
@@ -535,6 +562,56 @@ const resolvers = {
         };
         
       } catch(e) {
+        return e;
+      }
+    },
+
+    getVisitorList: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const visiteList = await client.query('SELECT * FROM user_visite WHERE to_user = $1', [user.id]);
+        if (visiteList.rowCount === 0)
+          return [];
+
+        let userList = null;
+        if (user.sexual_orientation === 'man' || user.sexual_orientation === 'woman')
+          userList = await client.query('SELECT * FROM user_info WHERE genre = $1 AND iscomplete = $2', [user.sexual_orientation, 1]);
+        else if (user.sexual_orientation === 'bisexual')
+          userList = await client.query('SELECT * FROM user_info WHERE iscomplete = $1', [1]);
+
+        let trimedVisitor = [];
+        for (let visitor in userList.rows) {
+          let isVisitor = false;
+          visiteList.forEach(item => {
+            if (parseInt(item.from_user) ===  visitor.id)
+              isVisitor = true;
+          });
+
+          if (isVisitor) {
+            const isLikedVisitor = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, visitor.id]);
+            const visitorLat = JSON.parse(visitor.location).lat;
+            const visitorLng = JSON.parse(visitor.location).lng;
+            const userLat = JSON.parse(user.location).lat;
+            const userLng = JSON.parse(user.location).lng;
+            const dist = getDistance(userLat, userLng, visitorLat, visitorLng, 'K');
+            console.log(typeof dist);
+            trimedVisitor.push({
+              id: visitor.id,
+              popularityScore: visitor.popularity_score,
+              username: visitor.username,
+              age: getAge(visitor.birth_date),
+              distance: dist,
+              profilPicture: visitor.profil_picture,
+              isLiked: isLikedVisitor.rowCount === 0 ? false : true
+            });
+          }
+        }        
+
+        return trimedVisitor;
+      } catch (e) {
         return e;
       }
     }

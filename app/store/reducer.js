@@ -25,7 +25,8 @@ import {
   GET_USER_PROFIL,
   SAVE_USER_PROFIL_INFO,
   CLEAN_USER_PROFIL,
-  CHANGE_LIKE_STATUS_FOR_USER_LIST
+  CHANGE_LIKE_STATUS_FOR_USER_LIST,
+  SAVE_VISITOR_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -233,6 +234,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         simpleUserList: newList
+      };
+    case SAVE_VISITOR_LIST:
+      return {
+        ...state,
+        visitorList: action.payload
       };
     default:
       return state;

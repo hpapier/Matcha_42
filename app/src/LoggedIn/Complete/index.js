@@ -10,6 +10,7 @@ import Search from './Search';
 import Filtre from './Filtre';
 import RandomChoice from './RandomChoice';
 import Profil from './Profil';
+import VisitedBy from './VisitedBy';
 
 
 // Complete Component.
@@ -34,9 +35,8 @@ const Complete = props => {
         statusView !== 'profil' ?
         <div id='lgi-complete-right-subbox'>
           <RandomChoice />
-          <div>Visited</div>
-          <div>Liked by</div>
-          <div>like</div>
+          <VisitedBy />
+          {/* <LikedBy /> */}
         </div> :
         <Profil />
       }
