@@ -347,3 +347,21 @@ export const GET_VISITOR_QUERY = gql`
     }
   }
 `;
+
+export const BLOCK_USER_MUTATION = gql`
+  mutation blockUser($userId: Int!) {
+    blockUser(userId: $userId)
+  }
+`;
+
+export const UNBLOCK_USER_MUTATION = gql`
+  mutation unblockUser($userId: Int!) {
+    unblockUser(userId: $userId)
+  }
+`;
+
+export const REPORT_USER_MUTATION = gql`
+  mutation reportUser($userId: Int!) {
+    reportUser(userId: $userId)
+  }
+`;

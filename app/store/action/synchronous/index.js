@@ -159,4 +159,4 @@ export const changeLikeStatusForUserList = data => ({
 export const saveVisitorList = data => ({
   type: SAVE_VISITOR_LIST,
   payload: data
-})
+});

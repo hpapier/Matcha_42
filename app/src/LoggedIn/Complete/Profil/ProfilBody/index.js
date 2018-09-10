@@ -1,21 +1,35 @@
 // Modules imports.
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ApolloConsumer } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
 import './index.sass';
 import matchIcon from '../../../../../assets/match.svg';
 import closeIcon from '../../../../../assets/close-white.svg';
-import { cleanUserProfil } from '../../../../../store/action/synchronous';
+import { cleanUserProfil, clearStore } from '../../../../../store/action/synchronous';
 import likeWhiteIcon from '../../../../../assets/heart-white.svg';
 import scoreWhiteIcon from '../../../../../assets/cup-white.svg';
 import msgWhiteIcon from '../../../../../assets/msg-sending.svg';
 import flagIconWhite from '../../../../../assets/flag.svg';
 import nonBlockWhiteIcon from '../../../../../assets/non-block.svg';
+import blockIcon from '../../../../../assets/block.svg';
+import closeBlackIcon from '../../../../../assets/close-black.svg';
+import { BLOCK_USER_MUTATION, UNBLOCK_USER_MUTATION, REPORT_USER_MUTATION } from '../../../../../query';
+
 
 // ProfilImg Component.
 class ProfilBody extends Component {
+  state = {
+    blocked: false,
+    blockLoading: false,
+    modalReport: false,
+    modalReportLoading: false,
+    modalReportErrorMsg: ''
+  };
+
   _unmount = false;
 
   componentWillUnmount() {
@@ -29,61 +43,167 @@ class ProfilBody extends Component {
     return `${locArr[0]}, ${locArr[1]}, ${locArr[2]}`;
   }
 
+  blockUserMechanism = () => {
+    const { client } = this;
+    const { id } = this.props.information;
+    const { blocked } = this.state;
+
+    if (!this._unmount)
+      this.setState({ blockLoading: true });
+
+    if (!blocked) {
+      client.mutate({
+        mutation: BLOCK_USER_MUTATION,
+        variables: { userId: id }
+      })
+      .then(r => {
+        if (!this._unmount)
+          this.setState({ blockLoading: false, blocked: true });
+      })
+      .catch(error => {
+        console.log('-- CATCH --');
+        console.log(error);
+        if (!this._unmount)
+          this.setState({ blockLoading: false, blocked: false });
+      });
+    } else {
+      client.mutate({
+        mutation: UNBLOCK_USER_MUTATION,
+        variables: { userId: id }
+      })
+      .then(r => {
+        if (!this._unmount)
+          this.setState({ blockLoading: false, blocked: false });
+      })
+      .catch(error => {
+        if (error.graphQLErrors) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
+        }
+        if (!this._unmount)
+          this.setState({ blockLoading: false, blocked: true });
+      });
+    }
+  }
+
+  reportMechanism = () => {
+    const { client } = this;
+    const { id } = this.props.information;
+
+    if (!this._unmount)
+      this.setState({ modalReportLoading: true, modalReportErrorMsg: '' });
+
+    client.mutate({
+      mutation: REPORT_USER_MUTATION,
+      variables: { userId: id }
+    })
+    .then(r => {
+      if (!this._unmount)
+        this.setState({ modalReportLoading: false, modalReport: false, modalReportErrorMsg: '' });
+    })
+    .catch(error => {
+      if (error.graphQLErrors[0].message === 'Not auth') {
+        localStorage.removeItem('auth_token');
+        this.props.clearStore();
+        this.props.history.push('/');
+      }
+
+      if (!this._unmount)
+        this.setState({ modalReportLoading: false, modalReport: true, modalReportErrorMsg: 'Oups! Une erreur est survenu.' });
+    });
+  }
+
   render() {
     const { information } = this.props;
+    const { blocked, blockLoading, modalReport, modalReportLoading, modalReportErrorMsg } = this.state;
     return (
-      <div id='lgi-complete-profil-body'>
-        <div id='lgi-complete-profil-body-close'>
-          <img id='lgi-complete-profil-body-close-icon' src={closeIcon} alt='close' onClick={this.props.cleanUserProfil} />
-        </div>
+      <ApolloConsumer>
+      {
+        client => {
+          this.client = client;
+          return (
+            <div id='lgi-complete-profil-body'>
+              <div id='lgi-complete-profil-body-close'>
+                <img id='lgi-complete-profil-body-close-icon' src={closeIcon} alt='close' onClick={this.props.cleanUserProfil} />
+              </div>
+      
+              {
+                information.isMatched ?
+                <div id='lgi-complete-profil-body-match'>
+                  <img id='lgi-complete-profil-body-match-icon' src={matchIcon} alt='match-icon' />
+                  <div id='lgi-complete-profil-body-match-text'>Vous avez matché avec cette personne</div>
+                </div> :
+                <div id='lgi-complete-profil-body-match-empty'></div>
+              }
+      
+              <div id='lgi-complete-profil-body-user'>
+                <div id='lgi-complete-profil-body-user-lastconnexion'>Dernière connexion il y a {information.lastConnexion}</div>
+                <div id='lgi-complete-profil-body-user-username'>
+                  <div id='lgi-complete-profil-body-user-username-text'>{information.username}</div>
+                  <div id={ information.isConnected ? 'lgi-complete-profil-body-user-username-co-status-active' : 'lgi-complete-profil-body-user-username-co-status-inactive' }></div>
+                </div>
+                <div id='lgi-complete-profil-body-user-info'>{information.age} ans - {this.getLocationName(information.location)}</div>
+              </div>
+      
+              <div id='lgi-complete-profil-body-cta'>
+                <div id='lgi-complete-profil-body-cta-left'>
+                  <div id='lgi-complete-profil-body-cta-left-like'>
+                    <img id='lgi-complete-profil-body-cta-left-like-icon' src={likeWhiteIcon} alt='like-icon' />
+                  </div>
+      
+                  <div id='lgi-complete-profil-body-cta-left-score'>
+                    <img id='lgi-complete-profil-body-cta-left-score-icon' src={scoreWhiteIcon} alt='score-icon' />
+                    <div id='lgi-complete-profil-body-cta-left-score-score'>{information.popularityScore}</div>
+                  </div>
+      
+                  {
+                    information.isMatched ?
+                    <div id='lgi-complete-profil-body-cta-left-msg'>
+                      <img id='lgi-complete-profil-body-cta-left-msg-icon' src={msgWhiteIcon} alt='msg-icon'/>
+                    </div> :
+                    null
+                  }
+                </div>
+      
+                <div id='lgi-complete-profil-body-cta-right'>
+                  <button id={!blocked ? 'lgi-complete-profil-body-cta-right-block' : 'lgi-complete-profil-body-cta-right-block-blocked'} disabled={blockLoading} onClick={this.blockUserMechanism}>
+                    <img src={!blocked ? nonBlockWhiteIcon : blockIcon} alt='block-icon' id='lgi-complete-profil-body-cta-right-block-icon' />
+                    <div id='lgi-complete-profil-body-cta-right-block-text'>{blocked ? 'débloquer' : 'bloquer'}</div>
+                  </button>
+      
+                  <button id='lgi-complete-profil-body-cta-right-report' onClick={() => this.setState({ modalReport: true })}>
+                    <img src={flagIconWhite} alt='report-icon' id='lgi-complete-profil-body-cta-right-report-icon' />
+                    <div id='lgi-complete-profil-body-cta-right-report-text'>signaler</div>
+                  </button>
+                </div>
+              </div>
 
-        {
-          information.isMatched ?
-          <div id='lgi-complete-profil-body-match'>
-            <img id='lgi-complete-profil-body-match-icon' src={matchIcon} alt='match-icon' />
-            <div id='lgi-complete-profil-body-match-text'>Vous avez matché avec cette personne</div>
-          </div> :
-          <div id='lgi-complete-profil-body-match-empty'></div>
+              {
+                modalReport ?
+                <div className='lgi-complete-profil-body-modal-background'>
+                  <div className='lgi-complete-profil-body-modal-box'>
+                    <button className='lgi-complete-profil-body-modal-close' onClick={() => this.setState({ modalReportLoading: false, modalReport: false, modalReportErrorMsg: ''  })}>
+                      <img src={closeBlackIcon} alt='close-icon' />
+                    </button>
+                    <div className='lgi-complete-profil-body-modal-text'>Voulez vous signaler ce compte comme étant un "faux compte" ?</div>
+                    {
+                      !modalReportLoading ?
+                      <button className='lgi-complete-profil-body-modal-submit' onClick={this.reportMechanism}>Valider</button> :
+                      <div className='lgi-complete-profil-body-modal-submit-loading'><div className='lgi-complete-profil-body-modal-submit-loading-animation'></div></div>
+                    }
+                    { modalReportErrorMsg ? <div className='lgi-complete-profil-body-modal-error'>{modalReportErrorMsg}</div> : null }
+                  </div>
+                </div> :
+                null
+              }
+            </div>
+          );
         }
-
-        <div id='lgi-complete-profil-body-user'>
-          <div id='lgi-complete-profil-body-user-lastconnexion'>Dernière connexion il y a {information.lastConnexion}</div>
-          <div id='lgi-complete-profil-body-user-username'>
-            <div id='lgi-complete-profil-body-user-username-text'>{information.username}</div>
-            <div id={ information.isConnected ? 'lgi-complete-profil-body-user-username-co-status-active' : 'lgi-complete-profil-body-user-username-co-status-inactive' }></div>
-          </div>
-          <div id='lgi-complete-profil-body-user-info'>{information.age} ans - {this.getLocationName(information.location)}</div>
-        </div>
-
-        <div id='lgi-complete-profil-body-cta'>
-          <div id='lgi-complete-profil-body-cta-left'>
-            <div id='lgi-complete-profil-body-cta-left-like'>
-              <img id='lgi-complete-profil-body-cta-left-like-icon' src={likeWhiteIcon} alt='like-icon' />
-            </div>
-
-            <div id='lgi-complete-profil-body-cta-left-score'>
-              <img id='lgi-complete-profil-body-cta-left-score-icon' src={scoreWhiteIcon} alt='score-icon' />
-              <div id='lgi-complete-profil-body-cta-left-score-score'>{information.popularityScore}</div>
-            </div>
-
-            <div id='lgi-complete-profil-body-cta-left-msg'>
-              <img id='lgi-complete-profil-body-cta-left-msg-icon' src={msgWhiteIcon} alt='msg-icon'/>
-            </div>
-          </div>
-
-          <div id='lgi-complete-profil-body-cta-right'>
-            <div id='lgi-complete-profil-body-cta-right-block'>
-              <img src={nonBlockWhiteIcon} alt='block-icon' id='lgi-complete-profil-body-cta-right-block-icon' />
-              <div id='lgi-complete-profil-body-cta-right-block-text'>bloquer</div>
-            </div>
-
-            <div id='lgi-complete-profil-body-cta-right-report'>
-              <img src={flagIconWhite} alt='report-icon' id='lgi-complete-profil-body-cta-right-report-icon' />
-              <div id='lgi-complete-profil-body-cta-right-report-text'>signaler</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      }
+      </ApolloConsumer>
     );
   }
 };
@@ -95,9 +215,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  cleanUserProfil: () => dispatch(cleanUserProfil())
+  cleanUserProfil: () => dispatch(cleanUserProfil()),
+  clearStore: () => dispatch(clearStore())
 })
 
 
 // Export.
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilBody);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProfilBody));

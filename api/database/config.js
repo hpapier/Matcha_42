@@ -222,6 +222,20 @@
  );
 */
 
+// Table `account_reported`
+// account_reported:
+// --> id
+// --> from_user_id
+// --> to_user_id
+
+/*
+  CREATE TABLE account_reported (
+    id            SERIAL       PRIMARY KEY,
+    from_user_id  VARCHAR(255) NOT NULL,
+    to_user_id    VARCHAR(255) NOT NULL
+  );
+*/
+
 
 module.exports = {
   HOST: 'localhost',

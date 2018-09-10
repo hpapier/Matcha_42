@@ -248,6 +248,9 @@ const typeDefs = `
     updateUserPreferences(ageStart: Int!, ageEnd: Int!, scoreStart: Int!, scoreEnd: Int!, location: Int!, tags: String!): UserPreferences
     likeUser(userId: Int!): Boolean
     unlikeUser(userId: Int!): Boolean
+    blockUser(userId: Int!): Boolean
+    unblockUser(userId: Int!): Boolean
+    reportUser(userId: Int!): Boolean
   }
 
 `;
@@ -476,14 +479,14 @@ const resolvers = {
         const userLng = JSON.parse(user.location).lng;
         
         let trimedByDistanceList = [];
-        for (item of res.rows) {
+        for (let item of res.rows) {
           if (distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 200)
             trimedByDistanceList.push(item);
         }
 
         let result = [];
-        for (item of trimedByDistanceList) {
-          const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [item.id, user.id]);
+        for (let item of trimedByDistanceList) {
+          const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [item.id, user.id]);
           if (checkIfBlocked.rowCount === 0) {
             const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, item.id]);
             if (checkIfLiked.rowCount === 0) {
@@ -1169,13 +1172,6 @@ const resolvers = {
 
     likeUser: async (parent, { userId }, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // return new Error('Not auth');
-        ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -1210,6 +1206,63 @@ const resolvers = {
       }
     },
 
+    blockUser: async (_, { userId }, ctx) => {
+      try {
+        // const lol = () => new Promise((r, f) => {
+        //   setTimeout(() => r(), 5000);
+        // });
+
+        // const ll = await lol();
+        // return new Error('Not auth');
+        ///----
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const check = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, userId]);
+        if (check.rowCount > 0)
+          return true;
+
+        await client.query('INSERT INTO account_blocked (from_user_id, to_user_id) VALUES ($1, $2)', [user.id, userId]);
+        return true;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    unblockUser: async (_, { userId }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const check = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, userId]);
+        if (check.rowCount === 0)
+          return true;
+
+        await client.query('DELETE FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, userId]);
+        return true;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    reportUser: async (_, { userId }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+          const check = await client.query('SELECT * FROM account_reported WHERE from_user_id = $1 AND to_user_id = $2', [user.id, userId]);
+          if (check.rowCount > 0)
+            return true;
+
+          await client.query('INSERT INTO account_reported (from_user_id, to_user_id) VALUES ($1, $2)', [user.id, userId]);
+          return true;
+      } catch (e) {
+        return e;
+      }
+    }
 
 
     // addPost: async (parent, { content, author }, ctx) => {

@@ -72,8 +72,6 @@ class Suggestion extends Component {
         variables: { userId: item.id }
       })
       .then(r => {
-        console.log('-- THEN --');
-        console.log(r);
         this.props.changeLikeStatusForUserList(item);
       })
       .catch(e => {
@@ -148,19 +146,25 @@ class Suggestion extends Component {
           this.client = client;
           return (
             <div>
-              <div id='lgi-suggestion-list'>
-                { this.displayUserSuggestion() }
-              </div>
-              <div>
-                {
-                  (data.length - limit > 0) ?
-                  <div onClick={() => this.setState({ limit: this.state.limit + 8 })} className='lgi-suggestion-list-item-more-result'>
-                    <div className='lgi-suggestion-list-item-more-result-text'>Plus de résultats</div>
-                    <img src={linedArrowBtm} alt='more-result-icon' className='lgi-suggestion-list-item-more-result-icon' />
-                  </div> : 
-                  null
-                }
-              </div>
+              {
+                data.length === 0 ?
+                <div className='lgi-suggestion-list-item-empty'>Aucun profil disponible</div> :
+                <div>
+                  <div id='lgi-suggestion-list'>
+                    { this.displayUserSuggestion() }
+                  </div>
+                  <div>
+                    {
+                      (data.length - limit > 0) ?
+                      <div onClick={() => this.setState({ limit: this.state.limit + 8 })} className='lgi-suggestion-list-item-more-result'>
+                        <div className='lgi-suggestion-list-item-more-result-text'>Plus de résultats</div>
+                        <img src={linedArrowBtm} alt='more-result-icon' className='lgi-suggestion-list-item-more-result-icon' />
+                      </div> : 
+                      null
+                    }
+                  </div>
+                </div>
+              }
             </div>
           );
         }
