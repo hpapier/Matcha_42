@@ -29,7 +29,8 @@ import {
   SAVE_VISITOR_LIST,
   CHANGE_LIKE_STATUS_USER_PROFIL,
   CHANGE_LIKE_STATUS_FOR_VISITOR_LIST,
-  CHANGE_BLOCK_STATUS_FOR_PROFIL_USER
+  CHANGE_BLOCK_STATUS_FOR_PROFIL_USER,
+  UPDATE_ORDER
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -194,7 +195,7 @@ export default (state = initialState, action) => {
     case UPDATE_FILTRE:
       return {
         ...state,
-        currentFiltre: action.payload
+        currentFiltre: (action.payload === state.currentFiltre) ? '' : action.payload
       };
     case SAVE_LIST_OF_USER:
       return {
@@ -280,6 +281,11 @@ export default (state = initialState, action) => {
         ...state,
         currentUserProfilInfo: { ...state.currentUserProfilInfo, isBlocked: !state.currentUserProfilInfo.isBlocked }
       };
+    case UPDATE_ORDER:
+      return {
+        ...state,
+        currentOrder: (action.payload === state.currentOrder) ? '' : action.payload
+      }
     default:
       return state;
   }

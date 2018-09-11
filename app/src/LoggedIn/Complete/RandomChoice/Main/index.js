@@ -97,6 +97,12 @@ class Main extends Component {
     return 0;
   }
 
+  filtreList = (list) => {
+    const { currentFiltre } = this.props;
+    console.log(currentFiltre);
+    return list;
+  };
+
   getUserList = () => {
     const { simpleUserList } = this.props;
     const userSuggestion = simpleUserList.map(element => {
@@ -111,7 +117,9 @@ class Main extends Component {
     });
 
     userSuggestion.sort((a, b) => b.ponderation - a.ponderation);
-    return userSuggestion;
+
+    const withFiltre = this.filtreList(userSuggestion);
+    return withFiltre;
   }
 
   componentWillUnmount() {
@@ -143,6 +151,7 @@ const mapStateToProps = state => ({
   userTags: state.user.userTags,
   userBd: state.user.birthDate,
   popularityScore: state.user.popularityScore,
+  currentFiltre: state.currentFiltre
 });
 
 const mapDispatchToProps = dispatch => ({

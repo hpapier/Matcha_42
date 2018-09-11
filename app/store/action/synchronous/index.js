@@ -28,7 +28,8 @@ import {
   SAVE_VISITOR_LIST,
   CHANGE_LIKE_STATUS_USER_PROFIL,
   CHANGE_LIKE_STATUS_FOR_VISITOR_LIST,
-  CHANGE_BLOCK_STATUS_FOR_PROFIL_USER
+  CHANGE_BLOCK_STATUS_FOR_PROFIL_USER,
+  UPDATE_ORDER
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -175,4 +176,9 @@ export const changeLikeStatusForVisitorList = (data) => ({
 
 export const changeBlockStatusForProfilUser = () => ({
   type: CHANGE_BLOCK_STATUS_FOR_PROFIL_USER
+});
+
+export const updateOrder = data => ({
+  type: UPDATE_ORDER,
+  payload: data
 });

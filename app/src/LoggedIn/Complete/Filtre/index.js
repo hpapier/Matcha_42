@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 // Locals imports.
 import './index.sass';
 import bottomArrow from '../../../../assets/bottom-arrow.svg';
-import { updateFiltre } from '../../../../store/action/synchronous';
+import { updateFiltre, updateOrder } from '../../../../store/action/synchronous';
 
 
 // Filtre Components.
@@ -14,25 +14,6 @@ class Filtre extends Component {
   state = {
     isActive: false
   };
-
-  toggleFiltre = item => {
-    const { filtre } = this.props;
-    let isPresent = false;
-    filtre.forEach(el => {
-      if (el === item)
-        isPresent = true;
-      return;
-    });
-
-    let newFiltre;
-    if (isPresent)
-      newFiltre = filtre.filter(e => e !== item);
-    else
-      newFiltre = [...filtre, item];
-
-    this.props.updateFiltre(newFiltre);
-    return;
-  }
 
   tradText = text => {
     if (text === 'age')
@@ -45,25 +26,22 @@ class Filtre extends Component {
       return 'score de popularité';
   }
 
-  getStyleOptions = () => {
-    const { filtre } = this.props;
+  getOptions = (status, part) => {
     const option = ['age', 'localisation', 'popularity', 'interest'];
 
     return option.map(item => {
-      let isPresent = false;
-      filtre.forEach(el => {
-        if (el === item)
-          isPresent = true;
-      });
+      let isActive = false;
+      if (status === item)
+        isActive = true;
 
       return (
         <div
           key={item}
-          onClick={() => this.toggleFiltre(item)}
-          className={isPresent ? 'lgi-complete-filtre-body-item-active' : 'lgi-complete-filtre-body-item-inactive'}
+          onClick={part === 'filtre' ? () => this.props.updateFiltre(item) : () => this.props.updateOrder(item)}
+          className={isActive ? 'lgi-complete-filtre-body-item-active' : 'lgi-complete-filtre-body-item-inactive'}
         >
-          <div className={isPresent ? 'lgi-complete-filtre-body-item-icon-active' : 'lgi-complete-filtre-body-item-icon-inactive'}></div>
-          <div className={isPresent ? 'lgi-complete-filtre-body-item-content-active' : 'lgi-complete-filtre-body-item-content-inactive'}>{this.tradText(item)}</div>
+          <div className={isActive ? 'lgi-complete-filtre-body-item-icon-active' : 'lgi-complete-filtre-body-item-icon-inactive'}></div>
+          <div className={isActive ? 'lgi-complete-filtre-body-item-content-active' : 'lgi-complete-filtre-body-item-content-inactive'}>{this.tradText(item)}</div>
         </div>
       );
     });
@@ -74,7 +52,7 @@ class Filtre extends Component {
     return (
       <div id='lgi-complete-filtre'>
         <div id='lgi-complete-filtre-header' onClick={() => this.setState({ isActive: !isActive })}>
-          <div id='lgi-complete-filtre-header-title'>Filtres</div>
+          <div id='lgi-complete-filtre-header-title'>Filtre</div>
           <img id='lgi-complete-filtre-header-icon' className={isActive ? 'filtre-box-active' : ''} src={bottomArrow} alt='bottom-arrow-icon' />
         </div>
   
@@ -83,7 +61,12 @@ class Filtre extends Component {
           <div id='lgi-complete-filtre-body'>
             <div id='lgi-complete-filtre-body-title'>Filtrer par..</div>
             <div id='lgi-complete-filtre-body-box'>
-              {this.getStyleOptions()}
+              {this.getOptions(this.props.filtre, 'filtre')}
+            </div>
+
+            <div id='lgi-complete-filtre-body-title'>Trier par..</div>
+            <div id='lgi-complete-filtre-body-box'>
+              {this.getOptions(this.props.trie, 'trie')}
             </div>
           </div> :
           null
@@ -96,11 +79,13 @@ class Filtre extends Component {
 
 // Redux connexion.
 const mapStateToProps = state => ({
-  filtre: state.currentFiltre
+  filtre: state.currentFiltre,
+  trie: state.currentOrder
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateFiltre: data => dispatch(updateFiltre(data))
+  updateFiltre: data => dispatch(updateFiltre(data)),
+  updateOrder: data => dispatch(updateOrder(data))
 });
 
 
