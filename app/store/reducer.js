@@ -195,7 +195,7 @@ export default (state = initialState, action) => {
     case UPDATE_FILTRE:
       return {
         ...state,
-        currentFiltre: (action.payload === state.currentFiltre) ? '' : action.payload
+        currentFiltre: action.payload
       };
     case SAVE_LIST_OF_USER:
       return {

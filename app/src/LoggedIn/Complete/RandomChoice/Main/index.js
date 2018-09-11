@@ -97,10 +97,71 @@ class Main extends Component {
     return 0;
   }
 
-  filtreList = (list) => {
-    const { currentFiltre } = this.props;
-    console.log(currentFiltre);
-    return list;
+  checkFiltreTags = element => {
+    const { tags } = this.props.userPref;
+    if (tags.length === 0)
+      return true;
+
+    let count = 0;
+    element.tags.forEach(tag => {
+      tags.forEach(el => {
+        if (el.id === tag.interestId)
+          count++;
+      });
+    });
+
+    if (count === tags.length)
+      return true;
+
+    return false;
+  };
+
+  withFiltre = list => {
+    const { currentFiltre, userPref } = this.props;
+    let result = list.slice(0);
+    currentFiltre.forEach(filtre => {
+      if (filtre === 'age')
+        result = result.filter(item => item.age >= userPref.ageStart && item.age <= userPref.ageEnd);
+      else if (filtre === 'localisation')
+        result = result.filter(item => item.distance <= userPref.location);
+      else if (filtre === 'popularity')
+        result = result.filter(item => item.popularityScore >= userPref.scoreStart && item.popularityScore <= userPref.scoreEnd);
+      else if (filtre === 'interest')
+        result = result.filter(item => this.checkFiltreTags(item));
+      
+      return;
+    });
+    return result;
+  };
+
+  orderByTags = list => {
+    const newList = list.map(item => {
+      return { ...item, tagPond: this.checkTags(item) };
+    });
+
+    newList.sort((a, b) => { b.tagPond - a.tagPond });
+    return newList.map(item => {
+      delete item.tagPond;
+      return item;
+    });
+  };
+
+  withOrder = list => {
+    const { currentOrder } = this.props;
+    let newList = list.slice(0);
+    
+    if (currentOrder === 'age')
+      newList.sort((a, b) => a.age - b.age);
+    else if (currentOrder === 'localisation')
+      newList.sort((a, b) => a.distance - b.distance);
+    else if (currentOrder === 'popularity')
+      newList.sort((a, b) => b.popularityScore - a.popularityScore);
+    else if (currentOrder === 'interest')
+      newList = this.orderByTags(list);
+    else
+      newList.sort((a, b) => b.ponderation - a.ponderation);
+
+    return newList;
   };
 
   getUserList = () => {
@@ -116,10 +177,11 @@ class Main extends Component {
       return { ...element, ponderation: p };
     });
 
-    userSuggestion.sort((a, b) => b.ponderation - a.ponderation);
+    let finalList = userSuggestion.slice(0);
+    finalList = this.withFiltre(finalList);
+    finalList = this.withOrder(finalList);
 
-    const withFiltre = this.filtreList(userSuggestion);
-    return withFiltre;
+    return finalList;
   }
 
   componentWillUnmount() {
@@ -151,7 +213,9 @@ const mapStateToProps = state => ({
   userTags: state.user.userTags,
   userBd: state.user.birthDate,
   popularityScore: state.user.popularityScore,
-  currentFiltre: state.currentFiltre
+  currentFiltre: state.currentFiltre,
+  currentOrder: state.currentOrder,
+  userPref: state.userPref
 });
 
 const mapDispatchToProps = dispatch => ({

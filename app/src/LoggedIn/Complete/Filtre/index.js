@@ -26,18 +26,58 @@ class Filtre extends Component {
       return 'score de popularité';
   }
 
-  getOptions = (status, part) => {
+  updateFiltre = element => {
+    const { filtre } = this.props;
+
+    let isPresent = false;
+    filtre.forEach(item => {
+      if (item === element)
+        isPresent = true;
+    });
+
+    if (isPresent)
+      this.props.updateFiltre(filtre.filter(item => item !== element));
+    else
+      this.props.updateFiltre([ ...filtre, element]);
+  }
+
+  getFiltreOptions = () => {
+    const { filtre } = this.props;
     const option = ['age', 'localisation', 'popularity', 'interest'];
 
     return option.map(item => {
       let isActive = false;
-      if (status === item)
+      filtre.forEach(element => {
+        if (element === item)
+          isActive = true;
+      });
+
+      return (
+        <div
+          key={item}
+          onClick={() => this.updateFiltre(item)}
+          className={isActive ? 'lgi-complete-filtre-body-item-active' : 'lgi-complete-filtre-body-item-inactive'}
+        >
+          <div className={isActive ? 'lgi-complete-filtre-body-item-icon-active' : 'lgi-complete-filtre-body-item-icon-inactive'}></div>
+          <div className={isActive ? 'lgi-complete-filtre-body-item-content-active' : 'lgi-complete-filtre-body-item-content-inactive'}>{this.tradText(item)}</div>
+        </div>
+      );
+    });
+  }
+
+  getOrderOptions = () => {
+    const { order } = this.props;
+    const option = ['age', 'localisation', 'popularity', 'interest'];
+
+    return option.map(item => {
+      let isActive = false;
+      if (order === item)
         isActive = true;
 
       return (
         <div
           key={item}
-          onClick={part === 'filtre' ? () => this.props.updateFiltre(item) : () => this.props.updateOrder(item)}
+          onClick={() => this.props.updateOrder(item)}
           className={isActive ? 'lgi-complete-filtre-body-item-active' : 'lgi-complete-filtre-body-item-inactive'}
         >
           <div className={isActive ? 'lgi-complete-filtre-body-item-icon-active' : 'lgi-complete-filtre-body-item-icon-inactive'}></div>
@@ -52,7 +92,7 @@ class Filtre extends Component {
     return (
       <div id='lgi-complete-filtre'>
         <div id='lgi-complete-filtre-header' onClick={() => this.setState({ isActive: !isActive })}>
-          <div id='lgi-complete-filtre-header-title'>Filtre</div>
+          <div id='lgi-complete-filtre-header-title'>Filtres</div>
           <img id='lgi-complete-filtre-header-icon' className={isActive ? 'filtre-box-active' : ''} src={bottomArrow} alt='bottom-arrow-icon' />
         </div>
   
@@ -61,12 +101,12 @@ class Filtre extends Component {
           <div id='lgi-complete-filtre-body'>
             <div id='lgi-complete-filtre-body-title'>Filtrer par..</div>
             <div id='lgi-complete-filtre-body-box'>
-              {this.getOptions(this.props.filtre, 'filtre')}
+              {this.getFiltreOptions(this.props.filtre)}
             </div>
 
             <div id='lgi-complete-filtre-body-title'>Trier par..</div>
             <div id='lgi-complete-filtre-body-box'>
-              {this.getOptions(this.props.trie, 'trie')}
+              {this.getOrderOptions(this.props.trie, 'trie')}
             </div>
           </div> :
           null
@@ -80,7 +120,7 @@ class Filtre extends Component {
 // Redux connexion.
 const mapStateToProps = state => ({
   filtre: state.currentFiltre,
-  trie: state.currentOrder
+  order: state.currentOrder
 });
 
 const mapDispatchToProps = dispatch => ({
