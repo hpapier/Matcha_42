@@ -23,7 +23,7 @@ class VisitedBy extends Component {
       {
         ({ loading, error }) => {
           if (loading)
-            return <div>loading..</div>;
+            return <div id='lgi-complete-visitedby-loading'><div id='lgi-complete-visitedby-loading-animation'></div></div>;
 
           if (error) {
             if (error.graphQLErrors) {

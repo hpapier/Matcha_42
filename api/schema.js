@@ -448,41 +448,14 @@ const resolvers = {
         if (user.sexual_orientation === 'bisexual')
           res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND id != $2', [1, user.id]);
         else
-          res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND genre = $2', [1, user.sexual_orientation]);
-
-        const getAge = date => {
-          var today = new Date();
-          var birthDate = new Date(date);
-          var age = today.getFullYear() - birthDate.getFullYear();
-          var m = today.getMonth() - birthDate.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-              age--;
-          }
-          return age;
-        };
-
-        const distance = (lat1, lon1, lat2, lon2, unit) => {
-          var radlat1 = Math.PI * lat1/180;
-          var radlat2 = Math.PI * lat2/180;
-          var radlon1 = Math.PI * lon1/180;
-          var radlon2 = Math.PI * lon2/180;
-          var theta = lon1-lon2;
-          var radtheta = Math.PI * theta/180;
-          var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-          dist = Math.acos(dist);
-          dist = dist * 180/Math.PI;
-          dist = dist * 60 * 1.1515;
-          if (unit === "K") { dist = dist * 1.609344 };
-          if (unit === "N") { dist = dist * 0.8684 };
-          return dist;
-        };
+          res = await client.query('SELECT * FROM user_info WHERE iscomplete = $1 AND genre = $2 AND id != $3', [1, user.sexual_orientation, user.id]);
 
         const userLat = JSON.parse(user.location).lat;
         const userLng = JSON.parse(user.location).lng;
         
         let trimedByDistanceList = [];
         for (let item of res.rows) {
-          if (distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 200)
+          if (getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 200)
             trimedByDistanceList.push(item);
         }
 
@@ -490,7 +463,7 @@ const resolvers = {
         for (let item of trimedByDistanceList) {
           const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [item.id, user.id]);
           if (checkIfBlocked.rowCount === 0) {
-            const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, item.id]);
+            const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, item.id]);
             if (checkIfLiked.rowCount === 0) {
               const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
               const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
@@ -502,7 +475,7 @@ const resolvers = {
                 age: getAge(item.birth_date),
                 tags: formatedTagsList,
                 profilPicture: item.profil_picture,
-                distance: parseInt(distance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
+                distance: parseInt(getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
               });
             }
           }
@@ -1182,7 +1155,11 @@ const resolvers = {
           return new Error('Already liked');
 
         await client.query('INSERT INTO user_like (from_user, to_user) VALUES ($1, $2)', [user.id, userId]);
-        await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['like', userId, user.id, new Date()]);
+
+        const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [userId, user.id]);
+        if (isBlocked.rowCount === 0)
+          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['like', userId, user.id, new Date()]);
+
         return true;
       } catch (e) {
         return e;
@@ -1200,7 +1177,11 @@ const resolvers = {
           return new Error('Like doesn\'t exist');
 
         await client.query('DELETE FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, userId]);
-        await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unlike', userId, user.id, new Date()]);
+
+        const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [userId, user.id]);
+        if (isBlocked.rowCount === 0)
+          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unlike', userId, user.id, new Date()]);
+
         return true;
       } catch (e) {
         return e;

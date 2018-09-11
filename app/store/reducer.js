@@ -249,15 +249,24 @@ export default (state = initialState, action) => {
         currentUserProfilInfo: { ...state.currentUserProfilInfo, isLiked: !state.currentUserProfilInfo.isLiked }
       }
     case CHANGE_LIKE_STATUS_FOR_VISITOR_LIST:
+      const userSimpleListUpdated = state.simpleUserList.map(item => {
+        if (item.id === action.payload.id)
+          return { ...item, isLiked: !action.payload.isLiked };
+        else
+          return item;
+      });
+
       const newVisitorList = state.visitorList.map(item => {
         if (item.id === action.payload.id)
           return { ...item, isLiked: !action.payload.isLiked };
         else
           return item;
       });
+
       return {
         ...state,
-        visitorList: newVisitorList
+        visitorList: newVisitorList,
+        simpleUserList: userSimpleListUpdated
       };
     case CHANGE_BLOCK_STATUS_FOR_PROFIL_USER:
       return {
