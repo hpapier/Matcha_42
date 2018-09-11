@@ -212,6 +212,16 @@ const typeDefs = `
     isLiked: Boolean
   }
 
+  type UserNotification {
+    id: Int
+    fromUserId: Int
+    fromUserName: String
+    fromUserProfilPicture: String
+    fromUserGenre: String
+    action: String
+    date: String
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -224,6 +234,7 @@ const typeDefs = `
     getListOfUser: [UserSimpleList]
     getUserProfilInformation(userId: Int!): UserProfilInfo
     getVisitorList: [VisitorList]
+    getUserNotification: [UserNotification]
   }
   
   type Mutation {
@@ -599,6 +610,36 @@ const resolvers = {
         }
 
         return trimedVisitor;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    getUserNotification: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
+        let notifArray = [];
+
+        for (let item of notif.rows) {
+          const userInfo = await client.query('SELECT id, username, profil_picture, genre FROM user_info WHERE id = $1 AND iscomplete = $2', [item.from_user, 1]);
+          if (userInfo.rowCount === 1) {
+            notifArray.push({
+              id: item.id,
+              fromUserId: userInfo.rows[0].id,
+              fromUserName: userInfo.rows[0].username,
+              fromUserProfilPicture: userInfo.rows[0].profil_picture,
+              fromUserGenre: userInfo.rows[0].genre,
+              action: item.action,
+              date: item.creation_date
+            });
+          }
+        }
+
+        return notifArray;
       } catch (e) {
         return e;
       }

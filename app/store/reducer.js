@@ -30,7 +30,8 @@ import {
   CHANGE_LIKE_STATUS_USER_PROFIL,
   CHANGE_LIKE_STATUS_FOR_VISITOR_LIST,
   CHANGE_BLOCK_STATUS_FOR_PROFIL_USER,
-  UPDATE_ORDER
+  UPDATE_ORDER,
+  SAVE_NOTIF_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -285,7 +286,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentOrder: (action.payload === state.currentOrder) ? '' : action.payload
-      }
+      };
+    case SAVE_NOTIF_LIST:
+      return {
+        ...state,
+        notificationList: action.payload
+      };
     default:
       return state;
   }

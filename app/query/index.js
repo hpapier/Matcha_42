@@ -364,3 +364,17 @@ export const REPORT_USER_MUTATION = gql`
     reportUser(userId: $userId)
   }
 `;
+
+export const NOTIFICATION_COMPONENT_QUERY = gql`
+  {
+    getUserNotification {
+      id
+      fromUserId
+      fromUserName
+      fromUserProfilPicture
+      fromUserGenre
+      action
+      date
+    }
+  }
+`;

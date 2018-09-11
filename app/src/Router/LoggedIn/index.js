@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from '../../LoggedIn/Navbar';
 import Homepage from '../../LoggedIn/Homepage';
 import Profil from '../../LoggedIn/Profil';
+import Notification from '../../LoggedIn/Notification';
 
 
 // LoggedIn Router Component.
@@ -17,7 +18,7 @@ const LoggedIn = props => {
         <Navbar />
         <Switch>
           <Route exact path='/' component={() => <Homepage />} />
-          <Route exact path='/notification' component={() => <div>notifications</div>} />
+          <Route exact path='/notification' component={Notification} />
           <Route exact path='/message' component={() => <div>messages</div>} />
           <Route exact path='/profil' component={() => <Profil />} />
         </Switch>
