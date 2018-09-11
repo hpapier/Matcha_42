@@ -27,10 +27,12 @@ class RandomChoice extends Component {
             return <div id='lgi-random-choice-loading'><div id='lgi-random-choice-loading-animation'></div></div>;
 
           if (error) {
-            if (error.graphQLErrors[0].message === 'Not auth')
-              return <Logout />;
-            else
-              return <div>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
+            if (error.graphQLErrors && error.graphQLErrors[0]) {
+              if (error.graphQLErrors[0].message === 'Not auth')
+                return <Logout />;
+              else
+                return <div>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
+            }
           }
 
           return <Main />;

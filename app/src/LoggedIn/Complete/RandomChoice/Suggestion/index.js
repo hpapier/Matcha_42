@@ -74,7 +74,7 @@ class Suggestion extends Component {
         if (!this._unmount)
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
-      .catch(e => {
+      .catch(error => {
         if (error.graphQLErrors[0].message === 'Not auth') {
           localStorage.removeItem('auth_token');
           this.props.clearStore();

@@ -231,12 +231,19 @@ export default (state = initialState, action) => {
       const newList = state.simpleUserList.map(item => {
         if (item.id === action.payload.id)
           return { ...item, isLiked: !action.payload.isLiked };
-        else
-          return item;
+        return item;
       });
+
+      const visitorListUpdated = state.visitorList.map(item => {
+        if (item.id === action.payload.id)
+          return { ...item, isLiked: !action.payload.isLiked };
+        return item;
+      })
+
       return {
         ...state,
-        simpleUserList: newList
+        simpleUserList: newList,
+        visitorList: visitorListUpdated
       };
     case SAVE_VISITOR_LIST:
       return {
