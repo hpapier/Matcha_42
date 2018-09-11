@@ -20,6 +20,7 @@ import ProfilTags from './ProfilTags';
 // Profil Component.
 class Profil extends Component {
   onCompletedHandler = data => {
+    console.log('data forced');
     const { saveUserProfilInfo } = this.props;
     const { getUserProfilInformation } = data;
     saveUserProfilInfo(getUserProfilInformation);
@@ -43,14 +44,23 @@ class Profil extends Component {
             if (error.graphQLErrors[0]) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
+              else if (error.graphQLErrors[0].message === 'Profil blocked')
+                return (
+                  <div className='lgi-complete-profil-error'>
+                    <div className='lgi-complete-profil-error-text'>Ce profil vous a bloqué.</div>
+                    <div className='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
+                  </div>
+                );
             }
-            else
-              return (
-                <div id='lgi-complete-profil-error'>
-                  <div id='lgi-complete-profil-error-text'>Oups! Une erreur est survenu..</div>
-                  <div id='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
-                </div>
-              );
+            console.log(error);
+            console.log('IN ERROR');
+            if (error)
+            return (
+              <div className='lgi-complete-profil-error'>
+                <div className='lgi-complete-profil-error-text'>Oups! Une erreur est survenu..</div>
+                <div className='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
+              </div>
+            );
           }
 
           return (

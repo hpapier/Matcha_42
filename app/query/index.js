@@ -298,10 +298,7 @@ export const GET_USER_PROFIL_QUERY = gql`
         id
         path
       }
-      actions {
-        id
-        action
-      }
+      actions
       lastConnexion
       isConnected
       username
@@ -318,6 +315,8 @@ export const GET_USER_PROFIL_QUERY = gql`
         interestId
       }
       isMatched
+      isBlocked
+      isLiked
     }
   }
 `;

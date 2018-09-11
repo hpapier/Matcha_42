@@ -184,7 +184,7 @@ const typeDefs = `
   type UserProfilInfo {
     id: Int
     images: [UserImages]
-    actions: [UserActions]
+    actions: [String]
     lastConnexion: String
     isConnected: Boolean
     username: String
@@ -198,6 +198,8 @@ const typeDefs = `
     sexualOrientation: String
     tags: [UserInterests]
     isMatched: Boolean
+    isBlocked: Boolean
+    isLiked: Boolean
   }
 
   type VisitorList {
@@ -536,31 +538,25 @@ const resolvers = {
         
         await client.query('INSERT INTO user_visite (from_user, to_user, creation_date) VALUES ($1, $2, $3)', [user.id, userId, new Date()]);
         
-        const profilActions = await client.query('SELECT * FROM notification WHERE user_id = $1 AND from_user = $2', [user.id, userId]);
-        let actionArray = [];
-        if (profilActions.rowCount !== 0) {
-          profilActions.rows.forEach(item => {
-            let isPresent = false;
-            actionArray.forEach(el => {
-              if (el.action === item.action)
-                isPresent = true;
-            });
+        let actionsArray = [];
 
-            if (!isPresent)
-              actionArray.push({ id: item.id, action: item.action });
-          });
-        };
+        const getVisiteAction = await client.query('SELECT * FROM user_visite WHERE (from_user, to_user) = ($1, $2)', [userId, user.id]);
+        const getLikeAction = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2)', [userId, user.id]);
+        getVisiteAction.rowCount > 0 ? actionsArray.push('visite') : null
+        getLikeAction.rowCount > 0 ? actionsArray.push('like') : null
 
         const profilTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userId]);
         if (profilTags.rowCount === 0)
           return new Error('Profil not complete');
 
         const profilMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+        const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [user.id, userId]);
+        const isLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, userId]);
 
         return {
           id: profil.rows[0].id,
           images: profilImg.rows,
-          actions: actionArray,
+          actions: actionsArray,
           lastConnexion: profil.rows[0].last_connexion,
           isConnected: profil.rows[0].isconnected,
           username: profil.rows[0].username,
@@ -573,7 +569,9 @@ const resolvers = {
           genre: profil.rows[0].genre,
           sexualOrientation: profil.rows[0].sexual_orientation,
           tags: profilTags.rows.map(item => ({ id: item.id, interestId: item.interest_id })),
-          isMatched: profilMatch.rowCount === 0 ? false : true
+          isMatched: profilMatch.rowCount === 0 ? false : true,
+          isBlocked: isBlocked.rowCount === 0 ? false : true,
+          isLiked: isLiked.rowCount === 0 ? false : true
         };
         
       } catch(e) {

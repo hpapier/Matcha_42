@@ -9,7 +9,7 @@ import { withRouter } from 'react-router-dom';
 import './index.sass';
 import matchIcon from '../../../../../assets/match.svg';
 import closeIcon from '../../../../../assets/close-white.svg';
-import { cleanUserProfil, clearStore, changeLikeStatusOfUserProfil } from '../../../../../store/action/synchronous';
+import { cleanUserProfil, clearStore, changeLikeStatusOfUserProfil, changeBlockStatusForProfilUser } from '../../../../../store/action/synchronous';
 import likeWhiteIcon from '../../../../../assets/heart-white.svg';
 import likeBrownIcon from '../../../../../assets/heart-brown.svg';
 import scoreWhiteIcon from '../../../../../assets/cup-white.svg';
@@ -24,7 +24,6 @@ import { BLOCK_USER_MUTATION, UNBLOCK_USER_MUTATION, REPORT_USER_MUTATION, LIKE_
 // ProfilImg Component.
 class ProfilBody extends Component {
   state = {
-    blocked: false,
     blockLoading: false,
     modalReport: false,
     modalReportLoading: false,
@@ -46,20 +45,22 @@ class ProfilBody extends Component {
 
   blockUserMechanism = () => {
     const { client } = this;
-    const { id } = this.props.information;
-    const { blocked } = this.state;
+    const { id, isBlocked } = this.props.information;
 
     if (!this._unmount)
       this.setState({ blockLoading: true });
 
-    if (!blocked) {
+    if (!isBlocked) {
+      console.log('BLOCK USER');
       client.mutate({
         mutation: BLOCK_USER_MUTATION,
         variables: { userId: id }
       })
       .then(r => {
-        if (!this._unmount)
-          this.setState({ blockLoading: false, blocked: true });
+        if (!this._unmount) {
+          this.setState({ blockLoading: false });
+          this.props.changeBlockStatusForProfilUser();
+        }
       })
       .catch(error => {
         if (error.graphQLErrors) {
@@ -71,16 +72,19 @@ class ProfilBody extends Component {
         }
 
         if (!this._unmount)
-          this.setState({ blockLoading: false, blocked: false });
+          this.setState({ blockLoading: false });
       });
     } else {
+      console.log('UNBLOCK USER');
       client.mutate({
         mutation: UNBLOCK_USER_MUTATION,
         variables: { userId: id }
       })
       .then(r => {
-        if (!this._unmount)
-          this.setState({ blockLoading: false, blocked: false });
+        if (!this._unmount) {
+          this.setState({ blockLoading: false });
+          this.props.changeBlockStatusForProfilUser();
+        }
       })
       .catch(error => {
         if (error.graphQLErrors) {
@@ -92,7 +96,7 @@ class ProfilBody extends Component {
         }
 
         if (!this._unmount)
-          this.setState({ blockLoading: false, blocked: true });
+          this.setState({ blockLoading: false });
       });
     }
   }
@@ -167,8 +171,8 @@ class ProfilBody extends Component {
 
   render() {
     const { information } = this.props;
-    const { isLiked } = information;
-    const { blocked, blockLoading, modalReport, modalReportLoading, modalReportErrorMsg } = this.state;
+    const { isLiked, isBlocked } = information;
+    const { blockLoading, modalReport, modalReportLoading, modalReportErrorMsg } = this.state;
     return (
       <ApolloConsumer>
       {
@@ -219,9 +223,9 @@ class ProfilBody extends Component {
                 </div>
       
                 <div id='lgi-complete-profil-body-cta-right'>
-                  <button id={!blocked ? 'lgi-complete-profil-body-cta-right-block' : 'lgi-complete-profil-body-cta-right-block-blocked'} disabled={blockLoading} onClick={this.blockUserMechanism}>
-                    <img src={!blocked ? nonBlockWhiteIcon : blockIcon} alt='block-icon' id='lgi-complete-profil-body-cta-right-block-icon' />
-                    <div id='lgi-complete-profil-body-cta-right-block-text'>{blocked ? 'débloquer' : 'bloquer'}</div>
+                  <button id={!isBlocked ? 'lgi-complete-profil-body-cta-right-block' : 'lgi-complete-profil-body-cta-right-block-blocked'} disabled={blockLoading} onClick={this.blockUserMechanism}>
+                    <img src={!isBlocked ? nonBlockWhiteIcon : blockIcon} alt='block-icon' id='lgi-complete-profil-body-cta-right-block-icon' />
+                    <div id='lgi-complete-profil-body-cta-right-block-text'>{isBlocked ? 'débloquer' : 'bloquer'}</div>
                   </button>
       
                   <button id='lgi-complete-profil-body-cta-right-report' onClick={() => this.setState({ modalReport: true })}>
@@ -267,7 +271,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   cleanUserProfil: () => dispatch(cleanUserProfil()),
   clearStore: () => dispatch(clearStore()),
-  changeLikeStatusOfUserProfil: () => dispatch(changeLikeStatusOfUserProfil())
+  changeLikeStatusOfUserProfil: () => dispatch(changeLikeStatusOfUserProfil()),
+  changeBlockStatusForProfilUser: () => dispatch(changeBlockStatusForProfilUser())
 })
 
 

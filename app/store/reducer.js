@@ -28,7 +28,8 @@ import {
   CHANGE_LIKE_STATUS_FOR_USER_LIST,
   SAVE_VISITOR_LIST,
   CHANGE_LIKE_STATUS_USER_PROFIL,
-  CHANGE_LIKE_STATUS_FOR_VISITOR_LIST
+  CHANGE_LIKE_STATUS_FOR_VISITOR_LIST,
+  CHANGE_BLOCK_STATUS_FOR_PROFIL_USER
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -215,7 +216,7 @@ export default (state = initialState, action) => {
     case SAVE_USER_PROFIL_INFO:
       return {
         ...state,
-        currentUserProfilInfo: { ...action.payload, isLiked: false }
+        currentUserProfilInfo: { ...action.payload }
       };
     case CLEAN_USER_PROFIL:
       return {
@@ -257,6 +258,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         visitorList: newVisitorList
+      };
+    case CHANGE_BLOCK_STATUS_FOR_PROFIL_USER:
+      return {
+        ...state,
+        currentUserProfilInfo: { ...state.currentUserProfilInfo, isBlocked: !state.currentUserProfilInfo.isBlocked }
       };
     default:
       return state;
