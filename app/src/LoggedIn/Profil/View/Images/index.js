@@ -59,8 +59,6 @@ class Images extends Component {
     })
     .then(r => {
       if (!this._unmount) {
-        console.log('--> ADD THEN');
-        console.log(r.data.addUserImage);
         this.setState({ loading: false, errorMsg: '' });
         this.props.updateUserImages(r.data.addUserImage);
         this.inputFile.value = null;
@@ -108,8 +106,6 @@ class Images extends Component {
     })
     .then(r => {
       if (!this._unmount) {
-        console.log('--> REMOVE THEN');
-        console.log(r.data.removeUserImage);
         this.setState({ loading: false, errorMsg: '' });
         this.props.updateUserImages(r.data.removeUserImage);
         let isPresent = false;
@@ -145,8 +141,6 @@ class Images extends Component {
     })
     .then(r => {
       if (!this._unmount) {
-        console.log('--> UPDATE THEN');
-        console.log(r.data.updateProfilImg);
         this.setState({ loading: false, errorMsg: '' });
         this.props.updateUserProfilImg(r.data.updateProfilImg.path);
       }
@@ -169,8 +163,6 @@ class Images extends Component {
       <ApolloConsumer>
       {
         client => {
-          // console.log('--> this.props.userImg');
-          // console.log(this.props.userImages);
           return (
           <div id='lgi-profil-view-photos'>
             <div id='lgi-profil-view-photos-box-header'>

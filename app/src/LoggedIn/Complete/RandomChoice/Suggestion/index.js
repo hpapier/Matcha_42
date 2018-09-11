@@ -47,8 +47,6 @@ class Suggestion extends Component {
         variables: { userId: item.id }
       })
       .then(r => {
-        console.log('-- THEN --');
-        console.log(r);
         this.props.changeLikeStatusForUserList(item);
         if (!this._unmount)
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
@@ -73,17 +71,24 @@ class Suggestion extends Component {
       })
       .then(r => {
         this.props.changeLikeStatusForUserList(item);
+        if (!this._unmount)
+          this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
       .catch(e => {
-        console.log('-- THEN --');
-        console.log(e);
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
+
+        if (!this._unmount)
+          this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       });
     }
 
   }
 
   getUserProfilMech = (user, e) => {
-    console.log('PROFIL');
     if (e.target) {
       if (
         e.target.className === 'lgi-suggestion-list-item-event-like'

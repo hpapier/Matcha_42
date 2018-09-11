@@ -17,8 +17,6 @@ import { GET_USER_PREFERENCE_QUERY } from '../../../../query';
 // Search Component.
 class Search extends Component {
   onCompletedHandler = data => {
-    console.log('__ ON COMPLETED SEARCH __');
-    console.log(data);
     this.props.saveUserPref(data.getUserPreference);
   }
 

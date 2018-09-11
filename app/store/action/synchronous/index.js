@@ -25,7 +25,9 @@ import {
   SAVE_USER_PROFIL_INFO,
   CLEAN_USER_PROFIL,
   CHANGE_LIKE_STATUS_FOR_USER_LIST,
-  SAVE_VISITOR_LIST
+  SAVE_VISITOR_LIST,
+  CHANGE_LIKE_STATUS_USER_PROFIL,
+  CHANGE_LIKE_STATUS_FOR_VISITOR_LIST
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -158,5 +160,14 @@ export const changeLikeStatusForUserList = data => ({
 
 export const saveVisitorList = data => ({
   type: SAVE_VISITOR_LIST,
+  payload: data
+});
+
+export const changeLikeStatusOfUserProfil = () => ({
+  type: CHANGE_LIKE_STATUS_USER_PROFIL
+});
+
+export const changeLikeStatusForVisitorList = (data) => ({
+  type: CHANGE_LIKE_STATUS_FOR_VISITOR_LIST,
   payload: data
 });

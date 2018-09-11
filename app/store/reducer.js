@@ -26,7 +26,9 @@ import {
   SAVE_USER_PROFIL_INFO,
   CLEAN_USER_PROFIL,
   CHANGE_LIKE_STATUS_FOR_USER_LIST,
-  SAVE_VISITOR_LIST
+  SAVE_VISITOR_LIST,
+  CHANGE_LIKE_STATUS_USER_PROFIL,
+  CHANGE_LIKE_STATUS_FOR_VISITOR_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -213,7 +215,7 @@ export default (state = initialState, action) => {
     case SAVE_USER_PROFIL_INFO:
       return {
         ...state,
-        currentUserProfilInfo: action.payload
+        currentUserProfilInfo: { ...action.payload, isLiked: false }
       };
     case CLEAN_USER_PROFIL:
       return {
@@ -239,6 +241,22 @@ export default (state = initialState, action) => {
       return {
         ...state,
         visitorList: action.payload
+      };
+    case CHANGE_LIKE_STATUS_USER_PROFIL:
+      return {
+        ...state,
+        currentUserProfilInfo: { ...state.currentUserProfilInfo, isLiked: !state.currentUserProfilInfo.isLiked }
+      }
+    case CHANGE_LIKE_STATUS_FOR_VISITOR_LIST:
+      const newVisitorList = state.visitorList.map(item => {
+        if (item.id === action.payload.id)
+          return { ...item, isLiked: !action.payload.isLiked };
+        else
+          return item;
+      });
+      return {
+        ...state,
+        visitorList: newVisitorList
       };
     default:
       return state;

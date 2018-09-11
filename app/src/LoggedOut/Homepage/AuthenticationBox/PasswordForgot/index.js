@@ -17,7 +17,6 @@ class PasswordForgot extends Component {
 
   handleSubmit = (e, mutation) => {
     e.preventDefault();
-    console.log('Submit');
 
     this.setState({ errorMsg: '' });
     const { username, email } = this.state;

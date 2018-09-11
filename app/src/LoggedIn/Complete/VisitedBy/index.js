@@ -14,8 +14,6 @@ import { saveVisitorList } from '../../../../store/action/synchronous';
 // VisitedBy Component.
 class VisitedBy extends Component {
   onCompletedHandler = data => {
-    console.log('VISITOR LIST ->');
-    console.log(data.getVisitorList);
     this.props.saveVisitorList(data.getVisitorList);
   }
 

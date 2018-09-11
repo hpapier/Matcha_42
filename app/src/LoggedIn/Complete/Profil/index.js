@@ -20,8 +20,6 @@ import ProfilTags from './ProfilTags';
 // Profil Component.
 class Profil extends Component {
   onCompletedHandler = data => {
-    console.log('___ ON DATA COMPLETED HANDLER ___');
-    console.log(data);
     const { saveUserProfilInfo } = this.props;
     const { getUserProfilInformation } = data;
     saveUserProfilInfo(getUserProfilInformation);

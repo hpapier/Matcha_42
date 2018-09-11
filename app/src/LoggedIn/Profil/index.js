@@ -20,8 +20,6 @@ import Logout from '../Utils/Logout';
 // Profil Component
 class Profil extends Component {
   onCompletedHandler = (data) => {
-    console.log('__ ON COMPLETED FUNCTION __');
-    console.log(data);
     this.props.saveUserInfo(data.userInformations);
     this.props.saveInterest(data.getInterests);
   }

@@ -135,8 +135,6 @@ class SignIn extends Component {
       <Mutation mutation={SIGN_UP_MUTATION}>
         {
           (signUpMutation, response) => {
-            // console.log('--> Sign Up Component:');
-            // console.log(response);
             return (
               <div id='lgo-sign-in'>
                 <form onSubmit={e => this.signUpMechanism(e, signUpMutation)} id='lgo-sign-in-form'>

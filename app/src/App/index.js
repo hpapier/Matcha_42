@@ -12,7 +12,6 @@ const App = props => {
     <Query query={USER_STATUS_QUERY} pollInterval={500}>
       {
         response => {
-          console.log('--> RENDERING APP COMPONENT..');
           if (response.loading) {
             return (
               <div id='app-loading'>

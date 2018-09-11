@@ -108,7 +108,6 @@ class SearchMutation extends Component {
     const tagsToJson = JSON.stringify(tags);
     mutation({ variables: { ageStart, ageEnd, scoreStart, scoreEnd, location, tags: tagsToJson }})
     .then(result => {
-      console.log(result.data.updateUserPreferences);
       if (!this._unmount)
         this.setState({ ageStart: 18, ageEnd: 100, scoreStart: 10, scoreEnd: 100, location: 10, tags: [], isActive: false, errorMsg: '' });
 
@@ -133,7 +132,6 @@ class SearchMutation extends Component {
       <Mutation mutation={UPDATE_USER_PREFERENCE_MUTATION}>
       {
         (updateUserPreferences, { loading }) => {
-          // console.log(loading);
           return (
             <div id='lgi-complete-search'>
               <div id='lgi-complete-search-header' onClick={() => this.setState({ isActive: !isActive })}>

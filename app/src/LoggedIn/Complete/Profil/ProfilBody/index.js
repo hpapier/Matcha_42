@@ -9,15 +9,16 @@ import { withRouter } from 'react-router-dom';
 import './index.sass';
 import matchIcon from '../../../../../assets/match.svg';
 import closeIcon from '../../../../../assets/close-white.svg';
-import { cleanUserProfil, clearStore } from '../../../../../store/action/synchronous';
+import { cleanUserProfil, clearStore, changeLikeStatusOfUserProfil } from '../../../../../store/action/synchronous';
 import likeWhiteIcon from '../../../../../assets/heart-white.svg';
+import likeBrownIcon from '../../../../../assets/heart-brown.svg';
 import scoreWhiteIcon from '../../../../../assets/cup-white.svg';
 import msgWhiteIcon from '../../../../../assets/msg-sending.svg';
 import flagIconWhite from '../../../../../assets/flag.svg';
 import nonBlockWhiteIcon from '../../../../../assets/non-block.svg';
 import blockIcon from '../../../../../assets/block.svg';
 import closeBlackIcon from '../../../../../assets/close-black.svg';
-import { BLOCK_USER_MUTATION, UNBLOCK_USER_MUTATION, REPORT_USER_MUTATION } from '../../../../../query';
+import { BLOCK_USER_MUTATION, UNBLOCK_USER_MUTATION, REPORT_USER_MUTATION, LIKE_USER_MUTATION, UNLIKE_USER_MUTATION } from '../../../../../query';
 
 
 // ProfilImg Component.
@@ -61,8 +62,14 @@ class ProfilBody extends Component {
           this.setState({ blockLoading: false, blocked: true });
       })
       .catch(error => {
-        console.log('-- CATCH --');
-        console.log(error);
+        if (error.graphQLErrors) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
+        }
+
         if (!this._unmount)
           this.setState({ blockLoading: false, blocked: false });
       });
@@ -83,8 +90,50 @@ class ProfilBody extends Component {
             this.props.history.push('/');
           }
         }
+
         if (!this._unmount)
           this.setState({ blockLoading: false, blocked: true });
+      });
+    }
+  }
+
+  likeMechanism = () => {
+    const { client } = this;
+    const { id, isLiked } = this.props.information;
+
+    if (!isLiked) {
+      client.mutate({
+        mutation: LIKE_USER_MUTATION,
+        variables: { userId: id }
+      })
+      .then(r => {
+        if (!this._unmount)
+          this.props.changeLikeStatusOfUserProfil();
+      })
+      .catch(error => {
+        if (error.graphQLErrors) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
+        }
+      });
+    } else {
+      client.mutate({
+        mutation: UNLIKE_USER_MUTATION,
+        variables: { userId: id }
+      })
+      .then(r => {
+        if (!this._unmount)
+          this.props.changeLikeStatusOfUserProfil();
+      })
+      .catch(error => {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       });
     }
   }
@@ -118,6 +167,7 @@ class ProfilBody extends Component {
 
   render() {
     const { information } = this.props;
+    const { isLiked } = information;
     const { blocked, blockLoading, modalReport, modalReportLoading, modalReportErrorMsg } = this.state;
     return (
       <ApolloConsumer>
@@ -150,8 +200,8 @@ class ProfilBody extends Component {
       
               <div id='lgi-complete-profil-body-cta'>
                 <div id='lgi-complete-profil-body-cta-left'>
-                  <div id='lgi-complete-profil-body-cta-left-like'>
-                    <img id='lgi-complete-profil-body-cta-left-like-icon' src={likeWhiteIcon} alt='like-icon' />
+                  <div id={!isLiked ? 'lgi-complete-profil-body-cta-left-like' : 'lgi-complete-profil-body-cta-left-like-liked'} onClick={this.likeMechanism}>
+                    <img id='lgi-complete-profil-body-cta-left-like-icon' src={!isLiked ? likeWhiteIcon : likeBrownIcon} alt='like-icon' />
                   </div>
       
                   <div id='lgi-complete-profil-body-cta-left-score'>
@@ -216,7 +266,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   cleanUserProfil: () => dispatch(cleanUserProfil()),
-  clearStore: () => dispatch(clearStore())
+  clearStore: () => dispatch(clearStore()),
+  changeLikeStatusOfUserProfil: () => dispatch(changeLikeStatusOfUserProfil())
 })
 
 

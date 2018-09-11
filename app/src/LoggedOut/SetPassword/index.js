@@ -115,7 +115,6 @@ const SetPassword = props => {
     <Query query={RESET_TOKEN_VERIFICATION_QUERY} variables={{ username, resetToken }}>
     {
       ({ loading, error, data }) => {
-        console.log(data);
         return (
           <div id='lgo-homepage-reset-page'>
             <img id='lgo-homepage-background-reset-page' src={backgroundImage1} alt='background' />

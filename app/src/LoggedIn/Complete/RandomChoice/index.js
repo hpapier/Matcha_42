@@ -15,7 +15,6 @@ import Main from './Main';
 // RandomChoice Component.
 class RandomChoice extends Component {
   onCompletedHandler = data => {
-    console.log(data);
     this.props.saveListOfUser(data.getListOfUser);
   }
 
