@@ -413,3 +413,17 @@ export const USER_LIKE_QUERY = gql`
     }
   }
 `;
+
+export const USER_VISITE_QUERY = gql`
+  {
+    getUserVisite {
+      id
+      popularityScore
+      username
+      age
+      distance
+      profilPicture
+      isLiked
+    }
+  }
+`;

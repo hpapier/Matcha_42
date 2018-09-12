@@ -33,7 +33,8 @@ import {
   UPDATE_ORDER,
   SAVE_NOTIF_LIST,
   CHANGE_MATCH_STATUS_USER_PROFIL,
-  SAVE_USER_LIKE_LIST
+  SAVE_USER_LIKE_LIST,
+  SAVE_USER_VISITE_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -303,7 +304,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userLikeList: action.payload
-      }
+      };
+    case SAVE_USER_VISITE_LIST:
+      return {
+        ...state,
+        userVisiteList: action.payload
+      };
     default:
       return state;
   }

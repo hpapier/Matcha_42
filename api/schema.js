@@ -236,7 +236,7 @@ const typeDefs = `
     matchNumber: Int
   }
 
-  type UserLikeInfo {
+  type UserLikeVisiteMatchInfo {
     id: Int
     popularityScore: Int
     username: String
@@ -260,7 +260,8 @@ const typeDefs = `
     getVisitorList: [VisitorList]
     getUserNotification: [UserNotification]
     getCountNotification: NotifCount
-    getUserLike: [UserLikeInfo]
+    getUserLike: [UserLikeVisiteMatchInfo]
+    getUserVisite: [UserLikeVisiteMatchInfo]
   }
   
   type Mutation {
@@ -750,7 +751,44 @@ const resolvers = {
         console.log(e);
         return e;
       }
-    }
+    },
+
+    getUserVisite: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const visiteList = await client.query('SELECT * FROM user_visite WHERE from_user = $1', [user.id]);
+        if (visiteList.rowCount === 0)
+          return [];
+
+        let result = [];
+        for (let like of visiteList.rows) {
+          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE to_user_id = $1 AND from_user_id = $2', [user.id, like.to_user]);
+          if (isBlocked.rowCount === 0) {
+            const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [like.to_user, 1]);
+            if (userInfo.rowCount === 1) {
+              const userIsLiked = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, userInfo.rows[0].id]);
+              result.push({
+                id: userInfo.rows[0].id,
+                popularityScore: userInfo.rows[0].popularity_score,
+                username: userInfo.rows[0].username,
+                age: getAge(userInfo.rows[0].birth_date),
+                distance: parseInt(getDistance(JSON.parse(user.location).lat, JSON.parse(user.location).lng, JSON.parse(userInfo.rows[0].location).lat, JSON.parse(userInfo.rows[0].location).lng, 'K')),
+                profilPicture: userInfo.rows[0].profil_picture,
+                isLiked: userIsLiked.rowCount === 0 ? false : true
+              });
+            }
+          }
+        }
+        
+        return result;
+      } catch (e) {
+        console.log(e);
+        return e;
+      }
+    },
   },
 
 
