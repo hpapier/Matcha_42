@@ -230,6 +230,22 @@ const typeDefs = `
     isMatched: Boolean
   }
 
+  type UserHistory {
+    likeNumber: Int
+    visiteNumber: Int
+    matchNumber: Int
+  }
+
+  type UserLikeInfo {
+    id: Int
+    popularityScore: Int
+    username: String
+    age: Int
+    distance: Int
+    profilPicture: String
+    isLiked: Boolean
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -237,13 +253,14 @@ const typeDefs = `
     userInformations: UserInformations
     userInformationsBox: UserInformations
     getInterests: [Interests]
-    userNotif: [Notification]
+    userHistory: UserHistory
     getUserPreference: UserPreferences
     getListOfUser: [UserSimpleList]
     getUserProfilInformation(userId: Int!): UserProfilInfo
     getVisitorList: [VisitorList]
     getUserNotification: [UserNotification]
     getCountNotification: NotifCount
+    getUserLike: [UserLikeInfo]
   }
   
   type Mutation {
@@ -421,23 +438,23 @@ const resolvers = {
       }
     },
 
-    userNotif: async (parent, args, ctx) => {
-      try {
-        const user = await verifyUserToken(ctx.headers);
-        if (!user)
-          return new Error('Not auth');
+    // userNotif: async (parent, args, ctx) => {
+    //   try {
+    //     const user = await verifyUserToken(ctx.headers);
+    //     if (!user)
+    //       return new Error('Not auth');
 
-        const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
-        if (notif.rowCount === 0)
-          return [];
-        else {
-          const arrayOfNotif = notif.rows.map(item => ({ id: item.id, isViewed: item.is_viewed, action: item.action, userId: item.user_id, fromUserId: item.from }));
-          return arrayOfNotif;
-        }
-      } catch (e) {
-        return new Error(e.message);
-      }
-    },
+    //     const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
+    //     if (notif.rowCount === 0)
+    //       return [];
+    //     else {
+    //       const arrayOfNotif = notif.rows.map(item => ({ id: item.id, isViewed: item.is_viewed, action: item.action, userId: item.user_id, fromUserId: item.from }));
+    //       return arrayOfNotif;
+    //     }
+    //   } catch (e) {
+    //     return new Error(e.message);
+    //   }
+    // },
 
     getUserPreference: async (parent, args, ctx) => {
       try {
@@ -530,10 +547,15 @@ const resolvers = {
         if (profilBlock.rowCount > 0)
           return new Error('Profil blocked');
 
+        const visiteAlreadyExist = await client.query('SELECT * FROM user_visite WHERE (from_user, to_user) = ($1, $2)', [user.id, userId]);
+        if (visiteAlreadyExist.rowCount === 0)
+          await client.query('INSERT INTO user_visite (from_user, to_user, creation_date) VALUES ($1, $2, $3)', [user.id, userId, new Date()]);
+        else
+          await client.query('UPDATE user_visite SET creation_date = $1 WHERE from_user = $2 AND to_user = $3', [new Date(), user.id, userId]);
+        
         if (profilBlock.rowCount === 0)
           await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['visite', userId, user.id, new Date()]);
         
-        await client.query('INSERT INTO user_visite (from_user, to_user, creation_date) VALUES ($1, $2, $3)', [user.id, userId, new Date()]);
         pubSub.publish('notificationCount');
         
         let actionsArray = [];
@@ -674,6 +696,95 @@ const resolvers = {
         const notifs = await client.query('SELECT * FROM notification WHERE user_id = $1 AND is_viewed = $2', [user.id, 0]);
         return { count: notifs.rowCount };
       } catch (e) {
+        return e;
+      }
+    },
+
+    userHistory: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const like = await client.query('SELECT COUNT(*) FROM user_like WHERE from_user = $1', [user.id]);
+        const visite = await client.query('SELECT COUNT(*) FROM user_visite WHERE from_user = $1', [user.id]);
+        const match = await client.query('SELECT COUNT(*) FROM match WHERE from_user = $1 OR to_user = $1', [user.id]);
+        return { likeNumber: like.rows[0].count, visiteNumber: visite.rows[0].count, matchNumber: match.rows[0].count };
+      } catch (e) {
+        console.log(e);
+        return e;
+      }
+    },
+
+    getUserLike: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const likeList = await client.query('SELECT * FROM user_like WHERE from_user = $1', [user.id]);
+        if (likeList.rowCount === 0)
+          return [];
+
+        let result = [];
+        for (let like of likeList.rows) {
+          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE to_user_id = $1 AND from_user_id = $2', [user.id, like.to_user]);
+          if (isBlocked.rowCount === 0) {
+            const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [like.to_user, 1]);
+            if (userInfo.rowCount === 1) {
+              result.push({
+                id: userInfo.rows[0].id,
+                popularityScore: userInfo.rows[0].popularity_score,
+                username: userInfo.rows[0].username,
+                age: getAge(userInfo.rows[0].birth_date),
+                distance: parseInt(getDistance(JSON.parse(user.location).lat, JSON.parse(user.location).lng, JSON.parse(userInfo.rows[0].location).lat, JSON.parse(userInfo.rows[0].location).lng, 'K')),
+                profilPicture: userInfo.rows[0].profil_picture,
+                isLiked: true
+              });
+            }
+          }
+        }
+        
+        return result;
+        // let userList = null;
+        // if (user.sexual_orientation === 'man' || user.sexual_orientation === 'woman')
+        //   userList = await client.query('SELECT * FROM user_info WHERE genre = $1 AND iscomplete = $2', [user.sexual_orientation, 1]);
+        // else if (user.sexual_orientation === 'bisexual')
+        //   userList = await client.query('SELECT * FROM user_info WHERE iscomplete = $1', [1]);
+
+        // let trimedVisitor = [];
+        // for (let visitor of userList.rows) {
+        //   let isVisitor = false;
+        //   visiteList.rows.forEach(item => {
+        //     if (parseInt(item.from_user) ===  visitor.id)
+        //       isVisitor = true;
+        //   });
+
+        //   if (isVisitor) {
+        //     const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [visitor.id, user.id]);
+        //     if (isBlocked.rowCount === 0) {
+        //       const isLikedVisitor = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, visitor.id]);
+        //       const visitorLat = JSON.parse(visitor.location).lat;
+        //       const visitorLng = JSON.parse(visitor.location).lng;
+        //       const userLat = JSON.parse(user.location).lat;
+        //       const userLng = JSON.parse(user.location).lng;
+        //       const dist = getDistance(userLat, userLng, visitorLat, visitorLng, 'K');
+        //       trimedVisitor.push({
+        //         id: visitor.id,
+        //         popularityScore: visitor.popularity_score,
+        //         username: visitor.username,
+        //         age: getAge(visitor.birth_date),
+        //         distance: parseInt(dist),
+        //         profilPicture: visitor.profil_picture,
+        //         isLiked: isLikedVisitor.rowCount === 0 ? false : true
+        //       });
+        //     }
+        //   }
+        // }
+
+        return trimedVisitor;
+      } catch (e) {
+        console.log(e);
         return e;
       }
     }

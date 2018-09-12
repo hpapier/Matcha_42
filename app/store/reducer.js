@@ -32,7 +32,8 @@ import {
   CHANGE_BLOCK_STATUS_FOR_PROFIL_USER,
   UPDATE_ORDER,
   SAVE_NOTIF_LIST,
-  CHANGE_MATCH_STATUS_USER_PROFIL
+  CHANGE_MATCH_STATUS_USER_PROFIL,
+  SAVE_USER_LIKE_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -297,6 +298,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentUserProfilInfo: { ...state.currentUserProfilInfo, isMatched: action.payload }
+      };
+    case SAVE_USER_LIKE_LIST:
+      return {
+        ...state,
+        userLikeList: action.payload
       }
     default:
       return state;

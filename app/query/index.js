@@ -108,9 +108,10 @@ export const USER_BOX_QUERY = gql`
       bio
     }
 
-    userNotif {
-      id
-      action
+    userHistory {
+      likeNumber
+      visiteNumber
+      matchNumber
     }
   }
 `;
@@ -395,6 +396,20 @@ export const FETCH_NOTIF_COUNT_QUERY = gql`
   {
     getCountNotification {
       count
+    }
+  }
+`;
+
+export const USER_LIKE_QUERY = gql`
+  {
+    getUserLike {
+      id
+      popularityScore
+      username
+      age
+      distance
+      profilPicture
+      isLiked
     }
   }
 `;

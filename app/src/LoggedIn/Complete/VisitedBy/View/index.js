@@ -122,7 +122,11 @@ class View extends Component {
               <div id='lgi-complete-visitedby-view-empty'>Aucune personnes ont visité votre profil</div> :
               <div id='lgi-complete-visitedby-view-box'>
               {
-                visitorList.map(item => (
+                visitorList.map((item, index) => {
+                  if (index >= limit)
+                    return;
+
+                  return (
                   <div className='lgi-suggestion-list-item' key={item.id * Math.random()} onClick={(e) => this.getUserProfilMech(item, e)}>
                     <div className='lgi-suggestion-list-item-img'>
                       <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
@@ -145,7 +149,8 @@ class View extends Component {
                       <div className='lgi-suggestion-list-item-content-text'>{item.age} ans - {item.distance} km</div>
                     </div>
                   </div>
-                ))
+                  );
+                })
               }
               {
                 visitorList.length - limit > 0 ?

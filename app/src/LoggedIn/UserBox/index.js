@@ -1,12 +1,15 @@
 // Modules imports.
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 
 // Local import.
 import './index.sass';
 import { USER_BOX_QUERY } from '../../../query';
 import cupBrownIcon from '../../../assets/cup-brown.svg';
+import { changeStatusView } from '../../../store/action/synchronous';
 
 
 // UserBox Component
@@ -17,6 +20,20 @@ class UserBox extends Component {
     return word;
   }
 
+  getUserLikeView = () => {
+    if (this.props.location.pathname !== '/')
+      this.props.history.push('/');
+    this.props.changeStatusView('like');
+  }
+
+  getUserVisiteView = () => {
+
+  }
+
+  getUserMatchView = () => {
+
+  }
+
   render() {
     return (
       <Query
@@ -25,20 +42,7 @@ class UserBox extends Component {
       >
         {
           ({ loading, error, data }) => {
-            let likesArray = [];
-            let visiteArray = [];
-            let matchArray = [];
-            if (!loading) {
-              data.userNotif.forEach(item => {
-                if (item.action === 'like')
-                  likesArray.push(item);
-                else if (item.action === 'visite')
-                  visiteArray.push(item);
-                else if (item.action === 'match')
-                  matchArray.push(item);
-                return;
-              })
-            }
+            const { statusView } = this.props;
             return (
               <div id='lgi-user-box'>
                 {
@@ -78,18 +82,18 @@ class UserBox extends Component {
 
                 <div id='lgi-user-link'>
                   <div className='lgi-user-box-link-box'>
-                    <div className='lgi-user-box-link-box-title'>Likes</div>
-                    <div className='lgi-user-box-link-box-content'>{likesArray.length}</div>
+                    <div className={`lgi-user-box-link-box-title ${statusView === 'like' ? '-active-link' : ''}`} onClick={this.getUserLikeView}>Likes</div>
+                    <div className='lgi-user-box-link-box-content'>{data.userHistory ? data.userHistory.likeNumber : 0}</div>
                   </div>
 
                   <div className='lgi-user-box-link-box'>
-                    <div className='lgi-user-box-link-box-title'>Visites</div>
-                    <div className='lgi-user-box-link-box-content'>{visiteArray.length}</div>
+                    <div className={`lgi-user-box-link-box-title ${statusView === 'visite' ? '-active-link' : ''}`} onClick={this.getUserVisiteView}>Visites</div>
+                    <div className='lgi-user-box-link-box-content'>{data.userHistory ? data.userHistory.visiteNumber : 0}</div>
                   </div>
 
                   <div className='lgi-user-box-link-box'>
-                    <div className='lgi-user-box-link-box-title'>Matches</div>
-                    <div className='lgi-user-box-link-box-content'>{matchArray.length}</div>
+                    <div className={`lgi-user-box-link-box-title ${statusView === 'match' ? '-active-link' : ''}`} onClick={this.getUserMatchView}>Matches</div>
+                    <div className='lgi-user-box-link-box-content'>{data.userHistory ? data.userHistory.matchNumber : 0}</div>
                   </div>
                 </div>
 
@@ -103,5 +107,15 @@ class UserBox extends Component {
 };
 
 
+// Redux connection.
+const mapStateToProps = state => ({
+  statusView: state.homepage.statusView
+});
+
+const mapDispatchToProps = dispatch => ({
+  changeStatusView: data => dispatch(changeStatusView(data))
+});
+
+
 // Export.
-export default UserBox;
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserBox));
