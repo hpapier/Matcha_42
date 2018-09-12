@@ -9,7 +9,7 @@ import { withRouter } from 'react-router-dom';
 import './index.sass';
 import matchIcon from '../../../../../assets/match.svg';
 import closeIcon from '../../../../../assets/close-white.svg';
-import { cleanUserProfil, clearStore, changeLikeStatusOfUserProfil, changeBlockStatusForProfilUser } from '../../../../../store/action/synchronous';
+import { cleanUserProfil, clearStore, changeLikeStatusOfUserProfil, changeBlockStatusForProfilUser, changeMatchStatusOfUserProfil } from '../../../../../store/action/synchronous';
 import likeWhiteIcon from '../../../../../assets/heart-white.svg';
 import likeBrownIcon from '../../../../../assets/heart-brown.svg';
 import scoreWhiteIcon from '../../../../../assets/cup-white.svg';
@@ -51,7 +51,6 @@ class ProfilBody extends Component {
       this.setState({ blockLoading: true });
 
     if (!isBlocked) {
-      console.log('BLOCK USER');
       client.mutate({
         mutation: BLOCK_USER_MUTATION,
         variables: { userId: id }
@@ -75,7 +74,6 @@ class ProfilBody extends Component {
           this.setState({ blockLoading: false });
       });
     } else {
-      console.log('UNBLOCK USER');
       client.mutate({
         mutation: UNBLOCK_USER_MUTATION,
         variables: { userId: id }
@@ -111,8 +109,10 @@ class ProfilBody extends Component {
         variables: { userId: id }
       })
       .then(r => {
-        if (!this._unmount)
+        if (!this._unmount) {
           this.props.changeLikeStatusOfUserProfil();
+          this.props.changeMatchStatusOfUserProfil(r.data.likeUser.isMatched);
+        }
       })
       .catch(error => {
         if (error.graphQLErrors) {
@@ -129,8 +129,10 @@ class ProfilBody extends Component {
         variables: { userId: id }
       })
       .then(r => {
-        if (!this._unmount)
+        if (!this._unmount) {
           this.props.changeLikeStatusOfUserProfil();
+          this.props.changeMatchStatusOfUserProfil(r.data.unlikeUser.isMatched);
+        }
       })
       .catch(error => {
         if (error.graphQLErrors[0].message === 'Not auth') {
@@ -272,7 +274,8 @@ const mapDispatchToProps = dispatch => ({
   cleanUserProfil: () => dispatch(cleanUserProfil()),
   clearStore: () => dispatch(clearStore()),
   changeLikeStatusOfUserProfil: () => dispatch(changeLikeStatusOfUserProfil()),
-  changeBlockStatusForProfilUser: () => dispatch(changeBlockStatusForProfilUser())
+  changeBlockStatusForProfilUser: () => dispatch(changeBlockStatusForProfilUser()),
+  changeMatchStatusOfUserProfil: data => dispatch(changeMatchStatusOfUserProfil(data))
 })
 
 

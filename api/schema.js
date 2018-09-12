@@ -226,6 +226,10 @@ const typeDefs = `
     count: Int
   }
 
+  type LikeType {
+    isMatched: Boolean
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -264,8 +268,8 @@ const typeDefs = `
     removeUserImage(imgId: Int!, name: String!): [UserImages]
     updateProfilImg(imgId: Int!, name: String!, imgPath: String!): ProfilImg
     updateUserPreferences(ageStart: Int!, ageEnd: Int!, scoreStart: Int!, scoreEnd: Int!, location: Int!, tags: String!): UserPreferences
-    likeUser(userId: Int!): Boolean
-    unlikeUser(userId: Int!): Boolean
+    likeUser(userId: Int!): LikeType
+    unlikeUser(userId: Int!): LikeType
     blockUser(userId: Int!): Boolean
     unblockUser(userId: Int!): Boolean
     reportUser(userId: Int!): Boolean
@@ -1258,7 +1262,8 @@ const resolvers = {
 
         pubSub.publish('notificationCount');
 
-        return true;
+        const recheckMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+        return { isMatched: recheckMatch.rowCount === 0 ? false : true };
       } catch (e) {
         return e;
       }
@@ -1284,14 +1289,19 @@ const resolvers = {
 
         if (isBlocked.rowCount === 0) {
           await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unlike', userId, user.id, new Date()]);
+
           if (checkMatch.rowCount > 0)
-            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', userId, user.id, new Date()]);
+            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', userId, user.id, new Date()]);   
         }
-        
+
         if (checkMatch.rowCount > 0)
-          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', user.id, userId, new Date()]);
+            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', user.id, userId, new Date()]);
+        
         pubSub.publish('notificationCount');
-        return true;
+
+
+        const recheckMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+        return { isMatched: recheckMatch.rowCount === 0 ? false : true };
       } catch (e) {
         return e;
       }
