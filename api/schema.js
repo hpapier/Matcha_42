@@ -222,6 +222,10 @@ const typeDefs = `
     date: String
   }
 
+  type NotifCount {
+    count: Int
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -235,6 +239,7 @@ const typeDefs = `
     getUserProfilInformation(userId: Int!): UserProfilInfo
     getVisitorList: [VisitorList]
     getUserNotification: [UserNotification]
+    getCountNotification: NotifCount
   }
   
   type Mutation {
@@ -266,11 +271,15 @@ const typeDefs = `
     reportUser(userId: Int!): Boolean
   }
 
+  type Subscription {
+    notificationSub(token: String): NotifCount
+  }
 `;
 
 
 // type Subscription {
 //   postAdded: Post
+    // notificationSub
 // }
 //     signUp(username: !String, email: !String, lastname: !String, firstname: !String, birthDate: !Date, genre: !String, interest: !String, password: !String): AuthStatus
 
@@ -521,6 +530,7 @@ const resolvers = {
           await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['visite', userId, user.id, new Date()]);
         
         await client.query('INSERT INTO user_visite (from_user, to_user, creation_date) VALUES ($1, $2, $3)', [user.id, userId, new Date()]);
+        pubSub.publish('notificationCount');
         
         let actionsArray = [];
 
@@ -640,6 +650,19 @@ const resolvers = {
         }
 
         return notifArray;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    getCountNotification: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const notifs = await client.query('SELECT * FROM notification WHERE user_id = $1 AND is_viewed = $2', [user.id, 0]);
+        return { count: notifs.rowCount };
       } catch (e) {
         return e;
       }
@@ -1295,11 +1318,26 @@ const resolvers = {
     // }
   },
 
-  // Subscription: {
-  //   postAdded: {
-  //     subscribe: () => pubSub.asyncIterator('postAdded')
-  //   }
-  // }
+  Subscription: {
+    // postAdded: {
+    //   subscribe: () => pubSub.asyncIterator('postAdded')
+    // }
+    notificationSub: {
+      resolve: async (_, { token }, ctx) => {
+        try {
+          const user = await verifyUserToken({ authorization: `Bearer ${token}`});
+          if (!user)
+            return new Error('Not auth');
+  
+          const notifs = await client.query('SELECT * FROM notification WHERE user_id = $1 AND is_viewed = $2', [user.id, 0]);
+          return { count: notifs.rowCount };
+        } catch (e) {
+          return e;
+        }
+      },
+      subscribe: () => pubSub.asyncIterator('notificationCount')
+    }
+  }
 };
 
 const schema = makeExecutableSchema({

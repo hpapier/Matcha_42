@@ -378,3 +378,19 @@ export const NOTIFICATION_COMPONENT_QUERY = gql`
     }
   }
 `;
+
+export const NOTIFICATION_SUBSCRIPTION = gql`
+  subscription notificationSub($token: String!){
+    notificationSub(token: $token) {
+      count
+    }
+  }
+`;
+
+export const FETCH_NOTIF_COUNT_QUERY = gql`
+  {
+    getCountNotification {
+      count
+    }
+  }
+`;

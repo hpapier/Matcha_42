@@ -12,6 +12,7 @@ import { ApolloLink, split } from "apollo-link";
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { setContext } from 'apollo-link-context';
+// import { applyMiddleware } from 'subscriptions-transport-ws';
 import './index.scss';
 
 const LinkHttp = new HttpLink({
@@ -21,9 +22,21 @@ const LinkHttp = new HttpLink({
 const LinkWs = new WebSocketLink({
   uri: 'ws://localhost:4000/subscriptions',
   options: {
-    reconnect: true
+    reconnect: true,
+    // connectionParams: () => ({
+    //   authorization: token ? `Bearer ${token}` : ''
+    // })
   }
 });
+
+// const subscriptionMiddleware = {
+//   applyMiddleware (options, next) {
+//     options.auth = { someKey: "lol" }
+//     next()
+//   }
+// }
+
+// LinkWs.subscriptionClient.use([subscriptionMiddleware])
 
 const link = split(
   ({ query }) => {
