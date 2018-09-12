@@ -27,11 +27,15 @@ class UserBox extends Component {
   }
 
   getUserVisiteView = () => {
-
+    if (this.props.location.pathname !== '/')
+      this.props.history.push('/');
+    this.props.changeStatusView('visite');
   }
 
   getUserMatchView = () => {
-
+    if (this.props.location.pathname !== '/')
+      this.props.history.push('/');
+    this.props.changeStatusView('match');
   }
 
   render() {

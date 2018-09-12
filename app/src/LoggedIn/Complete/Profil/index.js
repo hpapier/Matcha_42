@@ -41,7 +41,7 @@ class Profil extends Component {
             return <div id='lgi-complete-profil-loading'><div id='lgi-complete-profil-loading-animation'></div></div>;
 
           if (error) {
-            if (error.graphQLErrors[0]) {
+            if (error.graphQLErrors && error.graphQLErrors[0]) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
               else if (error.graphQLErrors[0].message === 'Profil blocked')
@@ -52,15 +52,14 @@ class Profil extends Component {
                   </div>
                 );
             }
-            console.log(error);
-            console.log('IN ERROR');
+
             if (error)
-            return (
-              <div className='lgi-complete-profil-error'>
-                <div className='lgi-complete-profil-error-text'>Oups! Une erreur est survenu..</div>
-                <div className='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
-              </div>
-            );
+              return (
+                <div className='lgi-complete-profil-error'>
+                  <div className='lgi-complete-profil-error-text'>Oups! Une erreur est survenu..</div>
+                  <div className='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
+                </div>
+              );
           }
 
           return (

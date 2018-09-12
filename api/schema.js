@@ -746,43 +746,6 @@ const resolvers = {
         }
         
         return result;
-        // let userList = null;
-        // if (user.sexual_orientation === 'man' || user.sexual_orientation === 'woman')
-        //   userList = await client.query('SELECT * FROM user_info WHERE genre = $1 AND iscomplete = $2', [user.sexual_orientation, 1]);
-        // else if (user.sexual_orientation === 'bisexual')
-        //   userList = await client.query('SELECT * FROM user_info WHERE iscomplete = $1', [1]);
-
-        // let trimedVisitor = [];
-        // for (let visitor of userList.rows) {
-        //   let isVisitor = false;
-        //   visiteList.rows.forEach(item => {
-        //     if (parseInt(item.from_user) ===  visitor.id)
-        //       isVisitor = true;
-        //   });
-
-        //   if (isVisitor) {
-        //     const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [visitor.id, user.id]);
-        //     if (isBlocked.rowCount === 0) {
-        //       const isLikedVisitor = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, visitor.id]);
-        //       const visitorLat = JSON.parse(visitor.location).lat;
-        //       const visitorLng = JSON.parse(visitor.location).lng;
-        //       const userLat = JSON.parse(user.location).lat;
-        //       const userLng = JSON.parse(user.location).lng;
-        //       const dist = getDistance(userLat, userLng, visitorLat, visitorLng, 'K');
-        //       trimedVisitor.push({
-        //         id: visitor.id,
-        //         popularityScore: visitor.popularity_score,
-        //         username: visitor.username,
-        //         age: getAge(visitor.birth_date),
-        //         distance: parseInt(dist),
-        //         profilPicture: visitor.profil_picture,
-        //         isLiked: isLikedVisitor.rowCount === 0 ? false : true
-        //       });
-        //     }
-        //   }
-        // }
-
-        return trimedVisitor;
       } catch (e) {
         console.log(e);
         return e;

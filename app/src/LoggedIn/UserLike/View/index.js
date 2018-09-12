@@ -118,9 +118,9 @@ class View extends Component {
         client => {
           this.client = client;
           return (
-            <div>
+            <div id='lgi-complete-user-like'>
               <div id='lgi-complete-user-like-view-title'>
-                <div id='lgi-complete-user-like-view-title-text'>Vos likes</div>
+                <div id='lgi-complete-user-like-view-title-text'>Tous vos likes</div>
                 <div id='lgi-complete-user-like-view-title-back-btn' onClick={() => this.props.changeStatusView('suggestion')}>
                   <div id='lgi-complete-user-like-view-title-back-btn-text'>Retour</div>
                   <img id='lgi-complete-user-like-view-title-back-btn-icon' src={closeWhiteIcon} alt='back-icon' />
