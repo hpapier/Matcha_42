@@ -151,9 +151,10 @@
 
 /*
  CREATE TABLE match (
-   id           SERIAL        PRIMARY KEY,
-   from_user    VARCHAR(255)  NOT NULL,
-   to_user      VARCHAR(255)  NOT NULL
+   id             SERIAL        PRIMARY KEY,
+   from_user      VARCHAR(255)  NOT NULL,
+   to_user        VARCHAR(255)  NOT NULL,
+   creation_date  TIMESTAMP   NOT NULL
  );
 */
 

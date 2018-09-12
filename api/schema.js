@@ -1216,19 +1216,47 @@ const resolvers = {
 
     likeUser: async (parent, { userId }, ctx) => {
       try {
+
+        // Check header and get information about the user
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
 
+        // Check if like exist
         const checkLikeExist = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, userId]);
         if (checkLikeExist.rowCount > 0)
           return new Error('Already liked');
 
+        // Create the like for the user
         await client.query('INSERT INTO user_like (from_user, to_user) VALUES ($1, $2)', [user.id, userId]);
 
+        // Check if the user block this user account
         const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [userId, user.id]);
-        if (isBlocked.rowCount === 0)
-          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['like', userId, user.id, new Date()]);
+
+        // Check if the user to like already like this user
+        const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2)', [userId, user.id]);
+        if (checkIfLiked.rowCount === 1) {
+
+          // Check if a match exist, if it exist update it and if not exist create the match
+          const checkMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+          if (checkMatch.rowCount > 0)
+            await client.query('UPDATE match SET creation_date WHERE (from_user, to_user) = ($2, $3) OR (from_user, to_user) = ($3, $2)', [new Date(), user.id, userId]);
+          else
+            await client.query('INSERT INTO match (from_user, to_user, creation_date) VALUES ($1, $2, $3)', [user.id, userId, new Date()]);
+
+          // Create the notification for like and match
+          if (isBlocked.rowCount === 0) {
+            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['like-back', userId, user.id, new Date()]);
+            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['match', userId, user.id, new Date()]);
+          }
+
+          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['match', user.id, userId, new Date()]);
+        } else {
+          if (isBlocked.rowCount === 0)
+            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['like', userId, user.id, new Date()]);
+        }
+
+        pubSub.publish('notificationCount');
 
         return true;
       } catch (e) {
@@ -1249,9 +1277,20 @@ const resolvers = {
         await client.query('DELETE FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, userId]);
 
         const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [userId, user.id]);
-        if (isBlocked.rowCount === 0)
-          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unlike', userId, user.id, new Date()]);
 
+        const checkMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+        if (checkMatch.rowCount > 0)
+          await client.query('DELETE FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
+
+        if (isBlocked.rowCount === 0) {
+          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unlike', userId, user.id, new Date()]);
+          if (checkMatch.rowCount > 0)
+            await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', userId, user.id, new Date()]);
+        }
+        
+        if (checkMatch.rowCount > 0)
+          await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', user.id, userId, new Date()]);
+        pubSub.publish('notificationCount');
         return true;
       } catch (e) {
         return e;

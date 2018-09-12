@@ -16,10 +16,44 @@ class View extends Component {
           <div className='lgi-notification-view-box-item-content-text-username'>{username}</div> a visité votre profil
         </div>
       );
-    } else if (action === 'like') {
+    }
+    
+    if (action === 'like') {
       return (
         <div className='lgi-notification-view-box-item-content-text'>
           <div className='lgi-notification-view-box-item-content-text-username'>{username}</div> vous a liké
+        </div>
+      );
+    }
+    
+    if (action === 'unlike') {
+      return (
+        <div className='lgi-notification-view-box-item-content-text'>
+          <div className='lgi-notification-view-box-item-content-text-username'>{username}</div> ne vous like plus
+        </div>
+      );
+    }
+    
+    if (action === 'like-back') {
+      return (
+        <div className='lgi-notification-view-box-item-content-text'>
+          <div className='lgi-notification-view-box-item-content-text-username'>{username}</div> vous a également liké
+        </div>
+      );
+    }
+    
+    if (action === 'match') {
+      return (
+        <div className='lgi-notification-view-box-item-content-text'>
+          Nouveau match avec <div className='lgi-notification-view-box-item-content-text-username-match'>{username}</div>
+        </div>
+      );
+    }
+
+    if (action === 'unmatch') {
+      return (
+        <div className='lgi-notification-view-box-item-content-text'>
+          <div className='lgi-notification-view-box-item-content-text-username'>{username}</div> et vous ne matchez plus
         </div>
       );
     }
@@ -33,7 +67,7 @@ class View extends Component {
     const timestamp = Math.abs(new Date() - notifDate);
 
     if (timestamp < 86400000) {
-      const h = ((new Date(timestamp).getHours() - 1) === 0) ? '' : ((new Date(timestamp).getHours() - 1) < 10 ) ? '0' + (new Date(timestamp).getHours() - 1) : (new Date(timestamp).getHours() - 1);
+      const h = ((new Date(timestamp).getHours() - 1) === 0) ? '' : new Date(timestamp).getHours() - 1;
       const m = new Date(timestamp).getMinutes();
 
       if (!h) {
