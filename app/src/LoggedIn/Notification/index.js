@@ -21,7 +21,7 @@ class Notification extends Component {
 
   render() {
     return (
-      <Query query={NOTIFICATION_COMPONENT_QUERY} onCompleted={data => this.onCompleteHandler(data)} fetchPolicy='cache-and-network'>
+      <Query query={NOTIFICATION_COMPONENT_QUERY} onCompleted={data => this.onCompleteHandler(data)} pollInterval={500}>
       {
         ({ loading, error }) => {
           if (loading)

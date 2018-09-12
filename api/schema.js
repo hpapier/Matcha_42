@@ -569,6 +569,7 @@ const resolvers = {
         };
         
       } catch(e) {
+        console.log(e);
         return e;
       }
     },
@@ -637,6 +638,8 @@ const resolvers = {
         for (let item of notif.rows) {
           const userInfo = await client.query('SELECT id, username, profil_picture, genre FROM user_info WHERE id = $1 AND iscomplete = $2', [item.from_user, 1]);
           if (userInfo.rowCount === 1) {
+            if (item.is_viewed === 0)
+              await client.query('UPDATE notification SET is_viewed = $1 WHERE id = $2', [1, item.id]);
             notifArray.push({
               id: item.id,
               fromUserId: userInfo.rows[0].id,
@@ -648,6 +651,9 @@ const resolvers = {
             });
           }
         }
+
+        notifArray.sort((a, b) => b.date - a.date);
+        pubSub.publish('notificationCount');
 
         return notifArray;
       } catch (e) {
@@ -789,7 +795,7 @@ const resolvers = {
 
         const location = await getLocation.json();
         const locationJson = JSON.stringify({ lat: location.latitude, lng: location.longitude, formatedName: `${location.country_name}, ${location.city}, ${location.zip}` });
-        const mutationClient = await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [locationJson, user.id]);
+        await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [locationJson, user.id]);
         return true;
       } catch (e) {
         console.log(e);
@@ -1309,19 +1315,9 @@ const resolvers = {
         return e;
       }
     }
-
-
-    // addPost: async (parent, { content, author }, ctx) => {
-    //   const res = await client.query('INSERT INTO post (content, author) VALUES ($1, $2) RETURNING *', [content, author]);
-    //   pubSub.publish('postAdded', { postAdded: { id: res.rows[0].id, content: res.rows[0].content, author: res.rows[0].author }});
-    //   return { id: res.rows[0].id, content: res.rows[0].content, author: res.rows[0].author };
-    // }
   },
 
   Subscription: {
-    // postAdded: {
-    //   subscribe: () => pubSub.asyncIterator('postAdded')
-    // }
     notificationSub: {
       resolve: async (_, { token }, ctx) => {
         try {

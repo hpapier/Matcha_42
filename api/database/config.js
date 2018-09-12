@@ -125,7 +125,7 @@
     action        VARCHAR(255)  NOT NULL,
     user_id       VARCHAR(255)  NOT NULL,
     from_user     VARCHAR(255)  NOT NULL,
-    creation_date DATE          NOT NULL
+    creation_date TIMESTAMP     NOT NULL
   );
 */
 
