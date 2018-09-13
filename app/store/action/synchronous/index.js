@@ -36,7 +36,8 @@ import {
   SAVE_USER_VISITE_LIST,
   UPDATE_LIKE_STATUS_USER_VISITE_LIST,
   SAVE_USER_MATCH_LIST,
-  SAVE_LIKER_LIST
+  SAVE_LIKER_LIST,
+  SAVE_ROOM_LIST
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -222,5 +223,10 @@ export const saveUserMatchList = data => ({
 
 export const saveLikerList = data => ({
   type: SAVE_LIKER_LIST,
+  payload: data
+});
+
+export const saveRoomList = data => ({
+  type: SAVE_ROOM_LIST,
   payload: data
 });

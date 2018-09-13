@@ -8,6 +8,7 @@ import Navbar from '../../LoggedIn/Navbar';
 import Homepage from '../../LoggedIn/Homepage';
 import Profil from '../../LoggedIn/Profil';
 import Notification from '../../LoggedIn/Notification';
+import Message from '../../LoggedIn/Message';
 
 
 // LoggedIn Router Component.
@@ -19,8 +20,8 @@ const LoggedIn = props => {
         <Switch>
           <Route exact path='/' component={Homepage} />
           <Route exact path='/notification' component={Notification} />
-          <Route exact path='/message' component={() => <div>messages</div>} />
-          <Route exact path='/profil' component={() => <Profil />} />
+          <Route exact path='/message' component={Message} />
+          <Route exact path='/profil' component={Profil} />
         </Switch>
       </div>
     </Router>

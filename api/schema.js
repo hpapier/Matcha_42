@@ -247,6 +247,14 @@ const typeDefs = `
     tags: [UserInterests]
   }
 
+  type RoomList {
+    id: Int
+    userProfilPicture: String
+    userProfilUsername: String
+    lastMessage: String
+    lastMessageDate: String
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -266,6 +274,7 @@ const typeDefs = `
     getUserMatch: [UserLikeVisiteMatchInfo]
     getLikerList: [VisitorList]
     getCountMessage: NotifCount
+    getUserRoom: [RoomList]
   }
   
   type Mutation {
@@ -896,6 +905,43 @@ const resolvers = {
         return e;
       }
     },
+
+    getUserRoom: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const roomList = await client.query('SELECT * FROM room WHERE user_id_one = $1 OR user_id_two = $1', [user.id]);
+
+        let result = [];
+        for (let room of roomList.rows) {
+          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [room.user_id_one, room.user_id_two]);
+          if (isBlocked.rowCount === 0) {
+            let partnerId = room.user_id_one;
+            if (user.id = room.user_id_one)
+              partnerId = room.user_id_two;
+
+            const partnerInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [partnerId, 1]);
+            if (partnerInfo.rowCount === 1) {
+              const lastMsg = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date DESC LIMIT 1', [room.id]);
+              result.push({
+                id: room.id,
+                userProfilPicture: partnerInfo.profil_picture,
+                userProfilUsername: partnerInfo.username,
+                lastMessage: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].content,
+                lastMessageDate: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].date
+              });
+            }
+          }
+        }
+
+        return result;
+      } catch (e) {
+        console.log(e);
+        return e;
+      }
+    }
   },
 
 

@@ -513,3 +513,45 @@ export const MESSAGE_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const MESSAGE_COMPONENT_QUERY = gql`
+  {
+    getUserRoom {
+      id
+      userProfilPicture
+      userProfilUsername
+      lastMessage
+      lastMessageDate
+    }
+
+    userInformations {
+      username
+      lastname
+      firstname
+      birthDate
+      genre
+      sexualOrientation
+      bio
+      popularityScore
+      location
+      creationDate
+      lastConnexion
+      isComplete
+      interests {
+        id
+        interestId
+      }
+      images {
+        id
+        path
+      }
+      email
+      profilPicture
+    }
+
+    getInterests {
+      id
+      name
+    }
+  }
+`;

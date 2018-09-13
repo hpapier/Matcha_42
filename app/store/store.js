@@ -41,7 +41,8 @@ const store = {
   userLikeList: [],
   userVisiteList: [],
   userMatchList: [],
-  likerList: []
+  likerList: [],
+  roomList: []
 };
 
 export default store;
