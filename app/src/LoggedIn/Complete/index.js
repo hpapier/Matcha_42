@@ -12,6 +12,7 @@ import RandomChoice from './RandomChoice';
 import Profil from './Profil';
 import VisitedBy from './VisitedBy';
 import UserLike from '../UserLike';
+import UserVisite from '../UserVisite';
 
 
 // Complete Component.
@@ -39,8 +40,8 @@ const Complete = props => {
 
       { statusView === 'profil' ? <Profil /> : null }
       { statusView === 'like' ? <UserLike /> : null }
-      {/* { statusView === 'visite' ? <UserLike /> : null }
-      { statusView === 'match' ? <UserLike /> : null } */}
+      { statusView === 'visite' ? <UserVisite /> : null }
+      {/* { statusView === 'match' ? <UserLike /> : null } */}
       </div>
     </div>
   );

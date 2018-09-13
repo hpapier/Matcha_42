@@ -7,9 +7,10 @@ import { withRouter } from 'react-router-dom';
 
 // Locals imports.
 import './index.sass';
-import { changeStatusView, getUserProfil, clearStore } from '../../../../store/action/synchronous';
+import { changeStatusView, getUserProfil, clearStore, updateLikeStatusForUserVisiteList } from '../../../../store/action/synchronous';
 import { UNLIKE_USER_MUTATION, LIKE_USER_MUTATION } from '../../../../query';
 import heartIconBrown from '../../../../assets/heart-brown.svg';
+import heartIcon from '../../../../assets/heart-white.svg';
 import scoreIcon from '../../../../assets/popScore.svg';
 import linedArrowBtm from '../../../../assets/lined-bottom-arrow.svg';
 import closeWhiteIcon from '../../../../assets/close-white.svg';
@@ -65,7 +66,7 @@ class View extends Component {
       .then(r => {
         if (!this._unmount) {
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
-          this.props.refetch();
+          this.props.updateLikeStatusForUserVisiteList(item);
         }
       })
       .catch(error => {
@@ -88,7 +89,7 @@ class View extends Component {
       .then(r => {
         if (!this._unmount) {
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
-          this.props.refetch();
+          this.props.updateLikeStatusForUserVisiteList(item);
         }
       })
       .catch(error => {
@@ -105,8 +106,8 @@ class View extends Component {
   }
 
   getListOfData = () => {
-    const { userLikeList } = this.props;
-    return userLikeList.map(item => (
+    const { userVisiteList } = this.props;
+    return userVisiteList.map(item => (
       <div className='lgi-suggestion-list-item' key={item.id * Math.random()} onClick={(e) => this.getUserProfilMech(item, e)}>
         <div className='lgi-suggestion-list-item-img'>
           <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
@@ -114,7 +115,7 @@ class View extends Component {
         <div className='lgi-suggestion-list-item-event'>
           <button className={!item.isLiked ? 'lgi-suggestion-list-item-event-like' : 'lgi-suggestion-list-item-event-like-active'} onClick={(e) => this.toggleLikeUser(item)}>
             <img
-              src={heartIconBrown}
+              src={!item.isLiked ? heartIcon : heartIconBrown}
               alt='like-icon'
               className={'lgi-suggestion-list-item-event-like-img-active'}
             />
@@ -187,13 +188,14 @@ class View extends Component {
 
 // Redux connection.
 const mapStateToProps = state => ({
-  userLikeList: state.userLikeList
+  userVisiteList: state.userVisiteList
 });
 
 const mapDispatchToProps = dispatch => ({
   changeStatusView: data => dispatch(changeStatusView(data)),
   getUserProfil: data => dispatch(getUserProfil(data)),
-  clearStore: () => dispatch(clearStore())
+  clearStore: () => dispatch(clearStore()),
+  updateLikeStatusForUserVisiteList: data => dispatch(updateLikeStatusForUserVisiteList(data))
 });
 
 

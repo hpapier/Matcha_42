@@ -34,7 +34,8 @@ import {
   SAVE_NOTIF_LIST,
   CHANGE_MATCH_STATUS_USER_PROFIL,
   SAVE_USER_LIKE_LIST,
-  SAVE_USER_VISITE_LIST
+  SAVE_USER_VISITE_LIST,
+  UPDATE_LIKE_STATUS_USER_VISITE_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -309,6 +310,17 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userVisiteList: action.payload
+      };
+    case UPDATE_LIKE_STATUS_USER_VISITE_LIST:
+      const newUserVisiteList = state.userVisiteList.map(item => {
+        if (item.id === action.payload.id)
+          return { ...item, isLiked: !action.payload.isLiked }
+        return item;
+      });
+
+      return {
+        ...state,
+        userVisiteList: newUserVisiteList
       };
     default:
       return state;
