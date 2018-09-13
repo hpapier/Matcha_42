@@ -435,3 +435,21 @@ export const USER_VISITE_QUERY = gql`
     }
   }
 `;
+
+export const USER_MATCH_QUERY = gql`
+  {
+    getUserMatch {
+      id
+      popularityScore
+      username
+      age
+      distance
+      profilPicture
+      isLiked
+      tags {
+        id
+        interestId
+      }
+    }
+  }
+`;

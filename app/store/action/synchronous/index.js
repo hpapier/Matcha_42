@@ -34,7 +34,8 @@ import {
   CHANGE_MATCH_STATUS_USER_PROFIL,
   SAVE_USER_LIKE_LIST,
   SAVE_USER_VISITE_LIST,
-  UPDATE_LIKE_STATUS_USER_VISITE_LIST
+  UPDATE_LIKE_STATUS_USER_VISITE_LIST,
+  SAVE_USER_MATCH_LIST
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -210,5 +211,10 @@ export const saveUserVisiteList = data => ({
 
 export const updateLikeStatusForUserVisiteList = data => ({
   type: UPDATE_LIKE_STATUS_USER_VISITE_LIST,
+  payload: data
+});
+
+export const saveUserMatchList = data => ({
+  type: SAVE_USER_MATCH_LIST,
   payload: data
 });

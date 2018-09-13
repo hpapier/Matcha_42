@@ -6,16 +6,16 @@ import { connect } from 'react-redux';
 
 // Locals imports.
 import './index.sass';
-import { USER_VISITE_QUERY } from '../../../query';
-import { saveUserVisiteList, getUserProfil, changeStatusView } from '../../../store/action/synchronous';
+import { USER_MATCH_QUERY } from '../../../query';
+import { saveUserMatchList, getUserProfil, changeStatusView } from '../../../store/action/synchronous';
 import View from './View';
 import Logout from '../Utils/Logout';
 
 
-// UserVisite Component.
-class UserVisite extends Component {
+// UserMatch Component.
+class UserMatch extends Component {
   onCompletedHandler = data => {
-    this.props.saveUserVisiteList(data.getUserVisite);
+    this.props.saveUserMatchList(data.getUserMatch);
   }
 
   handleErrorCallback = () => {
@@ -26,11 +26,11 @@ class UserVisite extends Component {
 
   render() {
     return (
-      <Query query={USER_VISITE_QUERY} onCompleted={data => this.onCompletedHandler(data)} fetchPolicy='cache-and-network'>
+      <Query query={USER_MATCH_QUERY} onCompleted={data => this.onCompletedHandler(data)} fetchPolicy='cache-and-network'>
       {
-        ({ loading, error }) => {
+        ({ loading, error, refetch }) => {
           if (loading)
-            return <div id='lgi-complete-user-visite-loading'><div id='lgi-complete-user-visite-loading-animation'></div></div>;
+            return <div id='lgi-complete-user-like-loading'><div id='lgi-complete-user-like-loading-animation'></div></div>;
 
           if (error) {
             if (error.graphQLErrors && error.graphQLErrors[0]) {
@@ -46,7 +46,7 @@ class UserVisite extends Component {
             );
           }
 
-          return <View />
+          return <View refetch={refetch} />
         }
       }
       </Query>
@@ -57,11 +57,11 @@ class UserVisite extends Component {
 
 // Redux connection.
 const mapDispatchToProps = dispatch => ({
-  saveUserVisiteList: data => dispatch(saveUserVisiteList(data)),
+  saveUserMatchList: data => dispatch(saveUserMatchList(data)),
   getUserProfil: data => dispatch(getUserProfil(data)),
   changeStatusView: data => dispatch(changeStatusView(data))
 });
 
 
 // Export.
-export default connect(null, mapDispatchToProps)(UserVisite);
+export default connect(null, mapDispatchToProps)(UserMatch);

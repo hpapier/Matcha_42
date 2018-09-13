@@ -263,6 +263,7 @@ const typeDefs = `
     getCountNotification: NotifCount
     getUserLike: [UserLikeVisiteMatchInfo]
     getUserVisite: [UserLikeVisiteMatchInfo]
+    getUserMatch: [UserLikeVisiteMatchInfo]
   }
   
   type Mutation {
@@ -794,6 +795,49 @@ const resolvers = {
         return e;
       }
     },
+
+    getUserMatch: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const matchList = await client.query('SELECT * FROM match WHERE from_user = $1 OR to_user = $1', [user.id]);
+        if (matchList.rowCount === 0)
+          return [];
+
+        let result = [];
+        for (let match of matchList.rows) {
+          let matchId = match.from_user;
+          if (parseInt(match.from_user) === parseInt(user.id))
+            matchId = match.to_user;
+
+          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE to_user_id = $1 AND from_user_id = $2', [user.id, matchId]);
+          if (isBlocked.rowCount === 0) {
+            const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [matchId, 1]);
+            if (userInfo.rowCount === 1) {
+              const userIsLiked = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, userInfo.rows[0].id]);
+              const tags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userInfo.rows[0].id]);
+              result.push({
+                id: userInfo.rows[0].id,
+                popularityScore: userInfo.rows[0].popularity_score,
+                username: userInfo.rows[0].username,
+                age: getAge(userInfo.rows[0].birth_date),
+                distance: parseInt(getDistance(JSON.parse(user.location).lat, JSON.parse(user.location).lng, JSON.parse(userInfo.rows[0].location).lat, JSON.parse(userInfo.rows[0].location).lng, 'K')),
+                profilPicture: userInfo.rows[0].profil_picture,
+                isLiked: userIsLiked.rowCount === 0 ? false : true,
+                tags: tags.rows.map(item => ({ id: item.id, interestId: item.interest_id }))
+              });
+            }
+          }
+        }
+        
+        return result;
+      } catch (e) {
+        console.log(e);
+        return e;
+      }
+    }
   },
 
 

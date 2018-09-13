@@ -38,7 +38,8 @@ const store = {
   currentUserProfilInfo: null,
   notificationList: [],
   userLikeList: [],
-  userVisiteList: []
+  userVisiteList: [],
+  userMatchList: []
 };
 
 export default store;
