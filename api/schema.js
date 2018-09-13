@@ -381,6 +381,7 @@ const resolvers = {
         await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
         const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
         pubSub.publish('messageCount');
+        pubSub.publish('notificationCount');
         return {
           username: user.username,
           lastname: user.lastname,
@@ -1599,6 +1600,8 @@ const resolvers = {
           return true;
 
         await client.query('INSERT INTO account_blocked (from_user_id, to_user_id) VALUES ($1, $2)', [user.id, userId]);
+        pubSub.publish('messageCount');
+        pubSub.publish('notificationCount');
         return true;
       } catch (e) {
         return e;

@@ -11,10 +11,20 @@ class Logout extends Component {
     localStorage.removeItem('auth_token');
     this.props.clearStore();
     this.props.history.push('/');
+    this.client.resetStore();
   }
 
   render() {
-    return null;
+    return (
+      <ApolloConsumer>
+      {
+        client => {
+          this.client = client;
+          return null;
+        }
+      }
+      </ApolloConsumer>
+    )
   }
 }
 

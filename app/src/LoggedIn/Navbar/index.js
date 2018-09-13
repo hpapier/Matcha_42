@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { ApolloConsumer } from 'react-apollo';
 
 
 // Local import.
@@ -31,6 +32,7 @@ class Navbar extends Component {
     localStorage.removeItem('auth_token');
     this.props.clearStore();
     this.props.history.push('/');
+    this.client.resetStore();
   }
 
   navigationView = status => {
@@ -51,35 +53,44 @@ class Navbar extends Component {
   render() {
     const { statusBar } = this.props;
     return (
-      <div id='lgi-navbar'>
-
-        <div id='lgi-navbar-left'>
-          <div className={statusBar === 'home' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('home')}>
-            <img src={statusBar === 'home' ? homeSolidIcon : homeLineIcon} className='lgi-navbar-left-box-icon' />
-            <div className={statusBar === 'home' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive first'}>Acceuil</div>
-          </div>
-  
-          <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('notification')}>
-            <img src={statusBar === 'notification' ? notifSolidIcon : notifLineIcon} className='lgi-navbar-left-box-icon' />
-            <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Notifications</div>
-            { this.props.user.isComplete ? <NotificationSubscriber /> : null }
-          </div>
-  
-          <div className={statusBar === 'message' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('message')}>
-            <img src={statusBar === 'message' ? msgSolidIcon : msgLineIcon} className='lgi-navbar-left-box-icon' />
-            <div className={statusBar === 'message' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Messages</div>
-            { this.props.user.isComplete ? <MessageSubscriber /> : null }
-          </div>
-        </div>
-  
-        <div id='lgi-navbar-right'>
-          <div id='lgi-navbar-right-img' className={(statusBar === 'profil') ? 'lgi-navbar-right-img-active' : ''} onClick={() => this.navigationView('profil')}>
-          {this.props.user.profilPicture ? <img className='lgi-navbar-right-img-content' src={this.props.user.profilPicture} alt='user-profil-img' /> : null}
-          </div>
-          <button id='lgi-navbar-right-logout' onClick={this.logOutUser}>déconnexion</button>
-        </div>
-      </div>
-    );
+      <ApolloConsumer>
+      {
+        client => {
+          this.client = client;
+          return (
+            <div id='lgi-navbar'>
+      
+              <div id='lgi-navbar-left'>
+                <div className={statusBar === 'home' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('home')}>
+                  <img src={statusBar === 'home' ? homeSolidIcon : homeLineIcon} className='lgi-navbar-left-box-icon' />
+                  <div className={statusBar === 'home' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive first'}>Acceuil</div>
+                </div>
+        
+                <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('notification')}>
+                  <img src={statusBar === 'notification' ? notifSolidIcon : notifLineIcon} className='lgi-navbar-left-box-icon' />
+                  <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Notifications</div>
+                  { this.props.user.isComplete ? <NotificationSubscriber /> : null }
+                </div>
+        
+                <div className={statusBar === 'message' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('message')}>
+                  <img src={statusBar === 'message' ? msgSolidIcon : msgLineIcon} className='lgi-navbar-left-box-icon' />
+                  <div className={statusBar === 'message' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Messages</div>
+                  { this.props.user.isComplete ? <MessageSubscriber /> : null }
+                </div>
+              </div>
+        
+              <div id='lgi-navbar-right'>
+                <div id='lgi-navbar-right-img' className={(statusBar === 'profil') ? 'lgi-navbar-right-img-active' : ''} onClick={() => this.navigationView('profil')}>
+                {this.props.user.profilPicture ? <img className='lgi-navbar-right-img-content' src={this.props.user.profilPicture} alt='user-profil-img' /> : null}
+                </div>
+                <button id='lgi-navbar-right-logout' onClick={this.logOutUser}>déconnexion</button>
+              </div>
+            </div>
+          );
+        }
+      }
+      </ApolloConsumer>
+    )
   }
 };
 
