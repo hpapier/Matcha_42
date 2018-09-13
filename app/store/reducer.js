@@ -60,7 +60,8 @@ export default (state = initialState, action) => {
           lastConnexion: action.payload.lastConnexion,
           userImages: action.payload.images,
           userTags: action.payload.interests,
-          profilPicture: action.payload.profilPicture
+          profilPicture: action.payload.profilPicture,
+          isComplete: action.payload.isComplete
         }
       };
     case CHANGE_STATUS_BAR:

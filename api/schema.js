@@ -141,7 +141,7 @@ const typeDefs = `
     interests: [UserInterests]
     images: [UserImages]
     profilPicture: String
-    isComplete: Int
+    isComplete: Boolean
   }
 
   type UserPreferences {
@@ -384,7 +384,7 @@ const resolvers = {
           interests: convertedInterests,
           images: userImages.rows,
           profilPicture: user.profil_picture,
-          isComplete: user.iscomplete
+          isComplete: user.iscomplete === 0 ? false : true
         };
       } catch (e) {
         return new Error(e.message)
@@ -422,7 +422,7 @@ const resolvers = {
           interests: convertedInterests,
           images: userImages.rows,
           profilPicture: user.profil_picture,
-          isComplete: user.iscomplete
+          isComplete: user.iscomplete === 0 ? false : true
         };
       } catch (e) {
         return new Error(e.message)
@@ -645,6 +645,9 @@ const resolvers = {
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
+
+        if (user.iscomplete === 0)
+          return [];
 
         const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
         let notifArray = [];
@@ -1555,7 +1558,9 @@ const resolvers = {
           const user = await verifyUserToken({ authorization: `Bearer ${token}`});
           if (!user)
             return new Error('Not auth');
-  
+
+
+            
           const notifs = await client.query('SELECT * FROM notification WHERE user_id = $1 AND is_viewed = $2', [user.id, 0]);
           return { count: notifs.rowCount };
         } catch (e) {

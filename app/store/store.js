@@ -14,7 +14,8 @@ const store = {
     lastConnexion: '',
     userTags: [],
     userImages: [],
-    profilPicture: null
+    profilPicture: null,
+    isComplete: false
   },
   refetching: false,
   interests: [],

@@ -8,15 +8,18 @@ import { connect } from 'react-redux';
 import './index.sass';
 import { NOTIFICATION_COMPONENT_QUERY } from '../../../query';
 import View from './View';
-import { saveNotifList } from '../../../store/action/synchronous';
+import NotComplete from '../NotComplete';
+import { saveNotifList, saveUserInfo, saveInterest } from '../../../store/action/synchronous';
 
 
 // Notification Component.
 class Notification extends Component {
   onCompleteHandler = data => {
-    const { getUserNotification } = data;
-    const { saveNotifList } = this.props;
+    const { getUserNotification, userInformations, getInterests } = data;
+    const { saveNotifList, saveUserInfo, saveInterest } = this.props;
     saveNotifList(getUserNotification);
+    saveUserInfo(userInformations);
+    saveInterest(getInterests);
   }
 
   render() {
@@ -28,8 +31,8 @@ class Notification extends Component {
             return <div><div></div></div>;
 
           if (error) {
-            if (error.graphQlErrors && error.graphQlErrors[0]) {
-              if (error.graphQlErrors[0].message === 'Not auth')
+            if (error.graphQLErrors && error.graphQLErrors[0].message) {
+              if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
             }
 
@@ -51,7 +54,9 @@ class Notification extends Component {
 
 // Redux connection.
 const mapDispatchToProps = dispatch => ({
-  saveNotifList: data => dispatch(saveNotifList(data))
+  saveNotifList: data => dispatch(saveNotifList(data)),
+  saveUserInfo: data => dispatch(saveUserInfo(data)),
+  saveInterest: data => dispatch(saveInterest(data))
 });
 
 

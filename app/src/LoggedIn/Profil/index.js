@@ -26,7 +26,7 @@ class Profil extends Component {
 
   render() {
     return (
-      <Query query={GET_USER_INFO_QUERY} fetchPolicy='cache-and-network' onCompleted={data => this.onCompletedHandler(data)}>
+      <Query query={GET_USER_INFO_QUERY} onCompleted={data => this.onCompletedHandler(data)} pollInterval={500}>
       {
         ({ loading, error }) => {
           if (loading)

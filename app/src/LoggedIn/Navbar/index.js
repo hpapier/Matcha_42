@@ -61,7 +61,7 @@ class Navbar extends Component {
           <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('notification')}>
             <img src={statusBar === 'notification' ? notifSolidIcon : notifLineIcon} className='lgi-navbar-left-box-icon' />
             <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Notifications</div>
-            <NotificationSubscriber />
+            { this.props.user.isComplete ? <NotificationSubscriber /> : null }
           </div>
   
           <div className={statusBar === 'message' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('message')}>

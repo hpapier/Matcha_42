@@ -381,6 +381,36 @@ export const NOTIFICATION_COMPONENT_QUERY = gql`
       action
       date
     }
+
+    userInformations {
+      username
+      lastname
+      firstname
+      birthDate
+      genre
+      sexualOrientation
+      bio
+      popularityScore
+      location
+      creationDate
+      lastConnexion
+      isComplete
+      interests {
+        id
+        interestId
+      }
+      images {
+        id
+        path
+      }
+      email
+      profilPicture
+    }
+
+    getInterests {
+      id
+      name
+    }
   }
 `;
 

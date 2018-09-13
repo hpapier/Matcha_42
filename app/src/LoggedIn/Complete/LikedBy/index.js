@@ -14,7 +14,7 @@ import { saveLikerList } from '../../../../store/action/synchronous';
 // LikedBy Component.
 class LikedBy extends Component {
   onCompletedHandler = data => {
-    console.log(data);
+
     this.props.saveLikerList(data.getLikerList);
   }
 

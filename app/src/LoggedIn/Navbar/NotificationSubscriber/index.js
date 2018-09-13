@@ -36,7 +36,7 @@ const NotificationSubscriber = props => {
           })
         }
 
-        return <NotificationSubscriberView data={data.getCountNotification} subscribeToMoreNotification={subscribeToMoreNotification} />
+        return <NotificationSubscriberView data={data.getCountNotification} subscribeToMoreNotification={subscribeToMoreNotification} />
       }
     }
     </Query>
