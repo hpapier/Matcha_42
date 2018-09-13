@@ -304,6 +304,7 @@ const typeDefs = `
     blockUser(userId: Int!): Boolean
     unblockUser(userId: Int!): Boolean
     reportUser(userId: Int!): Boolean
+    sendUserMsg(toUser: Int!, content: String!): Boolean
   }
 
   type Subscription {
@@ -379,6 +380,7 @@ const resolvers = {
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
         await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
         const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
+        pubSub.publish('messageCount');
         return {
           username: user.username,
           lastname: user.lastname,
@@ -895,7 +897,10 @@ const resolvers = {
 
           if (!isPresent) {
             const isBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, message.from_user]);
-            if (isBlocked.rowCount === 0)
+            const isAlreadyMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, message.from_user]);
+            const isComplete = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [message.from_user ,1])
+
+            if (isBlocked.rowCount === 0 && isAlreadyMatch.rowCount === 1 && isComplete.rowCount === 1)
               stack.push(message.room_id);
           }
         }
@@ -919,19 +924,22 @@ const resolvers = {
           const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [room.user_id_one, room.user_id_two]);
           if (isBlocked.rowCount === 0) {
             let partnerId = room.user_id_one;
-            if (user.id = room.user_id_one)
+            if (parseInt(user.id) === parseInt(room.user_id_one))
               partnerId = room.user_id_two;
-
-            const partnerInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [partnerId, 1]);
-            if (partnerInfo.rowCount === 1) {
-              const lastMsg = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date DESC LIMIT 1', [room.id]);
-              result.push({
-                id: room.id,
-                userProfilPicture: partnerInfo.profil_picture,
-                userProfilUsername: partnerInfo.username,
-                lastMessage: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].content,
-                lastMessageDate: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].date
-              });
+            
+            const isAlreadyMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [room.user_id_one, room.user_id_two]);
+            if (isAlreadyMatch.rowCount === 1) {
+              const partnerInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [partnerId, 1]);
+              if (partnerInfo.rowCount === 1) {
+                const lastMsg = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date DESC LIMIT 1', [room.id]);
+                result.push({
+                  id: room.id,
+                  userProfilPicture: partnerInfo.rows[0].profil_picture,
+                  userProfilUsername: partnerInfo.rows[0].username,
+                  lastMessage: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].content,
+                  lastMessageDate: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].date
+                });
+              }
             }
           }
         }
@@ -1526,6 +1534,7 @@ const resolvers = {
         }
 
         pubSub.publish('notificationCount');
+        pubSub.publish('messageCount');
 
         const recheckMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
         return { isMatched: recheckMatch.rowCount === 0 ? false : true };
@@ -1563,7 +1572,7 @@ const resolvers = {
             await client.query('INSERT INTO notification (action, user_id, from_user, creation_date) VALUES ($1, $2, $3, $4)', ['unmatch', user.id, userId, new Date()]);
         
         pubSub.publish('notificationCount');
-
+        pubSub.publish('messageCount');
 
         const recheckMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, userId]);
         return { isMatched: recheckMatch.rowCount === 0 ? false : true };
@@ -1619,12 +1628,45 @@ const resolvers = {
         if (!user)
           return new Error('Not auth');
 
-          const check = await client.query('SELECT * FROM account_reported WHERE from_user_id = $1 AND to_user_id = $2', [user.id, userId]);
-          if (check.rowCount > 0)
-            return true;
-
-          await client.query('INSERT INTO account_reported (from_user_id, to_user_id) VALUES ($1, $2)', [user.id, userId]);
+        const check = await client.query('SELECT * FROM account_reported WHERE from_user_id = $1 AND to_user_id = $2', [user.id, userId]);
+        if (check.rowCount > 0)
           return true;
+
+        await client.query('INSERT INTO account_reported (from_user_id, to_user_id) VALUES ($1, $2)', [user.id, userId]);
+        return true;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    sendUserMsg: async (_, { toUser, content }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+        
+        const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [toUser, user.id]);
+        if (isBlocked.rowCount === 1)
+          return new Error('You are blocked');
+
+        const isMatched = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [toUser, user.id]);
+        if (isMatched.rowCount === 0)
+          return new Error('Not matched');
+
+        const roomExist = await client.query('SELECT * FROM room WHERE (user_id_one, user_id_two) = ($1, $2) OR (user_id_one, user_id_two) = ($2, $1)', [user.id, toUser]);
+        let roomId;
+        if (roomExist.rowCount === 0) {
+          const cri = await client.query('INSERT INTO room (user_id_one, user_id_two) VALUES ($1, $2) RETURNING id', [user.id, toUser]);
+          roomId = cri.rows[0].id;
+        }
+        else
+          roomId = roomExist.rows[0].id;
+
+        await client.query('INSERT INTO messages (from_user, to_user, content, room_id, date) VALUES ($1, $2, $3, $4, $5)', [user.id, toUser, content, roomId, new Date()]);
+        pubSub.publish('messageCount');
+
+        return true;
+        
       } catch (e) {
         return e;
       }
@@ -1653,7 +1695,6 @@ const resolvers = {
     messageSub: {
       resolve: async (_, { token }, ctx) => {
         try {
-          return new Error('Not auth');
           const user = await verifyUserToken({ authorization: `Bearer ${token}` });
           if (!user)
             return new Error('Not auth');
@@ -1673,7 +1714,10 @@ const resolvers = {
   
             if (!isPresent) {
               const isBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, message.from_user]);
-              if (isBlocked.rowCount === 0)
+              const isAlreadyMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, message.from_user]);
+              const isComplete = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [message.from_user ,1])
+
+              if (isBlocked.rowCount === 0 && isAlreadyMatch.rowCount === 1 && isComplete.rowCount === 1)
                 stack.push(message.room_id);
             }
           }

@@ -555,3 +555,9 @@ export const MESSAGE_COMPONENT_QUERY = gql`
     }
   }
 `;
+
+export const SEND_MSG_MUTATION = gql`
+  mutation sendUserMsg($toUser: Int!, $content: String!) {
+    sendUserMsg(toUser: $toUser, content: $content)
+  }
+`;

@@ -18,7 +18,7 @@ import flagIconWhite from '../../../../../assets/flag.svg';
 import nonBlockWhiteIcon from '../../../../../assets/non-block.svg';
 import blockIcon from '../../../../../assets/block.svg';
 import closeBlackIcon from '../../../../../assets/close-black.svg';
-import { BLOCK_USER_MUTATION, UNBLOCK_USER_MUTATION, REPORT_USER_MUTATION, LIKE_USER_MUTATION, UNLIKE_USER_MUTATION } from '../../../../../query';
+import { BLOCK_USER_MUTATION, UNBLOCK_USER_MUTATION, REPORT_USER_MUTATION, LIKE_USER_MUTATION, UNLIKE_USER_MUTATION, SEND_MSG_MUTATION } from '../../../../../query';
 
 
 // ProfilImg Component.
@@ -27,7 +27,11 @@ class ProfilBody extends Component {
     blockLoading: false,
     modalReport: false,
     modalReportLoading: false,
-    modalReportErrorMsg: ''
+    modalReportErrorMsg: '',
+    modalMsg: false,
+    modalMsgLoading: false,
+    modalMsgErrorMsg: '',
+    modalMsgInput: ''
   };
 
   _unmount = false;
@@ -160,10 +164,14 @@ class ProfilBody extends Component {
         this.setState({ modalReportLoading: false, modalReport: false, modalReportErrorMsg: '' });
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error) {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
+        }
       }
 
       if (!this._unmount)
@@ -171,10 +179,46 @@ class ProfilBody extends Component {
     });
   }
 
+  msgMechanism = () => {
+    const { client } = this;
+    const { id } = this.props.information;
+
+    if (!this._unmount) {
+      if (!this.state.modalMsgInput) {
+        this.setState({ modalMsgErrorMsg: 'Vous ne pouvez pas envoyer de message vide !' });
+        return;
+      }
+      this.setState({ modalMsgLoading: true, modalMsgErrorMsg: '' });
+    }
+
+    client.mutate({
+      mutation: SEND_MSG_MUTATION,
+      variables: { toUser: id, content: this.state.modalMsgInput }
+    })
+    .then(r => {
+      if (!this._unmount)
+        this.setState({ modalMsgLoading: false, modalMsg: false, modalMsgErrorMsg: '', modalMsgInput: '' });
+    })
+    .catch(error => {
+      if (error) {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
+        }
+      }
+
+      if (!this._unmount)
+        this.setState({ modalMsgLoading: false, modalMsg: true, modalMsgErrorMsg: 'Oups! Une erreur est survenu.' });
+    });
+  }
+
   render() {
     const { information } = this.props;
     const { isLiked, isBlocked } = information;
-    const { blockLoading, modalReport, modalReportLoading, modalReportErrorMsg } = this.state;
+    const { blockLoading, modalReport, modalReportLoading, modalReportErrorMsg, modalMsg, modalMsgLoading, modalMsgErrorMsg } = this.state;
     return (
       <ApolloConsumer>
       {
@@ -217,7 +261,7 @@ class ProfilBody extends Component {
       
                   {
                     information.isMatched ?
-                    <div id='lgi-complete-profil-body-cta-left-msg'>
+                    <div id='lgi-complete-profil-body-cta-left-msg' onClick={() => this.setState({ modalMsg: true })}>
                       <img id='lgi-complete-profil-body-cta-left-msg-icon' src={msgWhiteIcon} alt='msg-icon'/>
                     </div> :
                     null
@@ -251,6 +295,26 @@ class ProfilBody extends Component {
                       <div className='lgi-complete-profil-body-modal-submit-loading'><div className='lgi-complete-profil-body-modal-submit-loading-animation'></div></div>
                     }
                     { modalReportErrorMsg ? <div className='lgi-complete-profil-body-modal-error'>{modalReportErrorMsg}</div> : null }
+                  </div>
+                </div> :
+                null
+              }
+
+              {
+                modalMsg ?
+                <div className='lgi-complete-profil-body-modal-msg-background'>
+                  <div className='lgi-complete-profil-body-modal-msg-box'>
+                    <button className='lgi-complete-profil-body-modal-msg-close' onClick={() => this.setState({ modalMsgLoading: false, modalMsg: false, modalMsgErrorMsg: '', modalMsgInput: ''  })}>
+                      <img src={closeBlackIcon} alt='close-icon' />
+                    </button>
+                    <div className='lgi-complete-profil-body-modal-msg-text'>Message à {this.props.information.username}</div>
+                    <textarea className='lgi-complete-profil-body-modal-msg-input' value={this.state.modalMsgInput} placeholder='Entrer votre message..' onChange={e => this.setState({ modalMsgInput: e.target.value })}></textarea>
+                    {
+                      !modalMsgLoading ?
+                      <button className='lgi-complete-profil-body-modal-msg-submit' onClick={this.msgMechanism}>Valider</button> :
+                      <div className='lgi-complete-profil-body-modal-msg-submit-loading'><div className='lgi-complete-profil-body-modal-msg-submit-loading-animation'></div></div>
+                    }
+                    { modalMsgErrorMsg ? <div className='lgi-complete-profil-body-modal-msg-error'>{modalMsgErrorMsg}</div> : null }
                   </div>
                 </div> :
                 null

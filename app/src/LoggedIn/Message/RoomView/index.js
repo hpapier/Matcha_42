@@ -21,22 +21,10 @@ class RoomView extends Component {
     const timestamp = Math.abs(new Date() - notifDate);
 
     if (timestamp < 86400000) {
-      const h = ((new Date(timestamp).getHours() - 1) === 0) ? '' : new Date(timestamp).getHours() - 1;
-      const m = new Date(timestamp).getMinutes();
+      const h = notifDate.getHours() < 10 ? '0' + notifDate.getHours() : notifDate.getHours();
+      const m = notifDate.getMinutes() === 0 ? '' : notifDate.getMinutes() < 10 ? '0' + notifDate.getMinutes() : notifDate.getMinutes();
 
-      if (!h) {
-        if (m === 0)
-          return 'Il y a quelques secondes';
-        else
-          return `Il y a ${m} minutes`;
-      } else {
-        if (m > 45)
-          return `Il y a ${h + 1}h`;
-        else
-          return `Il y a ${h}h`;
-      }
-
-
+      return `${h}h${m}`;
     } else {
       const day = (notifDate.getDate() < 10) ? '0' + notifDate.getDate() : notifDate.getDate();
       let month;
@@ -98,10 +86,10 @@ class RoomView extends Component {
           <img src={item.userProfilPicture} alt='profil-picture' className='lgi-message-view-box-item-img-picture' />
         </div>
         <div className='lgi-message-view-box-item-content'>
-          <div>{item.userProfilUsername}</div>
-          <div>{item.lastMessage}</div>
-          <div className='lgi-message-view-box-item-date'>{this.getDate(item.lastMessageDate)}</div>
+          <div className='lgi-message-view-box-item-username'>{item.userProfilUsername}</div>
+          <div className='lgi-message-view-box-item-msg'>{item.lastMessage.length > 60 ? item.lastMessage.substring(0, 60) + '...' : item.lastMessage}</div>
         </div>
+        <div className='lgi-message-view-box-item-date'>{this.getDate(item.lastMessageDate)}</div>
       </div>
     ));
   };
@@ -111,10 +99,11 @@ class RoomView extends Component {
       <div id='lgi-message-view'>
         <div id='lgi-message-view-title'>Tous vos messages</div>
         <div id='lgi-message-view-box'>
-        {
-          !this.state.msgView ?
-          this.displayRoomList() :
-          <div>message view</div>
+        { this.props.user.isComplete ?
+            !this.state.msgView ?
+            this.displayRoomList() :
+            <div>message view</div> :
+          <div className='lgi-message-view-box-item-empty'>Vous n'avez pas de messages</div>
         }
         </div>
       </div>
@@ -125,7 +114,8 @@ class RoomView extends Component {
 
 // Redux connection.
 const mapStateToProps = state => ({
-  roomList: state.roomList
+  roomList: state.roomList,
+  user: state.user
 });
 
 
