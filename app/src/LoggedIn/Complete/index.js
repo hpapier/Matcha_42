@@ -14,6 +14,7 @@ import VisitedBy from './VisitedBy';
 import UserLike from '../UserLike';
 import UserVisite from '../UserVisite';
 import UserMatch from '../UserMatch';
+import LikedBy from './LikedBy';
 
 
 // Complete Component.
@@ -35,6 +36,7 @@ const Complete = props => {
         <div id='lgi-complete-right-subbox'>
           <RandomChoice />
           <VisitedBy />
+          <LikedBy />
         </div> :
         null
       }

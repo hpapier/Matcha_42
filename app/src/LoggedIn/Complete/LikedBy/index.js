@@ -6,20 +6,21 @@ import { connect } from 'react-redux';
 
 // Locals imports.
 import './index.sass';
-import { GET_VISITOR_QUERY } from '../../../../query';
+import { GET_LIKER_QUERY } from '../../../../query';
 import View from './View';
-import { saveVisitorList } from '../../../../store/action/synchronous';
+import { saveLikerList } from '../../../../store/action/synchronous';
 
 
-// VisitedBy Component.
-class VisitedBy extends Component {
+// LikedBy Component.
+class LikedBy extends Component {
   onCompletedHandler = data => {
-    this.props.saveVisitorList(data.getVisitorList);
+    console.log(data);
+    this.props.saveLikerList(data.getLikerList);
   }
 
   render() {
     return (
-      <Query query={GET_VISITOR_QUERY} onCompleted={data => this.onCompletedHandler(data)} pollInterval={300}>
+      <Query query={GET_LIKER_QUERY} onCompleted={data => this.onCompletedHandler(data)} pollInterval={300}>
       {
         ({ loading, error }) => {
           if (loading)
@@ -48,9 +49,9 @@ class VisitedBy extends Component {
 
 // Redux connection.
 const mapDispatchToProps = dispatch => ({
-  saveVisitorList: data => dispatch(saveVisitorList(data))
+  saveLikerList: data => dispatch(saveLikerList(data))
 });
 
 
 // Export.
-export default connect(null, mapDispatchToProps)(VisitedBy);
+export default connect(null, mapDispatchToProps)(LikedBy);

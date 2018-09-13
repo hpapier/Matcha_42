@@ -453,3 +453,17 @@ export const USER_MATCH_QUERY = gql`
     }
   }
 `;
+
+export const GET_LIKER_QUERY = gql`
+  {
+    getLikerList {
+      id
+      popularityScore
+      username
+      age
+      distance
+      profilPicture
+      isLiked
+    }
+  }
+`;

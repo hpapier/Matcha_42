@@ -36,7 +36,8 @@ import {
   SAVE_USER_LIKE_LIST,
   SAVE_USER_VISITE_LIST,
   UPDATE_LIKE_STATUS_USER_VISITE_LIST,
-  SAVE_USER_MATCH_LIST
+  SAVE_USER_MATCH_LIST,
+  SAVE_LIKER_LIST
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -327,6 +328,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userMatchList: action.payload
+      };
+    case SAVE_LIKER_LIST:
+      return {
+        ...state,
+        likerList: action.payload
       }
     default:
       return state;
