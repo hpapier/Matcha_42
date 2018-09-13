@@ -497,3 +497,19 @@ export const GET_LIKER_QUERY = gql`
     }
   }
 `;
+
+export const FETCH_MESSAGE_COUNT_QUERY = gql`
+  {
+    getCountMessage {
+      count
+    }
+  }
+`;
+
+export const MESSAGE_SUBSCRIPTION = gql`
+  subscription messageSub($token: String!){
+    messageSub(token: $token) {
+      count
+    }
+  }
+`;

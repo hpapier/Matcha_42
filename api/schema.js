@@ -265,6 +265,7 @@ const typeDefs = `
     getUserVisite: [UserLikeVisiteMatchInfo]
     getUserMatch: [UserLikeVisiteMatchInfo]
     getLikerList: [VisitorList]
+    getCountMessage: NotifCount
   }
   
   type Mutation {
@@ -298,6 +299,7 @@ const typeDefs = `
 
   type Subscription {
     notificationSub(token: String): NotifCount
+    messageSub(token: String): NotifCount
   }
 `;
 
@@ -858,6 +860,38 @@ const resolvers = {
         }
 
         return result;
+      } catch (e) {
+        return e;
+      }
+    },
+
+    getCountMessage: async (_, args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const messages = await client.query('SELECT * FROM messages WHERE to_user = $1 AND is_viewed = $2', [user.id, 0]);
+        if (messages.rowCount === 0)
+          return { count: 0 };
+
+        let stack = [];
+        for (let message of messages.rows) {
+          
+          let isPresent = false;
+          stack.forEach(item => {
+            if (item === message.room_id)
+              isPresent = true;
+          });
+
+          if (!isPresent) {
+            const isBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, message.from_user]);
+            if (isBlocked.rowCount === 0)
+              stack.push(message.room_id);
+          }
+        }
+
+        return { count: stack.length };
       } catch (e) {
         return e;
       }
@@ -1568,6 +1602,42 @@ const resolvers = {
         }
       },
       subscribe: () => pubSub.asyncIterator('notificationCount')
+    },
+
+    messageSub: {
+      resolve: async (_, { token }, ctx) => {
+        try {
+          return new Error('Not auth');
+          const user = await verifyUserToken({ authorization: `Bearer ${token}` });
+          if (!user)
+            return new Error('Not auth');
+  
+          const messages = await client.query('SELECT * FROM messages WHERE to_user = $1 AND is_viewed = $2', [user.id, 0]);
+          if (messages.rowCount === 0)
+            return { count: 0 };
+  
+          let stack = [];
+          for (let message of messages.rows) {
+            
+            let isPresent = false;
+            stack.forEach(item => {
+              if (item === message.room_id)
+                isPresent = true;
+            });
+  
+            if (!isPresent) {
+              const isBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, message.from_user]);
+              if (isBlocked.rowCount === 0)
+                stack.push(message.room_id);
+            }
+          }
+  
+          return { count: stack.length };
+        } catch (e) {
+          return e;
+        }
+      },
+      subscribe: () => pubSub.asyncIterator('messageCount')
     }
   }
 };

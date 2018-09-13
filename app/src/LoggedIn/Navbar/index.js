@@ -14,6 +14,7 @@ import msgLineIcon from '../../../assets/msg-line.svg';
 import msgSolidIcon from '../../../assets/msg-solid.svg';
 import { statusBarMechanism, clearStore } from '../../../store/action/synchronous';
 import NotificationSubscriber from './NotificationSubscriber';
+import MessageSubscriber from './MessageSubscriber';
 
 
 // Navbar component
@@ -67,6 +68,7 @@ class Navbar extends Component {
           <div className={statusBar === 'message' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('message')}>
             <img src={statusBar === 'message' ? msgSolidIcon : msgLineIcon} className='lgi-navbar-left-box-icon' />
             <div className={statusBar === 'message' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive'}>Messages</div>
+            { this.props.user.isComplete ? <MessageSubscriber /> : null }
           </div>
         </div>
   

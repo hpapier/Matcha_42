@@ -190,7 +190,7 @@
    content      TEXT          NOT NULL,
    room_id      INTEGER       NOT NULL,
    is_viewed    SMALLINT      NOT NULL DEFAULT 0,
-   date         timestamp     NOT NULL
+   date         TIMESTAMP     NOT NULL
  );
 */
 
