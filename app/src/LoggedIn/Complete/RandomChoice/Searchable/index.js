@@ -126,7 +126,6 @@ class Searchable extends Component {
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
       .catch(error => {
-        console.log(error);
         if (error.graphQLErrors[0].message === 'Not auth') {
           localStorage.removeItem('auth_token');
           this.props.clearStore();

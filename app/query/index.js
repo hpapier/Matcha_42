@@ -410,6 +410,10 @@ export const USER_LIKE_QUERY = gql`
       distance
       profilPicture
       isLiked
+      tags {
+        id
+        interestId
+      }
     }
   }
 `;
@@ -424,6 +428,10 @@ export const USER_VISITE_QUERY = gql`
       distance
       profilPicture
       isLiked
+      tags {
+        id
+        interestId
+      }
     }
   }
 `;

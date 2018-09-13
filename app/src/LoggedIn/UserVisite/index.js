@@ -29,7 +29,6 @@ class UserLike extends Component {
       <Query query={USER_VISITE_QUERY} onCompleted={data => this.onCompletedHandler(data)} fetchPolicy='cache-and-network'>
       {
         ({ loading, error }) => {
-          console.log("in query");
           if (loading)
             return <div id='lgi-complete-user-visite-loading'><div id='lgi-complete-user-visite-loading-animation'></div></div>;
 

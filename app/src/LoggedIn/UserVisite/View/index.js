@@ -70,10 +70,14 @@ class View extends Component {
         }
       })
       .catch(error => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+        if (error) {
+          if (error.graphQLErrors && error.graphQLErrors[0]) {
+            if (error.graphQLErrors[0].message === 'Not auth') {
+              localStorage.removeItem('auth_token');
+              this.props.clearStore();
+              this.props.history.push('/');
+            }
+          }
         }
 
         if (!this._unmount)
@@ -93,10 +97,14 @@ class View extends Component {
         }
       })
       .catch(error => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+        if (error) {
+          if (error.graphQLErrors && error.graphQLErrors[0]) {
+            if (error.graphQLErrors[0].message === 'Not auth') {
+              localStorage.removeItem('auth_token');
+              this.props.clearStore();
+              this.props.history.push('/');
+            }
+          }
         }
 
         if (!this._unmount)
@@ -105,9 +113,106 @@ class View extends Component {
     }
   }
 
+  checkFiltreTags = element => {
+    const { tags } = this.props.userPref;
+    if (tags.length === 0)
+      return true;
+
+    let count = 0;
+    element.tags.forEach(tag => {
+      tags.forEach(el => {
+        if (el.id === tag.interestId)
+          count++;
+      });
+    });
+
+    if (count === tags.length)
+      return true;
+
+    return false;
+  };
+
+  checkTags = element => {
+    let count = 0;
+    element.tags.forEach(tag => {
+      this.props.userTags.forEach(userTags => {
+        if (tag.interestId === userTags.interestId)
+          count++;
+        return;
+      });
+    });
+
+    if (count === 0) {
+      return 0;
+    }
+
+    const len = element.tags.length;
+    if (len === count)
+      return 3;
+    
+    if (len / count >= (len / 2))
+      return 2;
+
+    if (len / count >= (len / 3))
+      return 1;
+
+    return 0;
+  }
+
+  orderByTags = list => {
+    const newList = list.map(item => {
+      return { ...item, tagPond: this.checkTags(item) };
+    });
+
+    newList.sort((a, b) => b.tagPond - a.tagPond);
+    return newList.map(item => {
+      delete item.tagPond;
+      return item;
+    });
+  };
+
+  withOrder = list => {
+    const { currentOrder } = this.props;
+    let newList = list.slice(0);
+    
+    if (currentOrder === 'age')
+      newList.sort((a, b) => a.age - b.age);
+    else if (currentOrder === 'localisation')
+      newList.sort((a, b) => a.distance - b.distance);
+    else if (currentOrder === 'popularity')
+      newList.sort((a, b) => b.popularityScore - a.popularityScore);
+    else if (currentOrder === 'interest')
+      newList = this.orderByTags(list);
+    else
+      newList.sort((a, b) => b.ponderation - a.ponderation);
+
+    return newList;
+  };
+
+  withFiltre = list => {
+    const { currentFiltre, userPref } = this.props;
+    let result = list.slice(0);
+    currentFiltre.forEach(filtre => {
+      if (filtre === 'age')
+        result = result.filter(item => item.age >= userPref.ageStart && item.age <= userPref.ageEnd);
+      else if (filtre === 'localisation')
+        result = result.filter(item => item.distance <= userPref.location);
+      else if (filtre === 'popularity')
+        result = result.filter(item => item.popularityScore >= userPref.scoreStart && item.popularityScore <= userPref.scoreEnd);
+      else if (filtre === 'interest')
+        result = result.filter(item => this.checkFiltreTags(item));
+      
+      return;
+    });
+    return result;
+  };
+
   getListOfData = () => {
     const { userVisiteList } = this.props;
-    return userVisiteList.map(item => (
+    let dataTrimed = userVisiteList.slice(0);
+    dataTrimed = this.withFiltre(dataTrimed);
+    dataTrimed = this.withOrder(dataTrimed)
+    return dataTrimed.map(item => (
       <div className='lgi-suggestion-list-item' key={item.id * Math.random()} onClick={(e) => this.getUserProfilMech(item, e)}>
         <div className='lgi-suggestion-list-item-img'>
           <img className='lgi-suggestion-list-item-img-element' src={item.profilPicture} />
@@ -144,7 +249,7 @@ class View extends Component {
           return (
             <div id='lgi-complete-user-like'>
               <div id='lgi-complete-user-like-view-title'>
-                <div id='lgi-complete-user-like-view-title-text'>Tous vos likes</div>
+                <div id='lgi-complete-user-like-view-title-text'>Toute vos visites</div>
                 <div id='lgi-complete-user-like-view-title-back-btn' onClick={() => this.props.changeStatusView('suggestion')}>
                   <div id='lgi-complete-user-like-view-title-back-btn-text'>Retour</div>
                   <img id='lgi-complete-user-like-view-title-back-btn-icon' src={closeWhiteIcon} alt='back-icon' />
@@ -188,7 +293,11 @@ class View extends Component {
 
 // Redux connection.
 const mapStateToProps = state => ({
-  userVisiteList: state.userVisiteList
+  userVisiteList: state.userVisiteList,
+  userPref: state.userPref,
+  currentFiltre: state.currentFiltre,
+  currentOrder: state.currentOrder,
+  userTags: state.user.userTags
 });
 
 const mapDispatchToProps = dispatch => ({

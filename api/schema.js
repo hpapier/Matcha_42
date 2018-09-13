@@ -243,7 +243,8 @@ const typeDefs = `
     age: Int
     distance: Int
     profilPicture: String
-    isLiked: Boolean
+    isLiked: Boolean,
+    tags: [UserInterests]
   }
 
   type Query {
@@ -732,6 +733,7 @@ const resolvers = {
           const isBlocked = await client.query('SELECT * FROM account_blocked WHERE to_user_id = $1 AND from_user_id = $2', [user.id, like.to_user]);
           if (isBlocked.rowCount === 0) {
             const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [like.to_user, 1]);
+            const tags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userInfo.rows[0].id]);
             if (userInfo.rowCount === 1) {
               result.push({
                 id: userInfo.rows[0].id,
@@ -740,7 +742,8 @@ const resolvers = {
                 age: getAge(userInfo.rows[0].birth_date),
                 distance: parseInt(getDistance(JSON.parse(user.location).lat, JSON.parse(user.location).lng, JSON.parse(userInfo.rows[0].location).lat, JSON.parse(userInfo.rows[0].location).lng, 'K')),
                 profilPicture: userInfo.rows[0].profil_picture,
-                isLiked: true
+                isLiked: true,
+                tags: tags.rows.map(item => ({ id: item.id, interestId: item.interest_id }))
               });
             }
           }
@@ -770,6 +773,7 @@ const resolvers = {
             const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [like.to_user, 1]);
             if (userInfo.rowCount === 1) {
               const userIsLiked = await client.query('SELECT * FROM user_like WHERE from_user = $1 AND to_user = $2', [user.id, userInfo.rows[0].id]);
+              const tags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userInfo.rows[0].id]);
               result.push({
                 id: userInfo.rows[0].id,
                 popularityScore: userInfo.rows[0].popularity_score,
@@ -777,7 +781,8 @@ const resolvers = {
                 age: getAge(userInfo.rows[0].birth_date),
                 distance: parseInt(getDistance(JSON.parse(user.location).lat, JSON.parse(user.location).lng, JSON.parse(userInfo.rows[0].location).lat, JSON.parse(userInfo.rows[0].location).lng, 'K')),
                 profilPicture: userInfo.rows[0].profil_picture,
-                isLiked: userIsLiked.rowCount === 0 ? false : true
+                isLiked: userIsLiked.rowCount === 0 ? false : true,
+                tags: tags.rows.map(item => ({ id: item.id, interestId: item.interest_id }))
               });
             }
           }

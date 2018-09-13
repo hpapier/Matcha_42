@@ -139,7 +139,7 @@ class Main extends Component {
       return { ...item, tagPond: this.checkTags(item) };
     });
 
-    newList.sort((a, b) => { b.tagPond - a.tagPond });
+    newList.sort((a, b) => b.tagPond - a.tagPond);
     return newList.map(item => {
       delete item.tagPond;
       return item;
