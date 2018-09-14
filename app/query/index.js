@@ -373,16 +373,6 @@ export const REPORT_USER_MUTATION = gql`
 
 export const NOTIFICATION_COMPONENT_QUERY = gql`
   {
-    getUserNotification {
-      id
-      fromUserId
-      fromUserName
-      fromUserProfilPicture
-      fromUserGenre
-      action
-      date
-    }
-
     userInformations {
       id
       username
@@ -412,6 +402,16 @@ export const NOTIFICATION_COMPONENT_QUERY = gql`
     getInterests {
       id
       name
+    }
+
+    getUserNotification {
+      id
+      fromUserId
+      fromUserName
+      fromUserProfilPicture
+      fromUserGenre
+      action
+      date
     }
   }
 `;
@@ -518,14 +518,6 @@ export const MESSAGE_SUBSCRIPTION = gql`
 
 export const MESSAGE_COMPONENT_QUERY = gql`
   {
-    getUserRoom {
-      id
-      userProfilPicture
-      userProfilUsername
-      lastMessage
-      lastMessageDate
-    }
-
     userInformations {
       id
       username
@@ -555,6 +547,15 @@ export const MESSAGE_COMPONENT_QUERY = gql`
     getInterests {
       id
       name
+    }
+
+    getUserRoom {
+      id
+      userId
+      userProfilPicture
+      userProfilUsername
+      lastMessage
+      lastMessageDate
     }
   }
 `;

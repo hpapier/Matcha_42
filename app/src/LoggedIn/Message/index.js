@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import './index.sass';
 import { MESSAGE_COMPONENT_QUERY } from '../../../query';
 import RoomView from './RoomView';
+import Logout from '../Utils/Logout';
 import { saveRoomList, saveUserInfo, saveInterest } from '../../../store/action/synchronous';
 
 
@@ -21,13 +22,20 @@ class Notification extends Component {
     saveInterest(getInterests);
   }
 
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
+
+
   render() {
     return (
-      <Query query={MESSAGE_COMPONENT_QUERY} onCompleted={data => this.onCompleteHandler(data)} pollInterval={500}>
+      <Query query={MESSAGE_COMPONENT_QUERY} onCompleted={data => this.onCompleteHandler(data)} pollInterval={!this._unmount ? 500 : 0}>
       {
         ({ loading, error }) => {
           if (loading)
-            return <div><div>loading</div></div>;
+            return <div id='lgi-msg-loading'><div id='lgi-msg-loading-animation'></div></div>;
 
           if (error) {
             if (error.graphQLErrors && error.graphQLErrors[0].message) {
@@ -35,7 +43,7 @@ class Notification extends Component {
                 return <Logout />;
             }
 
-            return <div>Oups! Une erreur est survenu..</div>;
+            return <div id='lgi-msg-error'>Oups! Une erreur est survenu..</div>;
           }
 
           return (

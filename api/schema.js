@@ -250,6 +250,7 @@ const typeDefs = `
 
   type RoomList {
     id: Int
+    userId: Int
     userProfilPicture: String
     userProfilUsername: String
     lastMessage: String
@@ -384,7 +385,7 @@ const resolvers = {
         //  const ll = await lol();
         const user = await verifyUserToken(ctx.headers);
         if (!user)
-          return new Error('User not found');
+          return new Error('Not auth');
   
         const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
@@ -925,6 +926,12 @@ const resolvers = {
 
     getUserRoom: async (_, args, ctx) => {
       try {
+        const lol = () => new Promise((r, f) => {
+           setTimeout(() => r(), 3000);
+         });
+
+        const ll = await lol();
+        return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -946,6 +953,7 @@ const resolvers = {
                 const lastMsg = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date DESC LIMIT 1', [room.id]);
                 result.push({
                   id: room.id,
+                  userId: partnerInfo.rows[0].id,
                   userProfilPicture: partnerInfo.rows[0].profil_picture,
                   userProfilUsername: partnerInfo.rows[0].username,
                   lastMessage: lastMsg.rowCount === 0 ? 'empty' : lastMsg.rows[0].content,

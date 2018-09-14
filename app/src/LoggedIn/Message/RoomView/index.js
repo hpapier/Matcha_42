@@ -15,6 +15,7 @@ class RoomView extends Component {
     msgView: false,
     roomInfo: {
       roomId: '',
+      partnerId: '',
       partnerPp: '',
       partnerUsername: ''
     }
@@ -27,7 +28,8 @@ class RoomView extends Component {
     const notifDate = new Date(date);
     const timestamp = Math.abs(new Date() - notifDate);
 
-    if (timestamp < 86400000) {
+    const diffH = new Date().getHours() - new Date(timestamp).getHours();
+    if (diffH >= 0) {
       const h = notifDate.getHours() < 10 ? '0' + notifDate.getHours() : notifDate.getHours();
       const m = notifDate.getMinutes() === 0 ? '' : notifDate.getMinutes() < 10 ? '0' + notifDate.getMinutes() : notifDate.getMinutes();
 
@@ -41,13 +43,13 @@ class RoomView extends Component {
 
       switch (notifDate.getMonth()) {
         case 1:
-          month = 'février';
+          month = 'févr.';
           break;
         case 2:
           month = 'mars';
           break;
         case 3:
-          month = 'avril';
+          month = 'avr.';
           break;
         case 4:
           month = 'mai';
@@ -56,25 +58,25 @@ class RoomView extends Component {
           month = 'juin';
           break;
         case 6:
-          month = 'juillet';
+          month = 'juil.';
           break;
         case 7:
           month = 'août';
           break;
         case 8:
-          month = 'septembre';
+          month = 'sept.';
           break;
         case 9:
-          month = 'octobre';
+          month = 'oct.';
           break;
         case 10:
-          month = 'novembre';
+          month = 'nov.';
           break;
         case 11:
-          month = 'décembre';
+          month = 'déc.';
           break;
 
-        default: 'Janvier'
+        default: 'janv.'
       }
 
       return `${day} ${month} ${year}, ${hours}h${minutes}`;
@@ -88,7 +90,7 @@ class RoomView extends Component {
       return <div className='lgi-message-view-box-item-empty'>Vous n'avez pas de messages</div>;
 
     return roomList.map(item => (
-      <div className='lgi-message-view-box-item' key={item.id * Math.random()} onClick={() => this.setState({ msgView: true, roomInfo: { roomId: item.id, partnerPp: item.userProfilPicture, partnerUsername: item.userProfilUsername }})}>
+      <div className='lgi-message-view-box-item' key={item.id * Math.random()} onClick={() => this.setState({ msgView: true, roomInfo: { roomId: item.id, partnerPp: item.userProfilPicture, partnerUsername: item.userProfilUsername, partnerId: item.userId }})}>
         <div className='lgi-message-view-box-item-img'>
           <img src={item.userProfilPicture} alt='profil-picture' className='lgi-message-view-box-item-img-picture' />
         </div>
