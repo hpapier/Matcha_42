@@ -27,10 +27,12 @@ const Homepage = props => {
           return <div id='profil-loading-box'><div id='profil-loading'></div></div>;
 
         if (error) {
-          if (error.graphQLErrors[0].message === 'Not auth')
-            return <Logout />;
-          else
-            return <div id='lgi-profil-error'>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
+          if (error.graphQLErrors && error.graphQLErrors[0]) {
+            if (error.graphQLErrors[0].message === 'Not auth')
+              return <Logout />;
+          }
+          
+          return <div id='lgi-profil-error'>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
         } 
 
         const getComponent = () => {

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import './index.sass';
 import { NOTIFICATION_COMPONENT_QUERY } from '../../../query';
 import View from './View';
-import NotComplete from '../NotComplete';
+import Logout from '../Utils/Logout';
 import { saveNotifList, saveUserInfo, saveInterest } from '../../../store/action/synchronous';
 
 
@@ -31,6 +31,7 @@ class Notification extends Component {
             return <div><div></div></div>;
 
           if (error) {
+            console.log(error.graphQLErrors);
             if (error.graphQLErrors && error.graphQLErrors[0].message) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;

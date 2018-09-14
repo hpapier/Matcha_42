@@ -18,11 +18,13 @@ class View extends Component {
   };
 
   componentDidMount() {
-    console.log(this.bodyRef.scrollTo(0, this.bodyRef.scrollHeight));
+    if (this.props.currentMsgRoom.length > 0)
+      this.bodyRef.scrollTo(0, this.bodyRef.scrollHeight);
   }
 
-  handleSubmitMsg = mutation => {
-
+  handleSubmitMsg = (e, mutation) => {
+    console.log('ON SUBMIT');
+    e.preventDefault();
   }
 
   getDate = date => {
@@ -32,7 +34,8 @@ class View extends Component {
     const notifDate = new Date(date);
     const timestamp = Math.abs(new Date() - notifDate);
 
-    if (timestamp < 86400000) {
+    const diffH = new Date().getHours() - new Date(timestamp).getHours();
+    if (diffH > 0) {
       const h = notifDate.getHours() < 10 ? '0' + notifDate.getHours() : notifDate.getHours();
       const m = notifDate.getMinutes() === 0 ? '' : notifDate.getMinutes() < 10 ? '0' + notifDate.getMinutes() : notifDate.getMinutes();
 
@@ -46,13 +49,13 @@ class View extends Component {
 
       switch (notifDate.getMonth()) {
         case 1:
-          month = 'février';
+          month = 'févr.';
           break;
         case 2:
           month = 'mars';
           break;
         case 3:
-          month = 'avril';
+          month = 'avr.';
           break;
         case 4:
           month = 'mai';
@@ -61,28 +64,28 @@ class View extends Component {
           month = 'juin';
           break;
         case 6:
-          month = 'juillet';
+          month = 'juil.';
           break;
         case 7:
           month = 'août';
           break;
         case 8:
-          month = 'septembre';
+          month = 'sept.';
           break;
         case 9:
-          month = 'octobre';
+          month = 'oct.';
           break;
         case 10:
-          month = 'novembre';
+          month = 'nov.';
           break;
         case 11:
-          month = 'décembre';
+          month = 'déc.';
           break;
 
-        default: 'Janvier'
+        default: 'janv.'
       }
 
-      return `${day} ${month} ${year}, ${hours}h${minutes}`;
+      return `${day} ${month}, ${hours}h${minutes}`;
     }
   };
 
@@ -96,7 +99,7 @@ class View extends Component {
             <div id='lgi-message-message-view-box'>
               <div id='lgi-message-message-view-box-list'>
               {
-                currentMsgRoom ?
+                currentMsgRoom.length > 0 ?
                 <div id='lgi-message-message-view-box-list-box' ref={ref => this.bodyRef = ref}>
                 {
                   currentMsgRoom.map(item => (
@@ -112,16 +115,16 @@ class View extends Component {
                   ))
                 }
                 </div> :
-                <div>Aucun message disponible</div>
+                <div id='lgi-message-message-view-box-list-box-empty'>Aucun message disponible</div>
               }
               </div>
 
-              <form id='lgi-message-message-view-box-input' onSubmit={() => this.handleSubmitMsg(sendUserMsg)}>
-                <div>
-                  <input type='text' placeholder='Écrivez quelque chose, un bonjour par exemple…' />
-                  <button type='submit'>envoyer</button>
+              <form id='lgi-message-message-view-box-input' onSubmit={e => this.handleSubmitMsg(e, sendUserMsg)}>
+                <div id='lgi-message-message-view-box-input-element'>
+                  <input type='text' placeholder='Écrivez quelque chose, un bonjour par exemple…' id='lgi-message-message-view-box-input-element-input' onChange={e => this.setState({ inputMsg: e.target.value })}/>
+                  <button disabled={this.state.inputMsg ? false : true} type='submit' id='lgi-message-message-view-box-input-element-submit'>envoyer</button>
                 </div>
-                { this.state.inputErrorMsg ? <div>{this.state.inputErrorMsg}</div> : null }
+                { this.state.inputErrorMsg ? <div id='lgi-message-message-view-box-input-element-error'>{this.state.inputErrorMsg}</div> : null }
               </form>
             </div>
 

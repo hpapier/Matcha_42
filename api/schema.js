@@ -425,7 +425,7 @@ const resolvers = {
         //  const ll = await lol();
         const user = await verifyUserToken(ctx.headers);
         if (!user)
-          return new Error('User not found');
+          return new Error('Not auth');
   
         const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
@@ -459,7 +459,7 @@ const resolvers = {
       try {
         const user = await verifyUserToken(ctx.headers);
         if (!user)
-          return new Error('Not authorized');
+          return new Error('Not auth');
   
         const interests = await client.query('SELECT * FROM interests');
         return interests.rows;
@@ -625,7 +625,6 @@ const resolvers = {
         };
         
       } catch(e) {
-        console.log(e);
         return e;
       }
     },
@@ -966,6 +965,14 @@ const resolvers = {
 
     getRoomMessage: async (_, { roomId }, ctx) => {
       try {
+        // /////
+        // const lol = () => new Promise((r, f) => {
+        //    setTimeout(() => r(), 3000);
+        //  });
+
+        // const ll = await lol();
+        // return [];
+        /////
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -986,7 +993,7 @@ const resolvers = {
         if (checkIfBlocked.rowCount > 0)
           return new Error('User blocked');
 
-        const msgList = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date DESC LIMIT 150', [roomId]);
+        const msgList = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date ASC LIMIT 150', [roomId]);
         if (msgList.rowCount === 0)
           return [];
 
