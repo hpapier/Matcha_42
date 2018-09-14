@@ -37,7 +37,8 @@ import {
   UPDATE_LIKE_STATUS_USER_VISITE_LIST,
   SAVE_USER_MATCH_LIST,
   SAVE_LIKER_LIST,
-  SAVE_ROOM_LIST
+  SAVE_ROOM_LIST,
+  SAVE_TO_CURRENT_MSG_ROOM
 } from '../../constant';
 
 export const clearStore = () => ({
@@ -228,5 +229,10 @@ export const saveLikerList = data => ({
 
 export const saveRoomList = data => ({
   type: SAVE_ROOM_LIST,
+  payload: data
+});
+
+export const saveToCurrentMsgRom = data => ({
+  type: SAVE_TO_CURRENT_MSG_ROOM,
   payload: data
 });

@@ -1,0 +1,114 @@
+#lgi-message-message-view-box
+  display: flex
+  flex-direction: column
+  
+#lgi-message-message-view-box-list
+  height: 500px
+  display: flex
+  flex-direction: column-reverse
+  background: #fff
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  padding-bottom: 20px
+
+#lgi-message-message-view-box-list-box
+  width: 95%
+  margin: auto
+  overflow: scroll
+  position: relative
+
+#lgi-message-message-view-box-list-box::-webkit-scrollbar
+  display: none
+
+#lgi-message-message-view-box-input
+  padding: 20px 0px
+  min-width: 100%
+  max-width: 100%
+  background: #ffffff
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05)
+  margin-top: 1px
+
+// Msg style
+.lgi-message-message-view-box-list-box-sender
+  width: 100%
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  flex-direction: row-reverse
+  margin: 15px 0px
+
+.lgi-message-message-view-box-list-box-receiver
+  width: 100%
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  margin: 15px 0px
+
+.lgi-message-message-view-box-list-box-img-sender
+  width: 45px
+  height: 45px
+  background: #F2F4F7
+  border-radius: 50%
+  margin-left: 25px
+
+.lgi-message-message-view-box-list-box-img-receiver
+  width: 45px
+  height: 45px
+  background: #F2F4F7
+  border-radius: 50%
+  margin-right: 25px
+
+.lgi-message-message-view-box-list-box-img-el
+  width: 45px
+  height: 45px
+  object-fit: cover
+  border-radius: 50%
+
+.lgi-message-message-view-box-list-box-sender-msg
+  min-width: 150px
+  min-height: 40px
+  border-radius: 15px
+  background: #E6C2AA
+  display: flex
+  position: relative
+  align-items: center
+
+.lgi-message-message-view-box-list-box-receiver-msg
+  background: #F2F4F7
+  min-width: 150px
+  min-height: 40px
+  border-radius: 15px
+  display: flex
+  position: relative
+  align-items: center
+
+.lgi-message-message-view-box-list-box-sender-msg-content
+  color: #ffffff
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  margin: 0px 50px 0px 20px
+
+.lgi-message-message-view-box-list-box-receiver-msg-content
+  color: #66757F
+  font-family: 'Source sans pro', sans-serif
+  font-size: .75em
+  font-weight: 400
+  margin: 0px 50px 0px 20px
+
+.lgi-message-message-view-box-list-box-sender-msg-date
+  position: absolute
+  right: 10px
+  top: 5px
+  color: #ffffff
+  font-family: 'Source sans pro', sans-serif
+  font-size: .625em
+  font-weight: 300
+
+.lgi-message-message-view-box-list-box-receiver-msg-date
+  position: absolute
+  right: 10px
+  top: 5px
+  color: #66757F
+  font-family: 'Source sans pro', sans-serif
+  font-size: .625em
+  font-weight: 300

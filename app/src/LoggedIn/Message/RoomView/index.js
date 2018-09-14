@@ -5,12 +5,19 @@ import { connect } from 'react-redux';
 
 // Locals imports.
 import './index.sass';
+import MessageView from './MessageView';
+import backIcon from '../../../../assets/back.svg';
 
 
 // RoomView Component.
 class RoomView extends Component {
   state = {
-    msgView: false
+    msgView: false,
+    roomInfo: {
+      roomId: '',
+      partnerPp: '',
+      partnerUsername: ''
+    }
   };
 
   getDate = date => {
@@ -81,7 +88,7 @@ class RoomView extends Component {
       return <div className='lgi-message-view-box-item-empty'>Vous n'avez pas de messages</div>;
 
     return roomList.map(item => (
-      <div className='lgi-message-view-box-item' key={item.id * Math.random()} onClick={() => this.setState({ msgView: true })}>
+      <div className='lgi-message-view-box-item' key={item.id * Math.random()} onClick={() => this.setState({ msgView: true, roomInfo: { roomId: item.id, partnerPp: item.userProfilPicture, partnerUsername: item.userProfilUsername }})}>
         <div className='lgi-message-view-box-item-img'>
           <img src={item.userProfilPicture} alt='profil-picture' className='lgi-message-view-box-item-img-picture' />
         </div>
@@ -97,12 +104,23 @@ class RoomView extends Component {
   render() {
     return (
       <div id='lgi-message-view'>
-        <div id='lgi-message-view-title'>Tous vos messages</div>
+        <div id='lgi-message-view-title'>
+          {
+            this.state.msgView ?
+            <div className='lgi-message-view-title-action'>
+              <button className='lgi-message-view-title-action-back' onClick={() => this.setState({ msgView: false, roomInfo: { roomId: '', partnerPp: '', partnerUsername: '' }})}>
+                <img src={backIcon} alt='back-icon' />
+              </button>
+              <div>{ this.state.roomInfo.partnerUsername}</div>
+            </div>:
+            <div>Tous vos messages</div>
+          }
+        </div>
         <div id='lgi-message-view-box'>
         { this.props.user.isComplete ?
             !this.state.msgView ?
             this.displayRoomList() :
-            <div>message view</div> :
+            <MessageView roomInfo={this.state.roomInfo} /> :
           <div className='lgi-message-view-box-item-empty'>Vous n'avez pas de messages</div>
         }
         </div>

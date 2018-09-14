@@ -60,6 +60,7 @@ export const RESET_PASSWORD_MUTATION = gql`
 export const GET_USER_INFO_QUERY = gql`
   {
     userInformations {
+      id
       username
       lastname
       firstname
@@ -383,6 +384,7 @@ export const NOTIFICATION_COMPONENT_QUERY = gql`
     }
 
     userInformations {
+      id
       username
       lastname
       firstname
@@ -525,6 +527,7 @@ export const MESSAGE_COMPONENT_QUERY = gql`
     }
 
     userInformations {
+      id
       username
       lastname
       firstname
@@ -560,4 +563,16 @@ export const SEND_MSG_MUTATION = gql`
   mutation sendUserMsg($toUser: Int!, $content: String!) {
     sendUserMsg(toUser: $toUser, content: $content)
   }
+`;
+
+export const GET_ROOM_MESSAGE_QUERY = gql`
+ query getRoomMessage($roomId: Int!){
+   getRoomMessage(roomId: $roomId) {
+     id
+     fromUser
+     toUser
+     content
+     date
+   }
+ }
 `;

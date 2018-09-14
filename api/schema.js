@@ -126,6 +126,7 @@ const typeDefs = `
   }
 
   type UserInformations {
+    id: Int
     username: String
     lastname: String
     firstname: String
@@ -255,6 +256,14 @@ const typeDefs = `
     lastMessageDate: String
   }
 
+  type Messages {
+    id: Int
+    fromUser: Int
+    toUser: Int
+    content: String
+    date: String
+  }
+
   type Query {
     userStatus: Status
     emailTokenVerification(username: String!, emailToken: String!): MessageStatus
@@ -275,6 +284,7 @@ const typeDefs = `
     getLikerList: [VisitorList]
     getCountMessage: NotifCount
     getUserRoom: [RoomList]
+    getRoomMessage(roomId: Int!): [Messages]
   }
   
   type Mutation {
@@ -383,6 +393,7 @@ const resolvers = {
         pubSub.publish('messageCount');
         pubSub.publish('notificationCount');
         return {
+          id: user.id,
           username: user.username,
           lastname: user.lastname,
           firstname: user.firstname,
@@ -421,6 +432,7 @@ const resolvers = {
         await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
         const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
         return {
+          id: user.id,
           username: user.username,
           lastname: user.lastname,
           firstname: user.firstname,
@@ -948,6 +960,41 @@ const resolvers = {
         return result;
       } catch (e) {
         console.log(e);
+        return e;
+      }
+    },
+
+    getRoomMessage: async (_, { roomId }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const checkIfExist = await client.query('SELECT * FROM room WHERE id = $1', [roomId]);
+        if (checkIfExist.rowCount === 0)
+          return new Error('Room does\'nt exist');
+
+        let partnerId = checkIfExist.rows[0].user_id_one;
+        if (parseInt(partnerId) === parseInt(user.id))
+          partnerId = checkIfExist.rows[0].user_id_two;
+
+        const checkMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, partnerId]);
+        if (checkMatch.rowCount === 0)
+          return new Error('No match');
+
+        const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [user.id, partnerId]);
+        if (checkIfBlocked.rowCount > 0)
+          return new Error('User blocked');
+
+        const msgList = await client.query('SELECT * FROM messages WHERE room_id = $1 ORDER BY date DESC LIMIT 150', [roomId]);
+        if (msgList.rowCount === 0)
+          return [];
+
+        await client.query('UPDATE messages SET is_viewed = $1 WHERE to_user = $2 AND room_id = $3', [1, user.id, roomId]);
+        pubSub.publish('messageCount');
+
+        return msgList.rows.map(item => ({ id: item.id, fromUser: parseInt(item.from_user), toUser: parseInt(item.to_user), content: item.content, date: item.date }));
+      } catch (e) {
         return e;
       }
     }

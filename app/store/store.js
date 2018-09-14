@@ -1,5 +1,6 @@
 const store = {
   user: {
+    id: null,
     username: '',
     lastname: '',
     firstname: '',
@@ -42,7 +43,8 @@ const store = {
   userVisiteList: [],
   userMatchList: [],
   likerList: [],
-  roomList: []
+  roomList: [],
+  currentMsgRoom: []
 };
 
 export default store;

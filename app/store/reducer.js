@@ -38,7 +38,8 @@ import {
   UPDATE_LIKE_STATUS_USER_VISITE_LIST,
   SAVE_USER_MATCH_LIST,
   SAVE_LIKER_LIST,
-  SAVE_ROOM_LIST
+  SAVE_ROOM_LIST,
+  SAVE_TO_CURRENT_MSG_ROOM
 } from './constant';
 
 export default (state = initialState, action) => {
@@ -47,6 +48,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         user: {
+          id: action.payload.id,
           username: action.payload.username,
           lastname: action.payload.lastname,
           firstname: action.payload.firstname,
@@ -340,6 +342,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         roomList: action.payload
+      };
+    case SAVE_TO_CURRENT_MSG_ROOM:
+      return {
+        ...state,
+        currentMsgRoom: action.payload
       };
     default:
       return state;
