@@ -31,7 +31,7 @@ class Notification extends Component {
 
   render() {
     return (
-      <Query query={MESSAGE_COMPONENT_QUERY} onCompleted={data => this.onCompleteHandler(data)} pollInterval={!this._unmount ? 500 : 0}>
+      <Query query={MESSAGE_COMPONENT_QUERY} onCompleted={data => this.onCompleteHandler(data)} pollInterval={500}>
       {
         ({ loading, error }) => {
           if (loading)

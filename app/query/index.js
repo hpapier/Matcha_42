@@ -567,13 +567,19 @@ export const SEND_MSG_MUTATION = gql`
 `;
 
 export const GET_ROOM_MESSAGE_QUERY = gql`
- query getRoomMessage($roomId: Int!){
-   getRoomMessage(roomId: $roomId) {
-     id
-     fromUser
-     toUser
-     content
-     date
-   }
- }
+  query getRoomMessage($roomId: Int!){
+    getRoomMessage(roomId: $roomId) {
+      id
+      fromUser
+      toUser
+      content
+      date
+    }
+  }
+`;
+
+export const DISCONNECT_USER_QUERY = gql`
+  {
+    disconnectUser
+  }
 `;

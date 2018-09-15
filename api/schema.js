@@ -75,12 +75,12 @@ const updateStatus = async (userId) => {
     const img = await client.query('SELECT * FROM images WHERE user_id = $1', [userId]);
     const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [userId]);
 
-    const { bio, profil_picture, location } = user.rows[0];
+    const { bio, profil_picture, location, popularity_score } = user.rows[0];
     if (img.rowCount === 0 || userInterest.rowCount === 0 || !bio || !location || !profil_picture)
-      await client.query('UPDATE user_info SET iscomplete = $1 WHERE id = $2', [0, userId]);
+      await client.query('UPDATE user_info SET (iscomplete, popularity_score) = ($1, $2) WHERE id = $3', [0, (popularity_score === 0 || popularity_score === 10) ? 0 : popularity_score - 10, userId]);
     else
-      await client.query('UPDATE user_info SET iscomplete = $1 WHERE id = $2', [1, userId]);
-    
+      await client.query('UPDATE user_info SET (iscomplete, popularity_score) = ($1, $2) WHERE id = $3', [1, (popularity_score === 0) ? 10 : popularity_score, userId]);
+
     return true;
   } catch (e) {
     return e;
@@ -286,6 +286,7 @@ const typeDefs = `
     getCountMessage: NotifCount
     getUserRoom: [RoomList]
     getRoomMessage(roomId: Int!): [Messages]
+    disconnectUser: Boolean
   }
   
   type Mutation {
@@ -335,9 +336,11 @@ const typeDefs = `
 const resolvers = {
   Query: {
     userStatus: async (parent, args, ctx) => {
-      const token = await verifyUserToken(ctx.headers);
-      if (token)
+      const user = await verifyUserToken(ctx.headers);
+      if (user) {
+        await client.query('UPDATE user_info SET (isconnected, last_connexion) = ($1, $2) WHERE id = $3', [1, new Date(), user.id]);
         return { status: true };
+      }
 
       return { status: false };
     },
@@ -926,12 +929,6 @@ const resolvers = {
 
     getUserRoom: async (_, args, ctx) => {
       try {
-        const lol = () => new Promise((r, f) => {
-           setTimeout(() => r(), 3000);
-         });
-
-        const ll = await lol();
-        return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -1011,6 +1008,20 @@ const resolvers = {
         return msgList.rows.map(item => ({ id: item.id, fromUser: parseInt(item.from_user), toUser: parseInt(item.to_user), content: item.content, date: item.date }));
       } catch (e) {
         return e;
+      }
+    },
+
+    disconnectUser: async (_,  args, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return false;
+
+        await client.query('UPDATE user_info SET (isconnected, last_connexion) = ($1, $2) WHERE id = $3', [0, new Date(), user.id]);
+        return true;
+      } catch (e) {
+        console.log(e);
+        return false;
       }
     }
   },

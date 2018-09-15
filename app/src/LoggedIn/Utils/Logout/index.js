@@ -1,35 +1,40 @@
+// Modules imports.
 import React, { Component } from 'react';
 import { ApolloConsumer } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 
+// Locals imports.
 import { clearStore } from '../../../../store/action/synchronous';
 
-class Logout extends Component {
-  componentDidMount() {
-    localStorage.removeItem('auth_token');
-    this.props.clearStore();
-    this.props.history.push('/');
-    this.client.resetStore();
-  }
 
+// Logout Component.
+class Logout extends Component {
   render() {
     return (
       <ApolloConsumer>
       {
         client => {
-          this.client = client;
-          return null;
+          client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; });
+          this.props.clearStore();
+          localStorage.removeItem('auth_token');
+          return <Redirect to='/' />
         }
       }
       </ApolloConsumer>
-    )
-  }
-}
+    );
+  };
+};
 
+
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   clearStore: () => dispatch(clearStore())
 });
 
-export default connect(null, mapDispatchToProps)(withRouter(Logout));
+
+// Export.
+export default connect(null, mapDispatchToProps)(Logout);
