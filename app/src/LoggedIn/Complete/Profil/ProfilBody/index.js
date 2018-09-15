@@ -228,8 +228,14 @@ class ProfilBody extends Component {
         }
       }
 
-      if (!this._unmount)
-        this.setState({ modalMsgLoading: false, modalMsg: true, modalMsgErrorMsg: 'Oups! Une erreur est survenu.' });
+      if (!this._unmount) {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'You are blocked')
+            this.setState({ modalMsgLoading: false, modalMsg: true, modalMsgErrorMsg: 'Vous ne pouvez plus envoyer de messages a un utilisateur bloqué.' });
+        }
+        else
+          this.setState({ modalMsgLoading: false, modalMsg: true, modalMsgErrorMsg: 'Oups! Une erreur est survenu.' });
+      }
     });
   }
 

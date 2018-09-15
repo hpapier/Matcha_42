@@ -627,7 +627,7 @@ const resolvers = {
 
         let result = [];
         for (let visitor of visitorList.rows) {
-          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [user.id, visitor.from_user]);
+          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [user.id, visitor.from_user]);
           if (isBlocked.rowCount === 0) {
             const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [visitor.from_user, 1]);
             if (userInfo.rowCount > 0) {
@@ -856,7 +856,7 @@ const resolvers = {
 
         let result = [];
         for (let liker of likerList.rows) {
-          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [user.id, liker.from_user]);
+          const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [user.id, liker.from_user]);
           if (isBlocked.rowCount === 0) {
             const userInfo = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [liker.from_user, 1]);
             if (userInfo.rowCount > 0) {
@@ -1711,7 +1711,7 @@ const resolvers = {
         if (!user)
           return new Error('Not auth');
         
-        const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2)', [toUser, user.id]);
+        const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [toUser, user.id]);
         if (isBlocked.rowCount === 1)
           return new Error('You are blocked');
 
