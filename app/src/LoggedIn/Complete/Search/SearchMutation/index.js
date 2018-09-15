@@ -1,7 +1,8 @@
 // Modules imports.
 import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import { Mutation, withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 // Local import.
@@ -114,9 +115,15 @@ class SearchMutation extends Component {
       this.props.saveUserPref(result.data.updateUserPreferences);
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.props.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; });
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -250,4 +257,4 @@ const mapDispatchToProps = dispatch => ({
   clearStore: () => dispatch(clearStore())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchMutation);
+export default connect(mapStateToProps, mapDispatchToProps)(withApollo(withRouter(SearchMutation)));

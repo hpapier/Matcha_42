@@ -34,10 +34,15 @@ class Geolocation extends Component {
       }
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; })
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -70,7 +75,8 @@ class Geolocation extends Component {
     return (
       <Mutation mutation={UPDATE_GEOLOCATION_MUTATION}>
       {
-        (updateUserGeolocation, { loading, error, data }) => {
+        (updateUserGeolocation, { loading, client }) => {
+          this.client = client;
           const { errorMsg, geolocationLoading } = this.state;
           const { geolocation } = this.props;
           return (

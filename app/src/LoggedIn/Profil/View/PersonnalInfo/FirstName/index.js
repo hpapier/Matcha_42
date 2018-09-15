@@ -54,10 +54,15 @@ class FirstName extends Component {
       }
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; })
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -75,7 +80,8 @@ class FirstName extends Component {
     return (
       <Mutation mutation={UPDATE_FIRSTNAME_MUTATION}>
       {
-        (updateUserFirstname, { loading, error, data }) => {
+        (updateUserFirstname, { loading, client }) => {
+          this.client = client;
           const { firstnameInput, modifActive, errorMsg } = this.state;
           const { userFirstname } = this.props;
           return (
@@ -132,6 +138,8 @@ class FirstName extends Component {
   }
 }
 
+
+// Redux connection.
 const mapStateToProps = state => ({
   userFirstname: state.user.firstname
 });
@@ -139,7 +147,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateUserFirstnameMechanism: firstname => dispatch(updateUserFirstnameMechanism(firstname)),
   clearStore: () => dispatch(clearStore())
-})
+});
+
 
 // Exports.
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FirstName));

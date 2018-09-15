@@ -4,7 +4,7 @@ import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 
 
-// Local import
+// Locals imports.
 import { GET_USER_INFO_QUERY } from '../../../query';
 import Logout from '../Utils/Logout';
 import { saveUserInfo, saveInterest } from '../../../store/action/synchronous';
@@ -54,10 +54,13 @@ const Homepage = props => {
   );
 };
 
+
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   saveUserInfo: data => dispatch(saveUserInfo(data)),
   saveInterest: data => dispatch(saveInterest(data))
-})
+});
+
 
 // Export.
 export default connect(null, mapDispatchToProps)(Homepage);

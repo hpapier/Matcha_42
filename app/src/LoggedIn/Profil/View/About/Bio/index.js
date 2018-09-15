@@ -48,10 +48,15 @@ class Bio extends Component {
       }
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; })
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -68,8 +73,9 @@ class Bio extends Component {
     return (
       <Mutation mutation={UPDATE_BIO_MUTATION}>
       {
-        (updateUserBio, { loading, error, data }) => {
-          const { errorMsg, modifActive, bioInput } = this.state;
+        (updateUserBio, { loading, client }) => {
+          this.client = client;
+          const { errorMsg, modifActive } = this.state;
           const { bio } = this.props;
           return (
             <div id='lgi-profil-view-pi-bio'>

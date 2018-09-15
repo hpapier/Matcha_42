@@ -66,8 +66,11 @@ class ProfilBody extends Component {
         }
       })
       .catch(error => {
-        if (error.graphQLErrors) {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
           if (error.graphQLErrors[0].message === 'Not auth') {
+            client.resetStore()
+              .then(r => { return; })
+              .catch(r => { return; });
             localStorage.removeItem('auth_token');
             this.props.clearStore();
             this.props.history.push('/');
@@ -78,6 +81,7 @@ class ProfilBody extends Component {
           this.setState({ blockLoading: false });
       });
     } else {
+
       client.mutate({
         mutation: UNBLOCK_USER_MUTATION,
         variables: { userId: id }
@@ -89,8 +93,11 @@ class ProfilBody extends Component {
         }
       })
       .catch(error => {
-        if (error.graphQLErrors) {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
           if (error.graphQLErrors[0].message === 'Not auth') {
+            client.resetStore()
+              .then(r => { return; })
+              .catch(r => { return; });
             localStorage.removeItem('auth_token');
             this.props.clearStore();
             this.props.history.push('/');
@@ -119,14 +126,18 @@ class ProfilBody extends Component {
         }
       })
       .catch(error => {
-        if (error.graphQLErrors) {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
           if (error.graphQLErrors[0].message === 'Not auth') {
+            client.resetStore()
+              .then(r => { return; })
+              .catch(r => { return; });
             localStorage.removeItem('auth_token');
             this.props.clearStore();
             this.props.history.push('/');
           }
         }
       });
+
     } else {
       client.mutate({
         mutation: UNLIKE_USER_MUTATION,
@@ -139,10 +150,15 @@ class ProfilBody extends Component {
         }
       })
       .catch(error => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            client.resetStore()
+              .then(r => { return; })
+              .catch(r => { return; });
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
         }
       });
     }
@@ -164,13 +180,14 @@ class ProfilBody extends Component {
         this.setState({ modalReportLoading: false, modalReport: false, modalReportErrorMsg: '' });
     })
     .catch(error => {
-      if (error) {
-        if (error.graphQLErrors && error.graphQLErrors[0]) {
-          if (error.graphQLErrors[0].message === 'Not auth') {
-            localStorage.removeItem('auth_token');
-            this.props.clearStore();
-            this.props.history.push('/');
-          }
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          client.resetStore()
+            .then(r => { return; })
+            .catch(r => { return; });
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
         }
       }
 
@@ -200,13 +217,14 @@ class ProfilBody extends Component {
         this.setState({ modalMsgLoading: false, modalMsg: false, modalMsgErrorMsg: '', modalMsgInput: '' });
     })
     .catch(error => {
-      if (error) {
-        if (error.graphQLErrors && error.graphQLErrors[0]) {
-          if (error.graphQLErrors[0].message === 'Not auth') {
-            localStorage.removeItem('auth_token');
-            this.props.clearStore();
-            this.props.history.push('/');
-          }
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          client.resetStore()
+            .then(r => { return; })
+            .catch(r => { return; });
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
         }
       }
 

@@ -4,6 +4,7 @@ import { Mutation } from 'react-apollo';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+
 // Locals imports.
 import './index.sass';
 import { UPDATE_PASSWORD_MUTATION } from '../../../../../../query';
@@ -57,10 +58,15 @@ class Password extends Component {
       }
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; })
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -81,7 +87,8 @@ class Password extends Component {
     return (
       <Mutation mutation={UPDATE_PASSWORD_MUTATION}>
       {
-        (updateUserPassword, { loading }) => {
+        (updateUserPassword, { loading, client }) => {
+          this.client = client;
           const { modifActive, errorMsg, previousPwd, newPwd, ePrePwd, eNewPwd } = this.state;
           return (
             <div>
@@ -143,8 +150,12 @@ class Password extends Component {
   } 
 }
 
+
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   clearStore: () => dispatch(clearStore())
 });
 
+
+// Export.
 export default connect(null, mapDispatchToProps)(withRouter(Password));

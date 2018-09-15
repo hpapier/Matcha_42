@@ -59,10 +59,15 @@ class UserName extends Component {
       }
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; })
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -83,7 +88,8 @@ class UserName extends Component {
     return (
       <Mutation mutation={UPDATE_USERNAME_MUTATION}>
       {
-        (updateUsername, { loading }) => {
+        (updateUsername, { loading, client }) => {
+          this.client = client;
           const { usernameInput, modifActive, errorMsg } = this.state;
           const { username } = this.props;
           return (

@@ -59,10 +59,15 @@ class Email extends Component {
       }
     })
     .catch(error => {
-      if (error.graphQLErrors[0].message === 'Not auth') {
-        localStorage.removeItem('auth_token');
-        this.props.clearStore();
-        this.props.history.push('/');
+      if (error.graphQLErrors && error.graphQLErrors[0]) {
+        if (error.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; })
+          localStorage.removeItem('auth_token');
+          this.props.clearStore();
+          this.props.history.push('/');
+        }
       }
 
       if (!this._unmount) {
@@ -83,7 +88,8 @@ class Email extends Component {
     return (
       <Mutation mutation={UPDATE_EMAIL_MUTATION}>
       {
-        (updateUserEmail, { loading }) => {
+        (updateUserEmail, { loading, client }) => {
+          this.client = client;
           const { emailInput, modifActive, errorMsg } = this.state;
           const { email } = this.props;
           return (
@@ -140,6 +146,8 @@ class Email extends Component {
   }
 }
 
+
+// Redux connection.
 const mapStateToProps = state => ({
   email: state.user.email
 });
@@ -147,7 +155,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateEmailMechanism: email => dispatch(updateEmailMechanism(email)),
   clearStore: () => dispatch(clearStore())
-})
+});
+
 
 // Exports.
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Email));

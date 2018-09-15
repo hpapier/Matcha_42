@@ -52,10 +52,15 @@ class Suggestion extends Component {
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
       .catch(error => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            this.client.resetStore()
+              .then(r => { return; })
+              .catch(e => { return; });
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
         }
 
         if (!this._unmount)
@@ -75,10 +80,15 @@ class Suggestion extends Component {
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
       .catch(error => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            this.client.resetStore()
+              .then(r => { return; })
+              .catch(e => { return; });
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
         }
 
         if (!this._unmount)
@@ -180,7 +190,7 @@ class Suggestion extends Component {
 };
 
 
-// Redux connexion.
+// Redux connection.
 const mapStateToProps = state => ({
   simpleUserList: state.simpleUserList,
   userTags: state.user.userTags,

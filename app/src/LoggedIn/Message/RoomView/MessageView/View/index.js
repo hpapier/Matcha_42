@@ -51,6 +51,9 @@ class View extends Component {
     .catch(e => {
       if (e.graphQLErrors && e.graphQLErrors[0]) {
         if (e.graphQLErrors[0].message === 'Not auth') {
+          this.client.resetStore()
+            .then(r => { return; })
+            .catch(e => { return; });
           localStorage.removeItem('auth_token');
           this.props.clearStore();
           this.props.history.push('/');
@@ -182,7 +185,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   clearStore: () => dispatch(clearStore())
-})
+});
+
 
 // Export.
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(View));

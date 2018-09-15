@@ -1,27 +1,38 @@
 // Modules imports.
 import React, { Component } from 'react';
 import { ApolloConsumer } from 'react-apollo';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 
 // Locals imports.
 import { clearStore } from '../../../../store/action/synchronous';
+import { DISCONNECT_USER_QUERY } from '../../../../query';
 
 
 // Logout Component.
 class Logout extends Component {
+  async componentDidMount() {
+    await this.client.query({
+      query: DISCONNECT_USER_QUERY
+    });
+
+    this.client.resetStore()
+      .then(r => { return; })
+      .catch(e => { return; });
+
+    localStorage.removeItem('auth_token');
+    this.props.clearStore();
+    this.props.history.push('/');
+  }
+
   render() {
     return (
       <ApolloConsumer>
       {
         client => {
-          client.resetStore()
-            .then(r => { return; })
-            .catch(e => { return; });
-          this.props.clearStore();
-          localStorage.removeItem('auth_token');
-          return <Redirect to='/' />
+          this.client = client;
+          return null;
         }
       }
       </ApolloConsumer>
@@ -37,4 +48,4 @@ const mapDispatchToProps = dispatch => ({
 
 
 // Export.
-export default connect(null, mapDispatchToProps)(Logout);
+export default connect(null, mapDispatchToProps)(withRouter(Logout));

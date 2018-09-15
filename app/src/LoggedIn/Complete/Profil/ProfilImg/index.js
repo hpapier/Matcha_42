@@ -15,9 +15,6 @@ class ProfilImg extends Component {
 
   _unmount = false;
 
-  componentDidMount() {
-  }
-
   componentWillUnmount() {
     this._unmount = true;
   }
@@ -34,7 +31,6 @@ class ProfilImg extends Component {
   }
 
   downImg = () => {
-    const { images } = this.props;
     const { index } = this.state;
 
     if (index === 0)
@@ -67,7 +63,7 @@ class ProfilImg extends Component {
 };
 
 
-// Redux connexion.
+// Redux connection.
 const mapStateToProps = state => ({
   images: state.currentUserProfilInfo.images
 });

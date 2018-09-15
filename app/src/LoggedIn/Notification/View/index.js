@@ -130,7 +130,6 @@ class View extends Component {
 
       return `${day} ${month} ${year}, ${hours}h${minutes}`;
     }
-    return 'yeah';
   }
 
   displayNotifList = () => {

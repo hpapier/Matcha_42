@@ -373,11 +373,6 @@ const resolvers = {
 
     userInformations: async (parent, args, ctx) => {
       try {
-        //  const lol = () => new Promise((r, f) => {
-        //    setTimeout(() => r(), 5000);
-        //  });
-
-        //  const ll = await lol();
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -414,11 +409,6 @@ const resolvers = {
 
     userInformationsBox: async (parent, args, ctx) => {
       try {
-        //  const lol = () => new Promise((r, f) => {
-        //    setTimeout(() => r(), 5000);
-        //  });
-
-        //  const ll = await lol();
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -730,6 +720,12 @@ const resolvers = {
 
     getUserLike: async (_, args, ctx) => {
       try {
+      //   const lol = () => new Promise((r, f) => {
+      //     setTimeout(() => r(), 3000);
+      //   });
+
+      //  const ll = await lol();
+      //   return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -886,6 +882,8 @@ const resolvers = {
 
     getCountMessage: async (_, args, ctx) => {
       try {
+        // return new Error('Not auth');
+
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -904,7 +902,7 @@ const resolvers = {
           });
 
           if (!isPresent) {
-            const isBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, message.from_user]);
+            const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [user.id, message.from_user]);
             const isAlreadyMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, message.from_user]);
             const isComplete = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [message.from_user ,1])
 
@@ -1748,8 +1746,6 @@ const resolvers = {
           const user = await verifyUserToken({ authorization: `Bearer ${token}`});
           if (!user)
             return new Error('Not auth');
-
-
             
           const notifs = await client.query('SELECT * FROM notification WHERE user_id = $1 AND is_viewed = $2', [user.id, 0]);
           return { count: notifs.rowCount };
@@ -1781,7 +1777,7 @@ const resolvers = {
             });
   
             if (!isPresent) {
-              const isBlocked = await client.query('SELECT * FROM account_blocked WHERE from_user_id = $1 AND to_user_id = $2', [user.id, message.from_user]);
+              const isBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [user.id, message.from_user]);
               const isAlreadyMatch = await client.query('SELECT * FROM match WHERE (from_user, to_user) = ($1, $2) OR (from_user, to_user) = ($2, $1)', [user.id, message.from_user]);
               const isComplete = await client.query('SELECT * FROM user_info WHERE id = $1 AND iscomplete = $2', [message.from_user ,1])
 

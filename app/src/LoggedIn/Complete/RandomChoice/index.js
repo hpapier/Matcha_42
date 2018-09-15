@@ -24,15 +24,14 @@ class RandomChoice extends Component {
       {
         ({ loading, error }) => {
           if (loading)
-            return <div id='lgi-random-choice-loading'><div id='lgi-random-choice-loading-animation'></div></div>;
-
+          return <div id='lgi-random-choice-loading'><div id='lgi-random-choice-loading-animation'></div></div>;
+          
           if (error) {
             if (error.graphQLErrors && error.graphQLErrors[0]) {
               if (error.graphQLErrors[0].message === 'Not auth')
-                return <Logout />;
-              else
-                return <div>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
+              return <Logout />;
             }
+            return <div className='lgi-list-error'>Oups! Une erreur est survenu, veuillez réessayer plus tard..</div>;
           }
 
           return <Main />;
@@ -44,7 +43,7 @@ class RandomChoice extends Component {
 };
 
 
-// Redux connexion.
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   saveListOfUser: data => dispatch(saveListOfUser(data))
 });

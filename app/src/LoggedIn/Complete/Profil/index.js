@@ -43,7 +43,7 @@ class Profil extends Component {
             if (error.graphQLErrors && error.graphQLErrors[0]) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
-              else if (error.graphQLErrors[0].message === 'Profil blocked')
+              if (error.graphQLErrors[0].message === 'Profil blocked')
                 return (
                   <div className='lgi-complete-profil-error'>
                     <div className='lgi-complete-profil-error-text'>Ce profil vous a bloqué.</div>
@@ -52,13 +52,12 @@ class Profil extends Component {
                 );
             }
 
-            if (error)
-              return (
-                <div className='lgi-complete-profil-error'>
-                  <div className='lgi-complete-profil-error-text'>Oups! Une erreur est survenu..</div>
-                  <div className='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
-                </div>
-              );
+            return (
+              <div className='lgi-complete-profil-error'>
+                <div className='lgi-complete-profil-error-text'>Oups! Une erreur est survenu..</div>
+                <div className='lgi-complete-profil-error-btn' onClick={this.handleErrorCallback}>Revenir au suggestion</div>
+              </div>
+            );
           }
 
           return (
@@ -87,7 +86,7 @@ class Profil extends Component {
 };
 
 
-// Redux connexion.
+// Redux connection.
 const mapStateToProps = state => ({
   userProfilToGet: state.userProfilToGet
 });

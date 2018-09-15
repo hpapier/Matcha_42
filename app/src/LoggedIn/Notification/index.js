@@ -31,7 +31,7 @@ class Notification extends Component {
             return <div id='lgi-notif-loading'><div id='lgi-notif-loading-animation'></div></div>;
 
           if (error) {
-            if (error.graphQLErrors && error.graphQLErrors[0].message) {
+            if (error.graphQLErrors && error.graphQLErrors[0]) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
             }

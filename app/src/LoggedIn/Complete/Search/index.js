@@ -4,7 +4,7 @@ import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 
 
-// Local import.
+// Locals imports.
 import './index.sass';
 import SearchLoading from './SearchLoading';
 import SearchMutation from './SearchMutation';
@@ -29,12 +29,11 @@ class Search extends Component {
             return <SearchLoading />;
 
           if (error) {
-            if (error.graphQLErrors[0]) {
+            if (error.graphQLErrors && error.graphQLErrors[0]) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
             }
-            else
-              return <SearchError />;
+            return <SearchError />;
           }
 
           return <SearchMutation />;
@@ -46,9 +45,11 @@ class Search extends Component {
 }
 
 
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   saveUserPref: data => dispatch(saveUserPref(data))
 });
 
 
+// Export.
 export default connect(null, mapDispatchToProps)(Search);

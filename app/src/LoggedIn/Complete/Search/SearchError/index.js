@@ -2,7 +2,7 @@
 import React from 'react';
 
 
-// Local import.
+// Locals imports.
 import './index.sass';
 
 

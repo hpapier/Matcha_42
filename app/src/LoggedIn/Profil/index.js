@@ -17,6 +17,7 @@ import ViewAbout from './View/About';
 import ViewImages from './View/Images';
 import Logout from '../Utils/Logout';
 
+
 // Profil Component
 class Profil extends Component {
   onCompletedHandler = (data) => {
@@ -63,10 +64,13 @@ class Profil extends Component {
   }
 }
 
+
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   saveUserInfo: data => dispatch(saveUserInfo(data)),
   saveInterest: data => dispatch(saveInterest(data))
-})
+});
+
 
 // Exports.
 export default connect(null, mapDispatchToProps)(withRouter(Profil));

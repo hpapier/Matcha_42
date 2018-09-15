@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 
-// Local import
+// Locals imports.
 import './index.sass';
 import { FORCE_GEOLOCATION_MUTATION } from '../../../query';
 import { statusBarMechanism } from '../../../store/action/synchronous';
@@ -51,9 +51,11 @@ class NotComplete extends Component {
 };
 
 
+// Redux connection.
 const mapDispatchToProps = dispatch => ({
   statusBarMechanism: status => dispatch(statusBarMechanism(status))
 });
+
 
 // Export.
 export default connect(null, mapDispatchToProps)(withRouter(NotComplete));

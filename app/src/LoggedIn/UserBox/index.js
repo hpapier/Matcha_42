@@ -10,6 +10,7 @@ import './index.sass';
 import { USER_BOX_QUERY } from '../../../query';
 import cupBrownIcon from '../../../assets/cup-brown.svg';
 import { changeStatusView } from '../../../store/action/synchronous';
+import Logout from '../Utils/Logout';
 
 
 // UserBox Component
@@ -46,6 +47,14 @@ class UserBox extends Component {
       >
         {
           ({ loading, error, data }) => {
+            if (error) {
+              if (error.graphQLErrors && error.graphQLErrors[0]) {
+                if (error.graphQLErrors[0].message === 'Not auth') {
+                  return <Logout />;
+                }
+              }
+            } 
+
             const { statusView } = this.props;
             return (
               <div id='lgi-user-box'>

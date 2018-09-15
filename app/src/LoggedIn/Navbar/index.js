@@ -16,6 +16,7 @@ import msgSolidIcon from '../../../assets/msg-solid.svg';
 import { statusBarMechanism, clearStore } from '../../../store/action/synchronous';
 import NotificationSubscriber from './NotificationSubscriber';
 import MessageSubscriber from './MessageSubscriber';
+import { DISCONNECT_USER_QUERY } from '../../../query';
 
 
 // Navbar component
@@ -28,10 +29,18 @@ class Navbar extends Component {
     this.props.statusBarMechanism((this.props.location.pathname.split('/')[1] !== '') ? this.props.location.pathname.split('/')[1] : 'home');
   }
 
-  logOutUser = () => {
+  componentDidUpdate() {
+    this.props.statusBarMechanism((this.props.location.pathname.split('/')[1] !== '') ? this.props.location.pathname.split('/')[1] : 'home');
+  }
+
+  logOutUser = async () => {
+    await this.client.query({
+      query: DISCONNECT_USER_QUERY
+    });
+
     this.client.resetStore()
-    .then(r => { return; })
-    .catch(e => { return; });
+      .then(r => { return; })
+      .catch(e => { return; });
     localStorage.removeItem('auth_token');
     this.props.clearStore();
     this.props.history.push('/');

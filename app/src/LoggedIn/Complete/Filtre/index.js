@@ -117,7 +117,7 @@ class Filtre extends Component {
 };
 
 
-// Redux connexion.
+// Redux connection.
 const mapStateToProps = state => ({
   filtre: state.currentFiltre,
   order: state.currentOrder

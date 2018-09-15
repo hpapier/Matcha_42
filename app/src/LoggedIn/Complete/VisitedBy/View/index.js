@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ApolloConsumer } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 
 
 // Locals imports.
@@ -10,7 +11,7 @@ import heartIcon from '../../../../../assets/heart-white.svg';
 import heartIconBrown from '../../../../../assets/heart-brown.svg';
 import scoreIcon from '../../../../../assets/popScore.svg';
 import linedArrowBtm from '../../../../../assets/lined-bottom-arrow.svg';
-import { getUserProfil, changeStatusView, changeLikeStatusForVisitorList } from '../../../../../store/action/synchronous';
+import { getUserProfil, changeStatusView, changeLikeStatusForVisitorList, clearStore } from '../../../../../store/action/synchronous';
 import { LIKE_USER_MUTATION, UNLIKE_USER_MUTATION } from '../../../../../query';
 
 
@@ -51,10 +52,15 @@ class View extends Component {
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
       .catch(error => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            this.client.resetStore()
+              .then(r => { return; })
+              .catch(e => { return; });
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
         }
 
         if (!this._unmount)
@@ -73,11 +79,16 @@ class View extends Component {
         if (!this._unmount)
           this.setState({ currentAction: this.state.currentAction.filter(el => el !== item.id)});
       })
-      .catch(e => {
-        if (error.graphQLErrors[0].message === 'Not auth') {
-          localStorage.removeItem('auth_token');
-          this.props.clearStore();
-          this.props.history.push('/');
+      .catch(error => {
+        if (error.graphQLErrors && error.graphQLErrors[0]) {
+          if (error.graphQLErrors[0].message === 'Not auth') {
+            this.client.resetStore()
+              .then(r => { return; })
+              .catch(e => { return; });
+            localStorage.removeItem('auth_token');
+            this.props.clearStore();
+            this.props.history.push('/');
+          }
         }
 
         if (!this._unmount)
@@ -180,9 +191,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getUserProfil: data => dispatch(getUserProfil(data)),
   changeStatusView: data => dispatch(changeStatusView(data)),
-  changeLikeStatusForVisitorList: data => dispatch(changeLikeStatusForVisitorList(data))
+  changeLikeStatusForVisitorList: data => dispatch(changeLikeStatusForVisitorList(data)),
+  clearStore: () => dispatch(clearStore())
 });
 
 
 // Export.
-export default connect(mapStateToProps, mapDispatchToProps)(View);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(View));
