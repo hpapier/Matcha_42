@@ -28,16 +28,15 @@ class Notification extends Component {
       {
         ({ loading, error }) => {
           if (loading)
-            return <div><div></div></div>;
+            return <div id='lgi-notif-loading'><div id='lgi-notif-loading-animation'></div></div>;
 
           if (error) {
-            console.log(error.graphQLErrors);
             if (error.graphQLErrors && error.graphQLErrors[0].message) {
               if (error.graphQLErrors[0].message === 'Not auth')
                 return <Logout />;
             }
 
-            return <div>Oups! Une erreur est survenu..</div>;
+            return <div id='lgi-notif-error'>Oups! Une erreur est survenu..</div>;
           }
 
           return (

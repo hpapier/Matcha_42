@@ -171,11 +171,11 @@ class Images extends Component {
                 {
                   loading ?
                   <div className='lgi-profil-view-photo-add-loading'></div> :
-                  <button className='lgi-profil-view-photos-header-plus-icon'>
+                  <div className='lgi-profil-view-photos-header-plus-icon'>
                     <label htmlFor='lgi-profil-view-photos-add-img' className='lgi-profil-view-photos-header-plus-icon-label'>
                       <img src={plusIconGrey} alt='plus-icon' />
                     </label>
-                  </button>
+                  </div>
                 }
                 <input type='file' id='lgi-profil-view-photos-add-img' accept='.png,.jpeg,.jpg' onChange={() => this.uploadFile(client)} ref={ref => this.inputFile = ref} />
               </div>

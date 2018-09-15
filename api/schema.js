@@ -325,14 +325,6 @@ const typeDefs = `
   }
 `;
 
-
-// type Subscription {
-//   postAdded: Post
-    // notificationSub
-// }
-//     signUp(username: !String, email: !String, lastname: !String, firstname: !String, birthDate: !Date, genre: !String, interest: !String, password: !String): AuthStatus
-
-
 const resolvers = {
   Query: {
     userStatus: async (parent, args, ctx) => {

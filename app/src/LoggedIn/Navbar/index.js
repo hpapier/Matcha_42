@@ -29,10 +29,12 @@ class Navbar extends Component {
   }
 
   logOutUser = () => {
+    this.client.resetStore()
+    .then(r => { return; })
+    .catch(e => { return; });
     localStorage.removeItem('auth_token');
     this.props.clearStore();
     this.props.history.push('/');
-    this.client.resetStore();
   }
 
   navigationView = status => {

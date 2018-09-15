@@ -1,0 +1,35 @@
+@keyframes lgi-notif-loading-animation-el
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+
+#lgi-notif-loading
+  width: 100%
+  display: flex
+  justify-content: center
+  margin-top: 100px
+
+#lgi-notif-loading-animation
+  background: #f2f4f7
+  border: 5px solid #f2f4f7
+  border-top: 5px solid #E6C2AA
+  border-radius: 50%
+  width: 30px
+  height: 30px
+  animation-name: lgi-notif-loading-animation-el
+  animation-duration: 1s
+  animation-iteration-count: infinite
+  animation-timing-function: ease
+  margin-bottom: 100px
+
+// ERROR
+#lgi-notif-error
+  width: 100%
+  margin-top: 100px
+  color: #66757F
+  font-family: 'Source sans pro', sans-serif
+  font-size: .875em
+  font-weight: 400
+  text-align: center
