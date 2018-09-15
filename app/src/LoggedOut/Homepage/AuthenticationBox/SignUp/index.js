@@ -28,6 +28,12 @@ class SignIn extends Component {
     errorMsg: ''
   };
 
+  _unmount = false;
+
+  componentWillUnmount() {
+    this._unmount = true;
+  }
+
   dayOption = () => {
     let DAY = [];
     for(let iteration = 1; iteration <= 31; iteration++) {
@@ -77,6 +83,26 @@ class SignIn extends Component {
     return false;
   }
 
+  checkPwd = pwd => {
+    let checkNumb = 0;
+    let checkMaj = 0;
+    let checkMin = 0;
+
+    for (let i = 0; i < pwd.length; i++) {
+      if (pwd.charAt(i).match(/([0-9])/))
+        checkNumb++;
+      else if (pwd.charAt(i).match(/([A-Z])/))
+        checkMaj++;
+      else if (pwd.charAt(i).match(/([a-z])/))
+        checkMin++;
+    }
+
+    if (checkNumb > 2 && checkMaj > 0 && checkMin > 0)
+      return true;
+
+    return false;
+  }
+
   signUpMechanism = (e, mutation) => {
     e.preventDefault();
 
@@ -97,6 +123,22 @@ class SignIn extends Component {
         return;
       }
 
+      if (password.length < 8) {
+        if (!this._unmount)
+          this.setState({ errorMsg: 'Votre mot de passe doit contenir minimum 8 caractères.'});
+          return;
+      }
+
+      if (!this.checkPwd(password)) {
+        this.setState({ errorMsg: 'Votre mot de passe doit contenir des minuscules, des majuscules ainsi que des chiffres.'});
+        return;
+      }
+
+      if (!email.match(/^([a-z]|[A-Z]|[0-9]|\.|\-)+@([a-z]|[A-Z]|[0-9])+\.([a-z])+$/)) {
+        this.setState({ errorMsg: 'Adresse email invalide'});
+        return;
+      }
+
       const birthDate = new Date(year, this.getCorrectMonth(month), day);
       const serverGenre = genre === 'Homme' ? 'man' : 'woman';
       const serverInterest = interest === 'Homme' ? 'man' : (interest === 'Femme' ? 'woman' : 'bisexual'); 
@@ -105,15 +147,19 @@ class SignIn extends Component {
 
       mutation({ variables: data })
       .then(r => {
-        if (r.data.signUpMutation.message === 'Success')
-          this.setState({ username: '', email: '', lastname: '', firstname: '', day: null, month: '', year: null, genre: '', interest: '', password: '', verif: '', errorMsg: ''});
+        if (r.data.signUpMutation.message === 'Success') {
+          if (!this._unmount)
+            this.setState({ username: '', email: '', lastname: '', firstname: '', day: null, month: '', year: null, genre: '', interest: '', password: '', verif: '', errorMsg: ''});
+        }
       });
 
-      this.setState({ errorMsg: '', password: '', verif: '' });
+      if (!this._unmount)
+        this.setState({ errorMsg: '', password: '', verif: '' });
       return;
     }
 
-    this.setState({ errorMsg: 'Vérification du mot de passe invalide' });
+    if (!this._unmount)
+      this.setState({ errorMsg: 'Vérification du mot de passe invalide' });
   }
 
   getCorrectMsg = msg => {
@@ -145,7 +191,7 @@ class SignIn extends Component {
 
                   <div id='lgo-sign-in-email'>
                     <img id='lgo-sign-in-email-icon' src={emailIcon} alt='email-icon' />
-                    <input id='lgo-sign-in-email-input' autoComplete='email' type='email' placeholder='Adresse email' onChange={e => this.setState({ email: e.target.value })} value={this.state.email} />
+                    <input id='lgo-sign-in-email-input' autoComplete='email' type='mail' placeholder='Adresse email' onChange={e => this.setState({ email: e.target.value })} value={this.state.email} />
                   </div>
 
                   <div id='lgo-sign-in-box-1'>
