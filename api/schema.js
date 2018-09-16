@@ -87,6 +87,25 @@ const updateStatus = async (userId) => {
   }
 };
 
+const getScore = async user => {
+  try {
+    if (user.iscomplete === 0)
+      return 0;
+  
+    const visiteNb = await client.query('SELECT count(*) FROM user_visite WHERE to_user = $1', [user.id]);
+    const matchNb = await client.query('SELECT count(*) FROM match WHERE from_user = $1 OR to_user = $1', [user.id]);
+    const likeNb = await client.query('SELECT count(*) FROM user_like WHERE to_user = $1', [user.id]);
+    const total = Math.floor(visiteNb.rows[0].count * 0.8) + (matchNb.rows[0].count * 0.2) + (likeNb.rows[0].count * 1.3) + 10;
+
+    if (total > 100)
+      return 100;
+    else
+      return total;
+  } catch(e) {
+    throw new Error(e);
+  }
+};
+
 const typeDefs = `
   type Status {
     status: Boolean
@@ -415,7 +434,8 @@ const resolvers = {
   
         const userImages = await client.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
         const userInterest = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [user.id]);
-        await client.query('UPDATE user_info SET last_connexion = $1 WHERE id = $2', [new Date(), user.id]);
+        const popScore = await getScore(user);
+        await client.query('UPDATE user_info SET (last_connexion, popularity_score) = ($1, $2) WHERE id = $3', [new Date(), popScore, user.id]);
         const convertedInterests = userInterest.rows.map(item => ({ id: item.id, interestId: item.interest_id }));
         return {
           id: user.id,
@@ -427,7 +447,7 @@ const resolvers = {
           genre: user.genre,
           sexualOrientation: user.sexual_orientation,
           bio: user.bio,
-          popularityScore: user.popularity_score,
+          popularityScore: popScore,
           location: user.location,
           creationDate: user.creation_date,
           lastConnexion: new Date(),
