@@ -40,6 +40,79 @@ class ProfilBody extends Component {
     this._unmount = true;
   }
 
+  getDateLastConnexion = date => {
+    if (!date)
+      return 'Unknow date..';
+
+    const notifDate = new Date(date);
+    const timestamp = Math.abs(new Date() - notifDate);
+
+    if (timestamp < 86400000) {
+      const h = ((new Date(timestamp).getHours() - 1) === 0) ? '' : new Date(timestamp).getHours() - 1;
+      const m = new Date(timestamp).getMinutes();
+
+      if (!h) {
+        if (m === 0)
+          return 'il y a quelques secondes';
+        else
+          return `il y a ${m} minutes`;
+      } else {
+        if (m > 45)
+          return `il y a ${h + 1}h`;
+        else
+          return `il y a ${h}h`;
+      }
+
+
+    } else {
+      const day = (notifDate.getDate() < 10) ? '0' + notifDate.getDate() : notifDate.getDate();
+      let month;
+      const year = notifDate.getFullYear();
+      const hours = (notifDate.getHours() < 10) ? '0' + notifDate.getHours() : notifDate.getHours();
+      const minutes = (notifDate.getMinutes() < 10) ? '0' + notifDate.getMinutes() : notifDate.getMinutes();
+
+      switch (notifDate.getMonth()) {
+        case 1:
+          month = 'février';
+          break;
+        case 2:
+          month = 'mars';
+          break;
+        case 3:
+          month = 'avril';
+          break;
+        case 4:
+          month = 'mai';
+          break;
+        case 5:
+          month = 'juin';
+          break;
+        case 6:
+          month = 'juillet';
+          break;
+        case 7:
+          month = 'août';
+          break;
+        case 8:
+          month = 'septembre';
+          break;
+        case 9:
+          month = 'octobre';
+          break;
+        case 10:
+          month = 'novembre';
+          break;
+        case 11:
+          month = 'décembre';
+          break;
+
+        default: 'Janvier'
+      }
+
+      return `le ${day} ${month} ${year}, à ${hours}h${minutes}`;
+    }
+  }
+
   getLocationName = (location) => {
     const locationName = JSON.parse(location).formatedName;
     const locArr = locationName.split(',');
@@ -264,7 +337,7 @@ class ProfilBody extends Component {
               }
       
               <div id='lgi-complete-profil-body-user'>
-                <div id='lgi-complete-profil-body-user-lastconnexion'>Dernière connexion il y a {information.lastConnexion}</div>
+                { !information.isConnected ? <div id='lgi-complete-profil-body-user-lastconnexion'>Dernière connexion {this.getDateLastConnexion(information.lastConnexion)}</div> : null }
                 <div id='lgi-complete-profil-body-user-username'>
                   <div id='lgi-complete-profil-body-user-username-text'>{information.username}</div>
                   <div id={ information.isConnected ? 'lgi-complete-profil-body-user-username-co-status-active' : 'lgi-complete-profil-body-user-username-co-status-inactive' }></div>

@@ -13,6 +13,11 @@ import { statusBarMechanism } from '../../../store/action/synchronous';
 
 // Homepage Component
 class NotComplete extends Component {
+  componentDidMount() {
+    if (!this.props.data.location)
+      this.forceGeolocation();
+  }
+
   changeRoute = () => {
     const { history, statusBarMechanism } = this.props;
     history.push('/profil');
@@ -24,10 +29,8 @@ class NotComplete extends Component {
       <Mutation mutation={FORCE_GEOLOCATION_MUTATION}>
       {
         forceGeolocation => {
-          const { bio, interests, images, location, profilPicture } = this.props.data;
-          if (!location)
-            forceGeolocation();
-
+          const { bio, interests, images, profilPicture } = this.props.data;
+          this.forceGeolocation = forceGeolocation;
           return (
             <div id='lgi-not-complete'>
               <div id='lgi-not-complete-title'>Votre profil n'est pas complet.</div>

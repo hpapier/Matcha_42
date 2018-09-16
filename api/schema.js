@@ -1110,6 +1110,7 @@ const resolvers = {
           `
         };
         const mailResult = await transporter.sendMail(mailOptions);
+        console.log(mailResult);
         const user = await client.query('UPDATE user_info SET reset_token = $1 WHERE username = $2', [resetToken, username]);
         return { message: 'Success' };
       } catch (e) {
