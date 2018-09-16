@@ -95,7 +95,7 @@ const getScore = async user => {
     const visiteNb = await client.query('SELECT count(*) FROM user_visite WHERE to_user = $1', [user.id]);
     const matchNb = await client.query('SELECT count(*) FROM match WHERE from_user = $1 OR to_user = $1', [user.id]);
     const likeNb = await client.query('SELECT count(*) FROM user_like WHERE to_user = $1', [user.id]);
-    const total = Math.floor(visiteNb.rows[0].count * 0.8) + (matchNb.rows[0].count * 0.2) + (likeNb.rows[0].count * 1.3) + 10;
+    const total = Math.floor(parseInt((visiteNb.rows[0].count * 0.8) + (matchNb.rows[0].count * 0.2) + (likeNb.rows[0].count * 1.3) + 10));
 
     if (total > 100)
       return 100;
@@ -521,22 +521,24 @@ const resolvers = {
 
         let result = [];
         for (let item of trimedByDistanceList) {
-          const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [item.id, user.id]);
-          if (checkIfBlocked.rowCount === 0) {
-            const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, item.id]);
-            if (checkIfLiked.rowCount === 0) {
-              const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
-              const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
-              result.push({
-                id: item.id,
-                location: item.location,
-                popularityScore: item.popularity_score,
-                username: item.username,
-                age: getAge(item.birth_date),
-                tags: formatedTagsList,
-                profilPicture: item.profil_picture,
-                distance: parseInt(getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
-              });
+          if (item.iscomplete === 1) {
+            const checkIfBlocked = await client.query('SELECT * FROM account_blocked WHERE (from_user_id, to_user_id) = ($1, $2) OR (from_user_id, to_user_id) = ($2, $1)', [item.id, user.id]);
+            if (checkIfBlocked.rowCount === 0) {
+              const checkIfLiked = await client.query('SELECT * FROM user_like WHERE (from_user, to_user) = ($1, $2)', [user.id, item.id]);
+              if (checkIfLiked.rowCount === 0) {
+                const getUserTags = await client.query('SELECT * FROM user_interests WHERE user_id = $1', [item.id]);
+                const formatedTagsList = getUserTags.rows.map(tag => ({ id: tag.id, interestId: tag.interest_id }));
+                result.push({
+                  id: item.id,
+                  location: item.location,
+                  popularityScore: item.popularity_score,
+                  username: item.username,
+                  age: getAge(item.birth_date),
+                  tags: formatedTagsList,
+                  profilPicture: item.profil_picture,
+                  distance: parseInt(getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K'))
+                });
+              }
             }
           }
         };
