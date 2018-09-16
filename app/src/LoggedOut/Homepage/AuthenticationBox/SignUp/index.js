@@ -56,7 +56,7 @@ class SignIn extends Component {
 
   yearOption = () => {
     let YEAR = [];
-    for(let it = 2018; it >= 1900; it--)
+    for(let it = 2000; it >= 1900; it--)
       YEAR.push(it);
 
     return YEAR.map(item => (
@@ -140,6 +140,7 @@ class SignIn extends Component {
       }
 
       const birthDate = new Date(year, this.getCorrectMonth(month), day);
+      console.log(birthDate);
       const serverGenre = genre === 'Homme' ? 'man' : 'woman';
       const serverInterest = interest === 'Homme' ? 'man' : (interest === 'Femme' ? 'woman' : 'bisexual'); 
 

@@ -16,8 +16,29 @@ class SetPasswordForm extends Component {
   state = {
     password: '',
     verif: '',
-    errorMsg: ''
+    errorMsg: '',
+    loading: false
   };
+
+  checkPwd = pwd => {
+    let checkNumb = 0;
+    let checkMaj = 0;
+    let checkMin = 0;
+
+    for (let i = 0; i < pwd.length; i++) {
+      if (pwd.charAt(i).match(/([0-9])/))
+        checkNumb++;
+      else if (pwd.charAt(i).match(/([A-Z])/))
+        checkMaj++;
+      else if (pwd.charAt(i).match(/([a-z])/))
+        checkMin++;
+    }
+
+    if (checkNumb > 2 && checkMaj > 0 && checkMin > 0)
+      return true;
+
+    return false;
+  }
 
   handleSubmit = (e, mutation) => {
     e.preventDefault();
@@ -41,21 +62,35 @@ class SetPasswordForm extends Component {
       return;
     }
 
+    if (password.length < 8) {
+      this.setState({ errorMsg: 'Votre mot de passe doit contenir au minimum 8 caractères.' });
+      return;
+    }
+
+    if (!this.checkPwd(password)) {
+      this.setState({ errorMsg: 'Votre mot de passe doit contenir des minuscules, des majuscules ainsi que des chiffres.' });
+      return;
+    }
+
+    this.setState({ loading: true, errorMsg: '' });
     const resetToken = this.props.resetToken;
     const username = this.props.username;
     mutation({ variables: { username, resetToken, password }})
     .then(r => {
       if (r.data.resetPassword.message === 'Success')
-        this.setState({ password: '', verif: '', errorMsg: '' });
+        this.setState({ password: '', verif: '', errorMsg: '', loading: false });
     })
+    .catch(e => {
+      this.setState({ password: '', verif: '', errorMsg: 'Oups! Une erreur est survenu..', loading: false })
+    });
   }
 
   render() {
-    const { errorMsg } = this.state;
+    const { errorMsg, loading } = this.state;
     return (
       <Mutation mutation={RESET_PASSWORD_MUTATION}>
       {
-        (resetPassword, { loading, data, error }) => {
+        (resetPassword, { data, error }) => {
           return (
             <div>
               {

@@ -1033,7 +1033,17 @@ const resolvers = {
           from: '"Hugo de Matcha.com" <hpapier.matcha@gmail.com>',
           to: email,
           subject: `Bienvenu ${firstname}, veuillez confirmer votre email ! :)`,
-          html: `<a href="http://localhost:8080/email/${username}/${emailConfirmationToken}">Confirmer votre email en cliquant sur ce lien</a>`
+          html: `
+            <div style="background-color: #fff; width: 100%;">
+              <h1 style="color: #66757F;">Bienvenu ${firstname}</h1>
+              <p style="font-family: Arial; font-size: 16px; font-weight: bold; color: #66757F; max-width: 600px; text-align: justify;">Vous faites partit maintenant de la communauté de matcha. Juste avant de pouvoir rencontrer de nouvelles personnes, vous devez confirmer votre compte en cliquant sur le button ci-dessous</p>
+              <p style="color: #66757F; max-width: 600px; text-align: justify;">À bientôt pour de nouvelles rencontres sur Matcha !</p>
+              <br />
+              <br />
+              <a style="text-decoration: none; font-family: Arial; font-size: 14px; font-weight: 600; text-transform: uppercase; color: #fff; background-color: #E6C2AA; padding: 15px 30px 15px 30px; border-radius: 5px; box-shadow: 0px 2px 4px rgba(0,0,0,0.05);" href="http://localhost:8080/email/${username}/${emailConfirmationToken}">confirmer mon email</a>
+              <br />
+            <div>  
+            `
         }
           
         const mailSendingResult = await transporter.sendMail(mailOptions);
@@ -1042,7 +1052,7 @@ const resolvers = {
 
         const insertion = 'INSERT INTO user_info (email, username, lastname, firstname, password, birth_date, genre, sexual_orientation, creation_date, confirmation_token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
         const creationDate = new Date();
-        const result = await client.query(insertion, [email, username, lastname, firstname, hashedPwd, birthDate, genre, interest, creationDate, emailConfirmationToken]);
+        const result = await client.query(insertion, [email, username, lastname, firstname, hashedPwd, new Date(birthDate), genre, interest, creationDate, emailConfirmationToken]);
         return { message: 'Success' };
       } catch (e) {
         const error = new Error(e);
@@ -1087,12 +1097,23 @@ const resolvers = {
           from: '"Hugo de Matcha.com" <hpapier.matcha@gmail.com>',
           to: email,
           subject: `${res.rows[0].firstname}, voici votre lien de réinitialisation ! :)`,
-          html: `<a href="http://localhost:8080/reset/${username}/${resetToken}">Réinitialiser votre mot de passe en cliquant sur ce lien</a>`
+          html: `
+            <div style="background-color: #fff; width: 100%;">
+              <h1 style="color: #66757F;">Réinitialisation de votre mot de passe</h1>
+              <p style="font-family: Arial; font-size: 16px; font-weight: bold; color: #66757F; max-width: 600px; text-align: justify;">Vous pouvez désormer réinitialiser votre mot de passe en cliquant sur le button ci-dessous</p>
+              <p style="color: #66757F; max-width: 600px; text-align: justify;">À bientôt pour de nouvelles rencontres sur Matcha !</p>
+              <br />
+              <br />
+              <a style="text-decoration: none; font-family: Arial; font-size: 14px; font-weight: 600; text-transform: uppercase; color: #fff; background-color: #E6C2AA; padding: 15px 30px 15px 30px; border-radius: 5px; box-shadow: 0px 2px 4px rgba(0,0,0,0.05);" href="http://localhost:8080/reset/${username}/${resetToken}">réinitialiser mon mot de passe</a>
+              <br />
+            <div>
+          `
         };
         const mailResult = await transporter.sendMail(mailOptions);
         const user = await client.query('UPDATE user_info SET reset_token = $1 WHERE username = $2', [resetToken, username]);
         return { message: 'Success' };
       } catch (e) {
+        console.log('--> IN SEND EMAIL RESET ERROR');
         console.log(e);
         return { message: 'Server Error' };
       }
@@ -1105,7 +1126,6 @@ const resolvers = {
         // })
 
         // const ll = await lol();
-        console.log(password);
         const res = await client.query('SELECT * FROM user_info WHERE username = $1', [username]);
         if (res.rowCount === 0)
           return { message: 'User not exist' };
@@ -1139,6 +1159,7 @@ const resolvers = {
         await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [locationJson, user.id]);
         return true;
       } catch (e) {
+        console.log('--> IN FORCE GEOLOCATION');
         console.log(e);
         return new Error(e.message);
       }
