@@ -336,6 +336,7 @@ const typeDefs = `
     unblockUser(userId: Int!): Boolean
     reportUser(userId: Int!): Boolean
     sendUserMsg(toUser: Int!, content: String!): Boolean
+    geocodeUser(address: String!): Boolean
   }
 
   type Subscription {
@@ -473,24 +474,6 @@ const resolvers = {
         return new Error(e.message);
       }
     },
-
-    // userNotif: async (parent, args, ctx) => {
-    //   try {
-    //     const user = await verifyUserToken(ctx.headers);
-    //     if (!user)
-    //       return new Error('Not auth');
-
-    //     const notif = await client.query('SELECT * FROM notification WHERE user_id = $1', [user.id]);
-    //     if (notif.rowCount === 0)
-    //       return [];
-    //     else {
-    //       const arrayOfNotif = notif.rows.map(item => ({ id: item.id, isViewed: item.is_viewed, action: item.action, userId: item.user_id, fromUserId: item.from }));
-    //       return arrayOfNotif;
-    //     }
-    //   } catch (e) {
-    //     return new Error(e.message);
-    //   }
-    // },
 
     getUserPreference: async (parent, args, ctx) => {
       try {
@@ -740,12 +723,6 @@ const resolvers = {
 
     getUserLike: async (_, args, ctx) => {
       try {
-      //   const lol = () => new Promise((r, f) => {
-      //     setTimeout(() => r(), 3000);
-      //   });
-
-      //  const ll = await lol();
-      //   return new Error('Not auth');
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -859,7 +836,6 @@ const resolvers = {
         
         return result;
       } catch (e) {
-        console.log(e);
         return e;
       }
     },
@@ -902,8 +878,6 @@ const resolvers = {
 
     getCountMessage: async (_, args, ctx) => {
       try {
-        // return new Error('Not auth');
-
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -973,21 +947,12 @@ const resolvers = {
 
         return result;
       } catch (e) {
-        console.log(e);
         return e;
       }
     },
 
     getRoomMessage: async (_, { roomId }, ctx) => {
       try {
-        // /////
-        // const lol = () => new Promise((r, f) => {
-        //    setTimeout(() => r(), 3000);
-        //  });
-
-        // const ll = await lol();
-        // return [];
-        /////
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -1030,7 +995,6 @@ const resolvers = {
         await client.query('UPDATE user_info SET (isconnected, last_connexion) = ($1, $2) WHERE id = $3', [0, new Date(), user.id]);
         return true;
       } catch (e) {
-        console.log(e);
         return false;
       }
     }
@@ -1295,6 +1259,7 @@ const resolvers = {
           httpAdapter: 'https', // Default
           // apiKey: 'e0f43f3da5051d101a0ba8d112b9871c', // for Mapquest, OpenCage, Google Premier 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4'
           // apiKey: 'SnyCDRVbW_KCGkXb1vrQ'
+          apiKey: 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4',
           formatter: null,         // 'gpx', 'string', ...
         };
         const geocoder = NodeGeocoder(options);
@@ -1559,13 +1524,6 @@ const resolvers = {
 
     updateUserPreferences: async (parent, { ageStart, ageEnd, scoreStart, scoreEnd, location, tags}, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // return new Error('Not auth');
-        // ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -1689,13 +1647,6 @@ const resolvers = {
 
     blockUser: async (_, { userId }, ctx) => {
       try {
-        // const lol = () => new Promise((r, f) => {
-        //   setTimeout(() => r(), 5000);
-        // });
-
-        // const ll = await lol();
-        // return new Error('Not auth');
-        ///----
         const user = await verifyUserToken(ctx.headers);
         if (!user)
           return new Error('Not auth');
@@ -1775,6 +1726,36 @@ const resolvers = {
 
         return true;
         
+      } catch (e) {
+        return e;
+      }
+    },
+
+    geocodeUser: async (_, { address }, ctx) => {
+      try {
+        const user = await verifyUserToken(ctx.headers);
+        if (!user)
+          return new Error('Not auth');
+
+        const options = {
+          provider: 'google',
+          // Optional depending on the providers
+          httpAdapter: 'https', // Default
+          // apiKey: 'e0f43f3da5051d101a0ba8d112b9871c', // for Mapquest, OpenCage, Google Premier 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4'
+          // apiKey: 'SnyCDRVbW_KCGkXb1vrQ'
+          apiKey: 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4',
+          formatter: null,         // 'gpx', 'string', ...
+        };
+        const geocoder = NodeGeocoder(options);
+        const res = await geocoder.geocode(address);
+        if (res.length === 0)
+          return new Error('Incorrect');
+
+        const newAddress = res[0].formattedAddress;
+        const newAdd = JSON.stringify({ lat: res[0].latitude, lng: res[0].longitude, formatedName: newAddress });
+        await client.query('UPDATE user_info SET location = $1 WHERE id = $2', [newAdd, user.id]);
+        await updateStatus(user.id);
+        return true;
       } catch (e) {
         return e;
       }

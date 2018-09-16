@@ -583,3 +583,9 @@ export const DISCONNECT_USER_QUERY = gql`
     disconnectUser
   }
 `;
+
+export const GEOCODE_USER_MUTATION = gql`
+  mutation geocodeUser($address: String!) {
+    geocodeUser(address: $address)
+  }
+`;
