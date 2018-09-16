@@ -15,6 +15,7 @@ import ProfilActions from './ProfilActions';
 import ProfilBio from './ProfilBio';
 import ProfilSexualOrientation from './ProfilSexualOrientation';
 import ProfilTags from './ProfilTags';
+import ProfilGender from './ProfilGender';
 
 
 // Profil Component.
@@ -69,6 +70,7 @@ class Profil extends Component {
               <div id='lgi-complete-profil-down-box'>
                 <div id='lgi-complete-profil-down-box-left'>
                   <ProfilActions />
+                  <ProfilGender />
                 </div>
                 <div id='lgi-complete-profil-down-box-right'>
                   <ProfilBio />
