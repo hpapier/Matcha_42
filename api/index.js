@@ -5,6 +5,7 @@ const { execute, subscribe } = require('graphql');
 const graphqlExpress = require('express-graphql');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 
 // Local imports.
@@ -14,6 +15,10 @@ const { schema } = require('./schema.js');
 const app = express();
 app.use(cors());
 app.use('/graphql', bodyParser.json({ limit: '5mb' }), (req, res) => graphqlExpress({ schema, graphiql: true, context: req })(req, res));
+
+// app.use(express.static(path.resolve(__dirname, '../public')));
+// --------------
+
 const ws = createServer(app);
 
 ws.listen(PORT, () => {

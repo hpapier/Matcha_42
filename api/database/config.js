@@ -96,6 +96,19 @@
   );
 */
 
+/*
+    INSERT INTO interests (name) VALUES ('nodejs');
+    INSERT INTO interests (name) VALUES ('React');
+    INSERT INTO interests (name) VALUES ('noob');
+    INSERT INTO interests (name) VALUES ('php');
+    INSERT INTO interests (name) VALUES ('rust');
+    INSERT INTO interests (name) VALUES ('love');
+    INSERT INTO interests (name) VALUES ('sun');
+    INSERT INTO interests (name) VALUES ('girl');
+    INSERT INTO interests (name) VALUES ('insta');
+    INSERT INTO interests (name) VALUES ('foot');
+*/
+
 // Table `user_interests`
 // user_interests:
 // --> id

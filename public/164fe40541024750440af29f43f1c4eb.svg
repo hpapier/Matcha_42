@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="18px" viewBox="0 0 15 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Home-:-0--&gt;-/" transform="translate(-269.000000, -22.000000)" fill="#66757F">
+            <g id="Notifications" transform="translate(244.000000, 0.000000)">
+                <g id="Icon-24px" transform="translate(25.000000, 22.000000)">
+                    <path d="M7.5,17.25 C8.4625,17.25 9.25,16.4625 9.25,15.5 L5.75,15.5 C5.75,16.4625 6.5375,17.25 7.5,17.25 L7.5,17.25 Z M12.75,12 L12.75,7.625 C12.75,4.93875 11.32375,2.69 8.8125,2.095 L8.8125,1.5 C8.8125,0.77375 8.22625,0.1875 7.5,0.1875 C6.77375,0.1875 6.1875,0.77375 6.1875,1.5 L6.1875,2.095 C3.685,2.69 2.25,4.93 2.25,7.625 L2.25,12 L0.5,13.75 L0.5,14.625 L14.5,14.625 L14.5,13.75 L12.75,12 L12.75,12 Z M11,12.875 L4,12.875 L4,7.625 C4,5.455 5.32125,3.6875 7.5,3.6875 C9.67875,3.6875 11,5.455 11,7.625 L11,12.875 L11,12.875 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

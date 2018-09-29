@@ -112,6 +112,7 @@ class SignIn extends Component {
       return;
     }
 
+
     if (password === verif && password && verif) {
       if (isNaN(Date.parse(year, this.getCorrectMonth(month), day))) {
         this.setState({ errorMsg: 'Date de naissance invalide' });
@@ -140,11 +141,10 @@ class SignIn extends Component {
       }
 
       const birthDate = new Date(year, this.getCorrectMonth(month), day);
-      console.log(birthDate);
-      const serverGenre = genre === 'Homme' ? 'man' : 'woman';
-      const serverInterest = interest === 'Homme' ? 'man' : (interest === 'Femme' ? 'woman' : 'bisexual'); 
+      // const serverGenre = genre === 'Homme' ? 'man' : 'woman';
+      // const serverInterest = interest === 'Homme' ? 'man' : (interest === 'Femme' ? 'woman' : 'bisexual'); 
 
-      const data = { username, email, lastname, firstname, birthDate, genre: serverGenre, interest: serverInterest, password };
+      const data = { username, email, lastname, firstname, birthDate, genre, interest, password };
 
       mutation({ variables: data })
       .then(r => {

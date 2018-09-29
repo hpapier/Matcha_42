@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="9px" height="12px" viewBox="0 0 9 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Fill 100</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Home-:-6--&gt;-/" transform="translate(-849.000000, -357.000000)" fill="#FFFFFE">
+            <path d="M857.25,360 L855,360 L855,366 L857.25,366 C857.664,366 858,365.683765 858,365.294118 L858,360.705882 C858,360.316235 857.664,360 857.25,360 L857.25,360 Z M851,365 L854,365 L854,358 L851,358 L851,365 Z M850.333333,358.125 L851,358.125 L851,357.75 C851,357.75 850.988,357 850.333333,357 L849.666667,357 C849.298667,357 849,357.336 849,357.75 L849,368.25 C849,368.664 849.298667,369 849.666667,369 L850.333333,369 C850.701333,369 851,368.664 851,368.25 L851,364.875 L850.333333,364.875 L850.333333,358.125 L850.333333,358.125 Z" id="Fill-100"></path>
+        </g>
+    </g>
+</svg>

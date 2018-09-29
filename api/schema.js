@@ -515,7 +515,8 @@ const resolvers = {
         
         let trimedByDistanceList = [];
         for (let item of res.rows) {
-          if (getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 200)
+          const dist = getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K');
+          if (getDistance(userLat, userLng, JSON.parse(item.location).lat, JSON.parse(item.location).lng, 'K') < 500)
             trimedByDistanceList.push(item);
         }
 
