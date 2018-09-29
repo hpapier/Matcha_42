@@ -60,12 +60,12 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   link: ApolloLink.from([
     onError((lol) => {
-      if (lol.graphQLErrors)
-        lol.graphQLErrors.map(({ message, locations, path }) => {
-          console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-        }
-      );
-      if (lol.networkError) console.log(`[Network error]: ${lol.networkError}`);
+      // if (lol.graphQLErrors)
+      //   lol.graphQLErrors.map(({ message, locations, path }) => {
+      //     console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+      //   }
+      // );
+      // if (lol.networkError) console.log(`[Network error]: ${lol.networkError}`);
     }),
     authLink.concat(link)
   ]),

@@ -142,17 +142,20 @@ class View extends Component {
                 currentMsgRoom.length > 0 ?
                 <div id='lgi-message-message-view-box-list-box' ref={ref => this.bodyRef = ref}>
                 {
-                  currentMsgRoom.map(item => (
-                    <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender' : 'lgi-message-message-view-box-list-box-receiver'} key={item.id}>
-                      <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-img-sender' : 'lgi-message-message-view-box-list-box-img-receiver'}>
-                        <img src={item.fromUser === user.id ? roomInfo.partnerPp : user.profilPicture} alt='profil-img' className='lgi-message-message-view-box-list-box-img-el' />
+                  currentMsgRoom.map(item => {
+                    return (
+                      <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender' : 'lgi-message-message-view-box-list-box-receiver'} key={item.id}>
+                        <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-img-sender' : 'lgi-message-message-view-box-list-box-img-receiver'}>
+                          <img src={item.fromUser === user.id ? user.profilPicture : roomInfo.partnerPp } alt='profil-img' className='lgi-message-message-view-box-list-box-img-el' />
+                        </div>
+                        <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender-msg' : 'lgi-message-message-view-box-list-box-receiver-msg'}>
+                          <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender-msg-content' : 'lgi-message-message-view-box-list-box-receiver-msg-content'}>{item.content}</div>
+                          <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender-msg-date' : 'lgi-message-message-view-box-list-box-receiver-msg-date'}>{this.getDate(item.date)}</div>
+                        </div>
                       </div>
-                      <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender-msg' : 'lgi-message-message-view-box-list-box-receiver-msg'}>
-                        <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender-msg-content' : 'lgi-message-message-view-box-list-box-receiver-msg-content'}>{item.content}</div>
-                        <div className={item.fromUser === user.id ? 'lgi-message-message-view-box-list-box-sender-msg-date' : 'lgi-message-message-view-box-list-box-receiver-msg-date'}>{this.getDate(item.date)}</div>
-                      </div>
-                    </div>
-                  ))
+                      );
+                    }
+                  )
                 }
                 </div> :
                 <div id='lgi-message-message-view-box-list-box-empty'>Aucun message disponible</div>

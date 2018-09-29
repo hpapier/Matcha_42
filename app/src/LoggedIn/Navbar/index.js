@@ -74,7 +74,7 @@ class Navbar extends Component {
               <div id='lgi-navbar-left'>
                 <div className={statusBar === 'home' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('home')}>
                   <img src={statusBar === 'home' ? homeSolidIcon : homeLineIcon} className='lgi-navbar-left-box-icon' />
-                  <div className={statusBar === 'home' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive first'}>Acceuil</div>
+                  <div className={statusBar === 'home' ? 'lgi-navbar-left-box-text-active' : 'lgi-navbar-left-box-text-inactive first'}>Accueil</div>
                 </div>
         
                 <div className={statusBar === 'notification' ? 'lgi-navbar-left-box-active' : 'lgi-navbar-left-box-inactive'} onClick={() => this.navigationView('notification')}>
