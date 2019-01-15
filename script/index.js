@@ -80,11 +80,28 @@ const generator = async () => {
       INSERT INTO user_info
       (email, username, lastname, firstname, password, birth_date, isconfirmed, genre, sexual_orientation, bio, popularity_score, location, iscomplete, creation_date, profil_picture, last_connexion)
       VALUES
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
       RETURNING *;
     `;
   
-    const TO_INSERT = [user.email, user.username, user.lastname, user.firstname, user.password, user.birth_date, user.isconfirmed, user.genre, user.sexual_orientation, user.bio, user.popularity_score, user.location, user.iscomplete, user.creation_date, user.profil_picture, new Date()];
+    const TO_INSERT = [
+      user.email,
+      user.username,
+      user.lastname,
+      user.firstname,
+      user.password,
+      user.birth_date,
+      user.isconfirmed,
+      user.genre,
+      user.sexual_orientation,
+      user.bio,
+      user.popularity_score,
+      user.location,
+      user.iscomplete,
+      user.creation_date,
+      user.profil_picture,
+      new Date()
+    ];
     const userInfo = await client.query(INSERTION, TO_INSERT);
 
     // Picture query
