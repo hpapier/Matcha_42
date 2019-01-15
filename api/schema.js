@@ -1744,9 +1744,7 @@ const resolvers = {
           provider: 'google',
           // Optional depending on the providers
           httpAdapter: 'https', // Default
-          // apiKey: 'e0f43f3da5051d101a0ba8d112b9871c', // for Mapquest, OpenCage, Google Premier 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4'
-          // apiKey: 'SnyCDRVbW_KCGkXb1vrQ'
-          apiKey: 'AIzaSyCr9V09uABdbvkvNhlynD-IY9KsnpkKir4',
+
           formatter: null,         // 'gpx', 'string', ...
         };
         const geocoder = NodeGeocoder(options);
